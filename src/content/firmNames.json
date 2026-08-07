@@ -1,0 +1,35 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27). NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with the verbatim reference pools when it lands. 'Adverse Selection & Sons' is canonical (design doc).",
+  "prefixes": [
+    "Adverse Selection",
+    "Sunk Cost",
+    "Moral Hazard",
+    "Dead Cat",
+    "Greater Fool",
+    "Diminishing Returns",
+    "Dry Powder",
+    "Down Round",
+    "Pattern Match",
+    "Thought Leader",
+    "Escape Velocity",
+    "Hockey Stick",
+    "First Mover",
+    "Local Maximum",
+    "Survivorship",
+    "Term Sheet"
+  ],
+  "suffixes": [
+    "& Sons",
+    "Capital",
+    "Ventures",
+    "Partners",
+    "Holdings",
+    "& Associates",
+    "Growth Equity",
+    "Syndicate",
+    "Opportunity Fund",
+    "& Daughters",
+    "Frontier Fund",
+    "& Cie"
+  ]
+}

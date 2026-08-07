@@ -1,0 +1,65 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27). NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with the 12 verbatim reference theses when it lands.",
+  "theses": [
+    {
+      "id": "thesis-picks-and-shovels",
+      "sectors": ["AI", "SaaS"],
+      "line": "Picks and shovels, but for vibes."
+    },
+    {
+      "id": "thesis-programmable-money",
+      "sectors": ["Fintech", "Crypto"],
+      "line": "Money wants to be programmable. Regulators want a word."
+    },
+    {
+      "id": "thesis-body-as-a-service",
+      "sectors": ["Health", "Consumer"],
+      "line": "The body is the last unmonetized subscription surface."
+    },
+    {
+      "id": "thesis-planet-b",
+      "sectors": ["Climate", "Space"],
+      "line": "Fix the planet, hedge with a spare."
+    },
+    {
+      "id": "thesis-hats-are-assets",
+      "sectors": ["Gaming", "Crypto"],
+      "line": "Players already pay for hats. Imagine if the hats appreciated."
+    },
+    {
+      "id": "thesis-edible-arr",
+      "sectors": ["Food", "Consumer"],
+      "line": "If people chew it daily, it's recurring revenue."
+    },
+    {
+      "id": "thesis-dr-data",
+      "sectors": ["AI", "Health"],
+      "line": "The doctor will see your data now."
+    },
+    {
+      "id": "thesis-boring-is-beautiful",
+      "sectors": ["SaaS", "Fintech"],
+      "line": "We only fund software boring enough to survive."
+    },
+    {
+      "id": "thesis-escapism-premium",
+      "sectors": ["Space", "Gaming"],
+      "line": "Escapism is a growth market; orbit is the premium tier."
+    },
+    {
+      "id": "thesis-long-lunch",
+      "sectors": ["Climate", "Food"],
+      "line": "Civilization runs on lunch and weather. We're long both."
+    },
+    {
+      "id": "thesis-attention-maximalists",
+      "sectors": ["Consumer", "Gaming"],
+      "line": "Attention is finite. We'd like all of it."
+    },
+    {
+      "id": "thesis-robots-first",
+      "sectors": ["AI", "Space"],
+      "line": "Send the robots first. Invoice the humans after."
+    }
+  ]
+}

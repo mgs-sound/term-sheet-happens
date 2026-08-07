@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), written to the tone spec in scripts/generate-pitches.md. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with verbatim reference content when it lands.",
+  "pitches": [
+    {
+      "id": "crypto-ledgerdemain",
+      "name": "LedgerDemain",
+      "idea": "Blockchain for receipts. The receipts are also on a blockchain.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-quorumless",
+      "name": "Quorumless",
+      "idea": "A DAO whose only successful vote was to stop voting.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-steadycoin",
+      "name": "Steadycoin",
+      "idea": "A stablecoin pegged to the founder's confidence.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-mintcondition",
+      "name": "MintCondition",
+      "idea": "NFTs of physical items we cannot confirm exist.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-layerthree",
+      "name": "LayerThree",
+      "idea": "A chain that settles to a chain that settles to a spreadsheet.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-frostbyte",
+      "name": "Frostbyte",
+      "idea": "A self-custody wallet featuring a forgot-password button.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-rugproof",
+      "name": "Rugproof",
+      "idea": "An exchange audited by its own foundation, twice, allegedly.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-gm-protocol",
+      "name": "gm Protocol",
+      "idea": "A decentralized social network with four users and a $90 million treasury.",
+      "sector": "Crypto"
+    }
+  ]
+}

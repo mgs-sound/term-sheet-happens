@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), written to the tone spec in scripts/generate-pitches.md. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with verbatim reference content when it lands.",
+  "pitches": [
+    {
+      "id": "consumer-hushpost",
+      "name": "Hushpost",
+      "idea": "A social network where posts unlock only after everyone stops caring.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-bundl",
+      "name": "Bundl",
+      "idea": "A subscription that bundles your subscriptions into one larger, angrier subscription.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-settle",
+      "name": "Settle",
+      "idea": "A dating app that shows you one person and asks if you're done.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-openboxed",
+      "name": "OpenBoxed",
+      "idea": "A marketplace for returned items still warm from the previous owner.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-punchd",
+      "name": "Punchd",
+      "idea": "A loyalty app; the tenth coffee is a push notification.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-refit",
+      "name": "Refit",
+      "idea": "Rental wardrobe for clothes you already own.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-porchwatch",
+      "name": "Porchwatch",
+      "idea": "A doorbell-camera social feed; crime is down, suspicion is way up.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-herd",
+      "name": "Herd",
+      "idea": "Group buying where nothing ships until your entire friend group commits.",
+      "sector": "Consumer"
+    }
+  ]
+}

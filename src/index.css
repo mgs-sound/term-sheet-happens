@@ -1,0 +1,85 @@
+/*
+ * Base stylesheet — deal-memo paper aesthetic.
+ * Palette and typography rules live in CLAUDE.md and are authoritative:
+ * hard-edged borders, offset block shadows, no rounded corners, no gradients.
+ */
+
+:root {
+  --paper: #f7f5ee;
+  --paper-bright: #fdfcf7;
+  --paper-dim: #e8e4d8; /* desktop backdrop outside the phone column */
+  --ink: #1c1b17;
+  --ledger-green: #1e6b4e;
+  --stamp-red: #b3382c;
+  --sign-yellow: #f5d547;
+
+  /* Serif for document text, monospace for numbers. */
+  --font-serif: georgia, 'Times New Roman', times, serif;
+  --font-mono: ui-monospace, 'SF Mono', menlo, consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* All scrolling is internal to screens; the page itself never scrolls, so
+     iOS pull-to-refresh and rubber-banding have nothing to grab. */
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: var(--paper-dim);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  /* iOS: no font inflation in landscape, no long-press callout. */
+  -webkit-text-size-adjust: 100%;
+  -webkit-touch-callout: none;
+}
+
+/* Center the phone column in the viewport on both axes. */
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#root {
+  /* A strict portrait phone column on EVERY viewport: capped at 430x932,
+     full-bleed on real phones (dvh tracks the iOS address bar). The outline
+     and block shadow render OUTSIDE the box, so on phones (column == viewport,
+     body overflow hidden) they're clipped away and only desktop sees the
+     "phone made of paper" frame. */
+  width: min(100vw, 430px);
+  height: min(100dvh, 932px);
+  background: var(--paper);
+  outline: 2px solid var(--ink);
+  box-shadow: 14px 14px 0 rgb(28 27 23 / 18%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* Notch/edge insets; the bottom inset belongs to each screen's action row. */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0
+    env(safe-area-inset-left);
+}
+
+/* Game surfaces: no text selection, no tap highlight, no touch callout. */
+.game-surface {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Honor reduced motion globally; JS mirrors this for its own timers. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

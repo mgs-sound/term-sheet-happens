@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), written to the tone spec in scripts/generate-pitches.md. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with verbatim reference content when it lands.",
+  "pitches": [
+    {
+      "id": "space-orbitally",
+      "name": "Orbitally",
+      "idea": "Satellite rideshare, now with a middle seat.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-lunarlease",
+      "name": "LunarLease",
+      "idea": "Moon real estate; the title search is ongoing.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-debrisnet",
+      "name": "DebrisNet",
+      "idea": "Space-junk removal funded by producing slightly more space junk.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-orebit",
+      "name": "OreBit",
+      "idea": "An asteroid-mining company, pre-revenue since the Obama administration.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-constellary",
+      "name": "Constellary",
+      "idea": "Satellite broadband beta-tested on astronomers against their will.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-apogee-club",
+      "name": "Apogee Club",
+      "idea": "Eleven minutes of weightlessness, a lifetime of mentioning it.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-thrustworthy",
+      "name": "Thrustworthy",
+      "idea": "Reusable rockets; reuse pending recovery of the first one.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-terraformly",
+      "name": "Terraformly",
+      "idea": "A Mars colonization roadmap with a Q3 milestone of 'oxygen.'",
+      "sector": "Space"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), written to the tone spec in scripts/generate-pitches.md. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with verbatim reference content when it lands.",
+  "pitches": [
+    {
+      "id": "saas-churnbaby",
+      "name": "ChurnBaby",
+      "idea": "A dashboard that predicts which customers will cancel, then reminds them to.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-seatless",
+      "name": "Seatless",
+      "idea": "Per-seat pricing for companies that have no employees yet.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-connectric",
+      "name": "Connectric",
+      "idea": "Middleware connecting two APIs that both shut down last quarter.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-okrwell",
+      "name": "OKRwell",
+      "idea": "Goal-tracking software where every objective quietly auto-completes at 70 percent.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-meetnt",
+      "name": "Meetn't",
+      "idea": "A calendar assistant that declines meetings and generates plausible regrets.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-formfatigue",
+      "name": "FormFatigue",
+      "idea": "A form builder whose premium tier removes the forms.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-compliantly",
+      "name": "Compliantly",
+      "idea": "SOC 2 audits as a subscription; the auditor is also a subscription.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-deckhand",
+      "name": "DeckHand",
+      "idea": "Pitch-deck software that A/B tests your traction slide against the truth.",
+      "sector": "SaaS"
+    }
+  ]
+}

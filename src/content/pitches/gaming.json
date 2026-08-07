@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), written to the tone spec in scripts/generate-pitches.md. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with verbatim reference content when it lands.",
+  "pitches": [
+    {
+      "id": "gaming-chestkey",
+      "name": "ChestKey",
+      "idea": "A free-to-play game where the tutorial costs $4.99.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-pitytimer",
+      "name": "PityTimer",
+      "idea": "A gacha game whose pity system pities the whales.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-benchwarm",
+      "name": "BenchWarm",
+      "idea": "An esports org whose players are contractually barred from practicing.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-streamstate",
+      "name": "StreamState",
+      "idea": "Cloud gaming at 40 milliseconds of latency from someone else's save file.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-shelflife",
+      "name": "ShelfLife",
+      "idea": "A storefront selling new games to owners of 400 unplayed games.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-cubicle3d",
+      "name": "Cubicle3D",
+      "idea": "A metaverse office with mandatory attendance; legs sold separately.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-anypercent",
+      "name": "AnyPercent",
+      "idea": "A speedrun-verification platform staffed by volunteers counting frames on faith.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-brickforge",
+      "name": "BrickForge",
+      "idea": "A UGC platform paying creators in a currency spendable only on hats.",
+      "sector": "Gaming"
+    }
+  ]
+}

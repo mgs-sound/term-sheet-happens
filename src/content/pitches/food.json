@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), written to the tone spec in scripts/generate-pitches.md. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with verbatim reference content when it lands.",
+  "pitches": [
+    {
+      "id": "food-broth-direct",
+      "name": "Broth Direct",
+      "idea": "DTC bone broth subscription, but the churn is somehow negative.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-phantom-fork",
+      "name": "Phantom Fork",
+      "idea": "One kitchen operating as fourteen restaurants, all rated 4.6.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-preportioned",
+      "name": "Preportioned",
+      "idea": "Meal kits for one, packaged in boxes built for six.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-stackcrop",
+      "name": "StackCrop",
+      "idea": "A vertical farm where the lettuce costs $9 and the Series B costs more.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-curbd",
+      "name": "Curbd",
+      "idea": "A delivery app charging a fee to explain the other fees.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-crickette",
+      "name": "Crickette",
+      "idea": "Cricket protein bars, rebranded four times, eaten twice.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-bloom-and-bitter",
+      "name": "Bloom & Bitter",
+      "idea": "An artisanal coffee subscription with tasting notes of jasmine, regret, and jasmine again.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-fourtop",
+      "name": "Fourtop",
+      "idea": "A reservation app auctioning 7 p.m. tables to the highest, saddest bidder.",
+      "sector": "Food"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), written to the tone spec in scripts/generate-pitches.md. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with verbatim reference content when it lands.",
+  "pitches": [
+    {
+      "id": "health-diagnosly",
+      "name": "Diagnosly",
+      "idea": "Telehealth that connects you to a doctor's out-of-office reply in seconds.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-stillness-plus",
+      "name": "Stillness+",
+      "idea": "A meditation app with aggressive, escalating notifications.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-supplemently",
+      "name": "Supplemently",
+      "idea": "Personalized vitamins assembled from a quiz you took while hungry.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-sleepdebt",
+      "name": "SleepDebt",
+      "idea": "A sleep tracker that gamifies insomnia with a global leaderboard.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-span",
+      "name": "Span",
+      "idea": "A longevity clinic whose founder is visibly aging at the standard rate.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-approvd",
+      "name": "Approvd",
+      "idea": "AI that appeals insurance denials by out-paperworking the insurer.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-ventwork",
+      "name": "Ventwork",
+      "idea": "A therapy marketplace whose therapists all see each other on the platform.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-repcount",
+      "name": "RepCount",
+      "idea": "A smart gym mirror that remembers your last visit and mentions it.",
+      "sector": "Health"
+    }
+  ]
+}

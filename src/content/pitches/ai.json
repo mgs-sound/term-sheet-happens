@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), written to the tone spec in scripts/generate-pitches.md. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with verbatim reference content when it lands.",
+  "pitches": [
+    {
+      "id": "ai-synergly",
+      "name": "Synergly",
+      "idea": "AI that attends your meetings and quietly resigns on your behalf.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-promptly",
+      "name": "Promptly",
+      "idea": "A paralegal LLM that bills in six-minute increments for hallucinating case law.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-hustlecorpus",
+      "name": "HustleCorpus",
+      "idea": "A founder-coaching model trained exclusively on LinkedIn posts written at 4 a.m.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-empathia",
+      "name": "Empathia",
+      "idea": "Customer-service AI that de-escalates by crying first.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-trenchcoat-systems",
+      "name": "TrenchCoat Systems",
+      "idea": "Twelve AI agents in a trench coat, billed as a consultancy.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-foundrmode",
+      "name": "FoundrMode",
+      "idea": "An AI cofounder that vests immediately and disagrees with nothing.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-qualia-labs",
+      "name": "Qualia Labs",
+      "idea": "A chatbot that claims sentience, but only during contract renewals.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-adwhisper",
+      "name": "AdWhisper",
+      "idea": "Personalized ads generated from conversations your phone insists it never heard.",
+      "sector": "AI"
+    }
+  ]
+}

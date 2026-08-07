@@ -1,0 +1,131 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), except the first rehireCard line, which is canonical from the design doc. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time.",
+  "rehireCard": [
+    "Somehow, you've been hired again. The industry has no long-term memory.",
+    "A rival firm calls your track record 'contrarian experience.' You start Monday.",
+    "Your references were not checked. Welcome aboard."
+  ],
+  "zombieFundJabs": [
+    "Your fund is described at a conference as 'technically still deploying.'",
+    "LPs receive your quarterly letter and file it under fiction.",
+    "A founder asks if your firm still does deals or just newsletters."
+  ],
+  "vetoLines": [
+    "'Love the energy. Hate the deal.' Your partner is already leaving.",
+    "Your partner slides the term sheet back unsigned, folded into a crane.",
+    "'We're pattern-matching here, and the pattern is no.'"
+  ],
+  "founderWalkLines": [
+    "The founder thanks you for your time in a tone that bills for it.",
+    "'We're actually oversubscribed.' The round closes without you by Friday.",
+    "The founder shakes your hand warmly and signs with your rival in the lobby."
+  ],
+  "vetoHeartbreak": [
+    "The partnership passed on {company}. {company} did not return the favor to obscurity.",
+    "{company}, vetoed at the table, is now a unicorn with a waiting list of term sheets.",
+    "Somewhere a partner is explaining why passing on {company} was 'discipline.'"
+  ],
+  "poachLines": [
+    "A rival firm saw your DPI and mistook it for skill. Welcome to the partner track.",
+    "Poached. The recruiter used the word 'visionary' unprompted.",
+    "Your new firm announces your arrival with a blog post nobody asked for."
+  ],
+  "lpOfferQuirks": [
+    "The anchor LP requires a monthly phone call with their nephew.",
+    "Capital calls are answered within ninety days, weather permitting.",
+    "The LP base is one university endowment and one unexplained yacht.",
+    "A side letter grants the family office veto power over your font choices."
+  ],
+  "verdicts": {
+    "wipeout": [
+      "A bonfire with a management fee.",
+      "The capital was deployed. That much is certain."
+    ],
+    "underwater": [
+      "Technically a fund, mathematically a donation.",
+      "The LPs have started calling it tuition."
+    ],
+    "respectable": [
+      "Nobody got rich. Nobody got deposed. A wash, with expenses.",
+      "The rare fund that returns exactly what everyone quietly expected."
+    ],
+    "heater": [
+      "The LPs return your calls before voicemail now.",
+      "Somewhere, a fund-of-funds slide features your logo."
+    ],
+    "legend": [
+      "They will teach this fund at business schools that rejected you.",
+      "The endowment sends a fruit basket and a much larger check."
+    ]
+  },
+  "reputationStages": ["DOG WATER", "TOURIST", "CREDIBLE", "HEAT MAGNET", "ENLIGHTENED"],
+  "founderMoods": [
+    "Reaching for the door",
+    "Visibly insulted",
+    "Recalculating",
+    "Warming up",
+    "Pen already uncapped"
+  ],
+  "boardSeatLocked": [
+    "Board seats are a Partner privilege. You may observe the parking lot.",
+    "Associates don't get board seats. Associates get the follow-up email."
+  ],
+  "finalCardPitches": [
+    "It's basically your fund, but younger, and with AI.",
+    "We move fast, we break things, we've never heard of you.",
+    "The thesis is vibes-forward. The deck is nineteen slides of momentum."
+  ],
+  "enlightenmentLines": [
+    "The LPs have stopped asking questions. The questions now come to you.",
+    "There is nothing left to prove, which is exactly when the industry starts listening.",
+    "Your quarterly letter is forwarded like scripture."
+  ],
+  "creditsLines": [
+    "The fees continue whether you do or not.",
+    "Somewhere, a first-time founder is practicing your name.",
+    "The industry has no long-term memory. You, however, kept a ledger."
+  ],
+  "shareLines": {
+    "wipeout": [
+      "I turned {fund} into {returned} at {firm}. The LPs call it tuition. Term Sheet Happens.",
+      "{dpi} DPI. The fund is a candle now. Term Sheet Happens.",
+      "I ran {firm} into the ground and all I kept was this PNG. Term Sheet Happens."
+    ],
+    "underwater": [
+      "Returned {returned} of {fund} at {firm}. Technically a fund, mathematically a donation. Term Sheet Happens.",
+      "{dpi} DPI at {firm}. The LPs have stopped replying-all. Term Sheet Happens.",
+      "My fund did {dpi}. The industry has no long-term memory, so neither do I. Term Sheet Happens."
+    ],
+    "respectable": [
+      "{dpi} DPI at {firm}. Nobody got rich, nobody got deposed. Term Sheet Happens.",
+      "Returned {returned} on {fund}. A wash, with expenses. Term Sheet Happens."
+    ],
+    "heater": [
+      "{dpi} DPI at {firm}. The LPs answer before voicemail now. Term Sheet Happens.",
+      "Returned {returned} on {fund}. Currently accepting apologies. Term Sheet Happens."
+    ],
+    "legend": [
+      "{dpi} DPI on {fund} at {firm}. They'll teach this one. Term Sheet Happens.",
+      "Returned {returned} to LPs in one fund. The endowment sent fruit. Term Sheet Happens."
+    ]
+  },
+  "shareCareerLines": [
+    "I've returned {returned} to LPs. Term Sheet Happens.",
+    "{returned} returned to LPs across {funds} funds. The fees were extra. Term Sheet Happens.",
+    "Career to date: {returned} back to LPs. You may now pitch me. Term Sheet Happens."
+  ],
+  "verdictStamps": {
+    "wipeout": "WIPEOUT",
+    "underwater": "UNDERWATER",
+    "respectable": "RESPECTABLE",
+    "heater": "HEATER",
+    "legend": "LEGEND"
+  },
+  "harvestOutcomeLabels": {
+    "zero": "SHUT DOWN",
+    "acquihire": "ACQUIHIRED",
+    "base": "MODEST EXIT",
+    "win": "STRONG EXIT",
+    "unicorn": "UNICORN"
+  }
+}

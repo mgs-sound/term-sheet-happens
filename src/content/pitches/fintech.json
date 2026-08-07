@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored DRAFT (2026-07-27), written to the tone spec in scripts/generate-pitches.md. NOT ported from reference/term-sheet-happens.jsx — that file was missing at authoring time. Replace or merge with verbatim reference content when it lands.",
+  "pitches": [
+    {
+      "id": "fintech-floatly",
+      "name": "Floatly",
+      "idea": "A debit card that rounds every purchase up to the nearest yacht.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-rentl",
+      "name": "Rentl",
+      "idea": "Buy-now-pay-later for rent, securitized into something we'd rather not name.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-trustfall-capital",
+      "name": "TrustFall Capital",
+      "idea": "An underwriting model that approves anyone who says 'trust me' twice.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-piggyback",
+      "name": "Piggyback",
+      "idea": "A savings app that charges a small fee each time you check your balance.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-escrowd",
+      "name": "Escrowd",
+      "idea": "Escrow, but the middleman is a group chat.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-scoresmith",
+      "name": "ScoreSmith",
+      "idea": "Raises your credit score by disputing your own existence.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-payd",
+      "name": "Payd",
+      "idea": "Payroll software running on vibes and one Excel tab named FINAL_v7.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-premiumly",
+      "name": "Premiumly",
+      "idea": "Insurance priced on your gait, your groceries, and one unexplained factor.",
+      "sector": "Fintech"
+    }
+  ]
+}
