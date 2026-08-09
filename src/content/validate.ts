@@ -10,6 +10,7 @@ import {
   EXIT_BUCKETS,
   SECTORS,
   VERDICT_BUCKETS,
+  type CarryEquivalences,
   type Content,
   type FirmNameParts,
   type FlavorLines,
@@ -81,6 +82,35 @@ export function validatePitchBatch(
   return { pitches, errors };
 }
 
+/**
+ * Tone lints (revised bar: "a real deck until exactly one clause").
+ * Errors fail the build; warnings flag lines for human review.
+ * Style-only — the app loader skips these; the CLI runs them.
+ */
+export function lintPitchBatch(
+  label: string,
+  pitches: Pitch[],
+): { errors: string[]; warnings: string[] } {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  let exclamations = 0;
+  for (const p of pitches) {
+    const where = `${label} (${p.id})`;
+    const allCaps = p.idea.match(/\b[A-Z]{4,}\b/g);
+    if (allCaps) {
+      errors.push(`${where}: ALL-CAPS word${allCaps.length > 1 ? 's' : ''} ${allCaps.join(', ')} — shouting is an absurdism smell`);
+    }
+    exclamations += (p.idea.match(/!/g) ?? []).length;
+    if (/\bliterally\b/i.test(p.idea)) warnings.push(`${where}: "literally" — review for tone`);
+    if (/\bjust\b/i.test(p.idea)) warnings.push(`${where}: "just" — review for tone`);
+    if (/\bwait\s*[—–-]/i.test(p.idea)) warnings.push(`${where}: trailing "Wait—" construction — review for tone`);
+  }
+  if (exclamations > 1) {
+    errors.push(`${label}: ${exclamations} exclamation marks in one file (max 1) — the register is deadpan`);
+  }
+  return { errors, warnings };
+}
+
 /** Cross-file checks: ids and names must be unique across ALL pitches. */
 export function validatePitchPool(pitches: Pitch[]): string[] {
   const errors: string[] = [];
@@ -144,6 +174,38 @@ export function validateFirmNameParts(data: unknown): {
     : { parts: { prefixes: data.prefixes as string[], suffixes: data.suffixes as string[] }, errors };
 }
 
+export function validateCarryEquivalences(data: unknown): {
+  carry: CarryEquivalences | null;
+  errors: string[];
+} {
+  const errors: string[] = [];
+  if (!isRecord(data)) return { carry: null, errors: ['carry-equivalences.json: not an object'] };
+  if (!isStringArray(data.failure)) {
+    errors.push('carry-equivalences.json: "failure" must be a non-empty string array');
+  }
+  const ladder = data.ladder;
+  if (!Array.isArray(ladder) || ladder.length === 0) {
+    errors.push('carry-equivalences.json: "ladder" must be a non-empty array');
+  } else {
+    let hasZero = false;
+    ladder.forEach((entry: unknown, i: number) => {
+      if (!isRecord(entry) || !Number.isFinite(entry.thresholdM) || (entry.thresholdM as number) < 0) {
+        errors.push(`carry-equivalences.json ladder[${i}]: thresholdM must be a finite number >= 0`);
+        return;
+      }
+      if (!isNonEmptyString(entry.line)) {
+        errors.push(`carry-equivalences.json ladder[${i}]: missing/empty "line"`);
+      }
+      if (entry.thresholdM === 0) hasZero = true;
+    });
+    // Full-range coverage: any positive carry must land on something.
+    if (!hasZero) {
+      errors.push('carry-equivalences.json: ladder needs at least one thresholdM of 0');
+    }
+  }
+  return { carry: errors.length > 0 ? null : (data as unknown as CarryEquivalences), errors };
+}
+
 /**
  * Assemble and validate a full Content bundle from parsed JSON. Shared by
  * the eager loader (tests/scripts) and the lazy loader (app). Throws with
@@ -154,6 +216,7 @@ export function assembleContent(
   thesesData: unknown,
   firmNamesData: unknown,
   linesData: unknown,
+  carryData: unknown,
 ): Content {
   const errors: string[] = [];
   const pitches: Pitch[] = [];
@@ -170,11 +233,13 @@ export function assembleContent(
   errors.push(...firmErrors);
   const { lines, errors: lineErrors } = validateFlavorLines(linesData);
   errors.push(...lineErrors);
+  const { carry, errors: carryErrors } = validateCarryEquivalences(carryData);
+  errors.push(...carryErrors);
 
-  if (errors.length > 0 || lines === null) {
+  if (errors.length > 0 || lines === null || carry === null) {
     throw new Error(`Content validation failed:\n- ${errors.join('\n- ')}`);
   }
-  return { pitches, theses, firmNames, lines };
+  return { pitches, theses, firmNames, lines, carryEquivalences: carry };
 }
 
 export function validateFlavorLines(data: unknown): { lines: FlavorLines | null; errors: string[] } {
@@ -194,6 +259,7 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     'finalCardPitches',
     'enlightenmentLines',
     'creditsLines',
+    'registerUnreachable',
   ] as const;
   for (const pool of pools) {
     if (!isStringArray(data[pool])) {

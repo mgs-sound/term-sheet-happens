@@ -6,6 +6,7 @@
 
 import type { CareerState, GameState } from './types.ts';
 import { initialCareer } from './career.ts';
+import { fundCarryM } from './carry.ts';
 import { METERS } from './tuning.ts';
 import { clamp, roundM } from './util.ts';
 
@@ -26,6 +27,7 @@ export function forceHarvestResult(
   }
   harvest.dpi = opts.dpi;
   harvest.returnedM = roundM(opts.dpi * s.fundSizeM);
+  harvest.carryM = fundCarryM(harvest.returnedM, s.fundSizeM);
   return s;
 }
 

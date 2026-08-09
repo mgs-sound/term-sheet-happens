@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { pickCarryLine } from './carry';
 import { loadContent, pitchFileManifest } from './index';
 import { SECTORS, VERDICT_BUCKETS, EXIT_BUCKETS } from './types';
 
@@ -57,5 +58,40 @@ describe('content pool', () => {
       expect(lines.shareLines[bucket].length, `share.${bucket}`).toBeGreaterThan(0);
     }
     expect(lines.shareCareerLines.length).toBeGreaterThan(0);
+    expect(lines.registerUnreachable.length).toBeGreaterThan(0);
+  });
+
+  it('carry price ladder covers the full range with a failure pool', () => {
+    const { carryEquivalences: eq } = loadContent();
+    expect(eq.failure.length).toBeGreaterThanOrEqual(5);
+    expect(eq.ladder.length).toBeGreaterThanOrEqual(30);
+    expect(eq.ladder.some((e) => e.thresholdM === 0)).toBe(true);
+    expect(eq.ladder.some((e) => e.thresholdM >= 500)).toBe(true);
+  });
+
+  it('picks the highest rung the carry clears, failure pool at zero', () => {
+    const { carryEquivalences: eq } = loadContent();
+    expect(eq.failure).toContain(pickCarryLine(eq, 0, 1));
+    expect(eq.failure).toContain(pickCarryLine(eq, -1, 2));
+
+    const at2 = pickCarryLine(eq, 2.5, 0);
+    const tier2Lines = eq.ladder.filter((e) => e.thresholdM === 2).map((e) => e.line);
+    expect(tier2Lines).toContain(at2);
+
+    const at600 = pickCarryLine(eq, 600, 0);
+    const topLines = eq.ladder.filter((e) => e.thresholdM === 500).map((e) => e.line);
+    expect(topLines).toContain(at600);
+
+    // Tiny positive carry lands on the zero rung, not the failure pool.
+    const tiny = pickCarryLine(eq, 0.001, 0);
+    expect(eq.ladder.filter((e) => e.thresholdM === 0).map((e) => e.line)).toContain(tiny);
+  });
+
+  it('rotates among lines sharing a threshold by key', () => {
+    const { carryEquivalences: eq } = loadContent();
+    const a = pickCarryLine(eq, 13, 0); // the 12-tier has two entries
+    const b = pickCarryLine(eq, 13, 1);
+    expect(a).not.toBe(b);
+    expect(pickCarryLine(eq, 13, 2)).toBe(a); // deterministic cycle
   });
 });

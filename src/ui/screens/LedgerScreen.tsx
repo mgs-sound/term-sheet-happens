@@ -39,6 +39,7 @@ export function LedgerScreen({
           <dd>{career.vetoedUnicorns}</dd>
         </div>
       </dl>
+      <span className="carry-line">YOUR CARRY: {fmtM(career.careerCarryM)}</span>
       {career.enlightened && <div className="enlightened-tab">ENLIGHTENED</div>}
 
       {career.ledger.length === 0 ? (

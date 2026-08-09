@@ -11,6 +11,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Pitch } from '../src/content/types.ts';
 import {
+  lintPitchBatch,
+  validateCarryEquivalences,
   validateFirmNameParts,
   validateFlavorLines,
   validatePitchBatch,
@@ -25,6 +27,7 @@ function readJson(relPath: string): unknown {
 }
 
 const errors: string[] = [];
+const warnings: string[] = [];
 const pitches: Pitch[] = [];
 const perFile: string[] = [];
 
@@ -42,8 +45,12 @@ for (const file of pitchFiles) {
   try {
     const batch = validatePitchBatch(label, readJson(label));
     errors.push(...batch.errors);
+    const lint = lintPitchBatch(label, batch.pitches);
+    errors.push(...lint.errors);
+    warnings.push(...lint.warnings);
     pitches.push(...batch.pitches);
-    perFile.push(`  ${batch.errors.length === 0 ? 'ok ' : 'ERR'} ${label} — ${batch.pitches.length} pitches`);
+    const mark = batch.errors.length + lint.errors.length === 0 ? 'ok ' : 'ERR';
+    perFile.push(`  ${mark} ${label} — ${batch.pitches.length} pitches`);
   } catch (err) {
     errors.push(`${label}: unreadable JSON (${String(err)})`);
     perFile.push(`  ERR ${label} — unreadable`);
@@ -61,6 +68,9 @@ errors.push(...firmErrors);
 const { errors: lineErrors } = validateFlavorLines(readJson('lines.json'));
 errors.push(...lineErrors);
 
+const { errors: carryErrors } = validateCarryEquivalences(readJson('carry-equivalences.json'));
+errors.push(...carryErrors);
+
 const bySector = new Map<string, number>();
 for (const p of pitches) bySector.set(p.sector, (bySector.get(p.sector) ?? 0) + 1);
 const sectorSummary = [...bySector.entries()]
@@ -71,6 +81,11 @@ const sectorSummary = [...bySector.entries()]
 console.log('Pitch files:');
 for (const line of perFile) console.log(line);
 console.log(`\nTotals: ${pitches.length} pitches (${sectorSummary}); ${theses.length} theses.`);
+
+if (warnings.length > 0) {
+  console.log(`\nWARN — ${warnings.length} line(s) flagged for human review:`);
+  for (const w of warnings) console.log(`  ~ ${w}`);
+}
 
 if (errors.length > 0) {
   console.error(`\nFAIL — ${errors.length} error(s):`);

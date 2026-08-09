@@ -1,0 +1,4 @@
+{
+  "_source": "Per-company logo pins, keyed by exact company name. Shape: { \"<Company Name>\": { \"frame\": \"seal|plate|diamond|slab\", \"motif\": \"bars|orbit|wedge|none\", \"tint\": \"ink|red|green\", \"monogram\": \"1-2 chars\" } } — any subset of fields; unspecified aspects keep their generated values. Spot duds in the ?logos=1 gallery and pin them here.",
+  "overrides": {}
+}

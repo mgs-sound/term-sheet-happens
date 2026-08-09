@@ -1,15 +1,30 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
 import { loadContentAsync } from '../content/loader';
+import { pickCarryLine } from '../content/carry';
 import type { Content, FlavorLines } from '../content/types';
 import { reduce } from '../game/engine';
-import { acceptLpOffer, closeCareerFund, initialCareer, withFirmName } from '../game/career';
+import {
+  acceptLpOffer,
+  closeCareerFund,
+  initialCareer,
+  scoreSubmissionFor,
+  withFirmName,
+} from '../game/career';
 import { careerAtEnlightenmentGate, forceHarvestResult } from '../game/devtools';
 import { generateFirmName } from '../game/firm';
+import { logoSvg } from '../game/logogen';
 import { createRng } from '../game/rng';
 import { migrateSave, type SaveData } from '../game/save';
 import { careerForTier, simulateRun } from '../game/sim';
-import type { Action, CareerState, EngineContent, GameEvent, GameState } from '../game/types';
+import type {
+  Action,
+  CareerState,
+  EngineContent,
+  GameEvent,
+  GameState,
+  ScoreSubmission,
+} from '../game/types';
 import { verdictBucket } from '../game/verdict';
 import { services } from '../services';
 import { fillLine, fmtDpi, fmtM, pickLine } from './format';
@@ -25,8 +40,10 @@ import { GpNamingScreen } from './screens/GpNamingScreen';
 import { LedgerScreen } from './screens/LedgerScreen';
 import { EnlightenmentScreen } from './screens/EnlightenmentScreen';
 import { DevPanel, type DevJump } from './components/DevPanel';
+import { NameCarveSheet } from './components/NameCarveSheet';
 import { SettingsSheet } from './components/SettingsSheet';
 import { Toasts, type Toast } from './components/Toasts';
+import { RegisterScreen } from './screens/RegisterScreen';
 
 type Screen =
   | 'reveal'
@@ -38,6 +55,7 @@ type Screen =
   | 'gpOffers'
   | 'gpNaming'
   | 'ledger'
+  | 'register'
   | 'enlightenment';
 
 const SAVE_KEY = 'save';
@@ -83,7 +101,7 @@ function screenForResume(save: SaveData): Screen {
   const game = save.game;
   if (!game) return 'reveal';
   if (game.phase === 'harvested') {
-    const allowed: Screen[] = ['scorecard', 'harvest', 'rehire', 'ledger', 'enlightenment'];
+    const allowed: Screen[] = ['scorecard', 'harvest', 'rehire', 'ledger', 'register', 'enlightenment'];
     if (save.pendingCareer) allowed.push('gpOffers', 'gpNaming');
     return allowed.includes(save.screen as Screen) ? (save.screen as Screen) : 'scorecard';
   }
@@ -134,6 +152,9 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
   const [pendingCareer, setPendingCareer] = useState<CareerState | null>(
     () => save?.pendingCareer ?? null,
   );
+  const [pendingScore, setPendingScore] = useState<ScoreSubmission | null>(
+    () => save?.pendingScore ?? null,
+  );
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [devPreviewUrl, setDevPreviewUrl] = useState<string | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -153,9 +174,20 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
   // Autosave: career + run at every clean beat (each meeting, close, harvest).
   useEffect(() => {
     if (!isCleanBeat(game)) return;
-    const snapshot: SaveData = { career, game, screen, pendingCareer };
+    const snapshot: SaveData = { career, game, screen, pendingCareer, pendingScore };
     void services.storage.write(SAVE_KEY, snapshot);
-  }, [career, game, screen, pendingCareer]);
+  }, [career, game, screen, pendingCareer, pendingScore]);
+
+  // Queued register submission from an offline session: retry once per boot.
+  const retriedRef = useRef(false);
+  useEffect(() => {
+    if (retriedRef.current || !pendingScore) return;
+    retriedRef.current = true;
+    void services.leaderboard.submit(pendingScore).then((outcome) => {
+      if (outcome !== 'unreachable') setPendingScore(null);
+    });
+  }, [pendingScore]);
+
 
   const dispatch = useCallback(
     (action: Action): GameState => {
@@ -202,6 +234,21 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
     return closeCareerFund(career, game, rng, content.theses);
   }, [game, career, content.theses]);
 
+  // Auto-submit on fund close for named, opted-in careers. The register can
+  // never block play: unreachable submissions queue into the save.
+  const lastSubmitRef = useRef('');
+  useEffect(() => {
+    if (game.phase !== 'harvested' || !nextCareer || !career.boardOptIn) return;
+    const submission = scoreSubmissionFor(nextCareer);
+    if (!submission) return;
+    const key = `${submission.careerId}:${game.fundIndex}`;
+    if (lastSubmitRef.current === key) return;
+    lastSubmitRef.current = key;
+    void services.leaderboard.submit(submission).then((outcome) => {
+      setPendingScore(outcome === 'unreachable' ? submission : null);
+    });
+  }, [game, nextCareer, career.boardOptIn]);
+
   const startRun = useCallback(
     (nextCareerState: CareerState): void => {
       const resolved = nextCareerState.pendingOffers
@@ -235,35 +282,51 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
     [pushToast],
   );
 
+  const carryEquivalenceFor = useCallback(
+    (g: GameState): string => {
+      const carryM = g.harvest?.carryM ?? 0;
+      return fillLine(pickCarryLine(content.carryEquivalences, carryM, g.seed), {
+        carry: fmtM(carryM),
+      });
+    },
+    [content.carryEquivalences],
+  );
+
   const buildScorecardPng = useCallback(async (): Promise<Blob | null> => {
     const g = gameRef.current;
     if (!g.harvest) return null;
     const bucket = verdictBucket(g.harvest.dpi);
     return renderScorecardPng({
       firmName: g.firmName,
+      logoSvg: logoSvg(g.firmName, null, 96),
       fundIndex: g.fundIndex,
       thesisLine: g.thesis.line,
       dpiLabel: fmtDpi(g.harvest.dpi),
       dpiGood: g.harvest.dpi >= 1,
       verdictStamp: content.lines.verdictStamps[bucket],
       verdictLine: pickLine(content.lines.verdicts[bucket], g.seed),
+      carryLabel: `Your carry: ${fmtM(g.harvest.carryM)}`,
+      carryEquivalence: carryEquivalenceFor(g),
       fundLabel: fmtM(g.fundSizeM),
       returnedLabel: fmtM(g.harvest.returnedM),
       checksLabel: String(g.portfolio.length),
       unicornsLabel: String(g.harvest.unicorns),
     });
-  }, [content.lines]);
+  }, [content.lines, carryEquivalenceFor]);
 
   const shareScorecard = useCallback(async (): Promise<void> => {
     const g = gameRef.current;
     if (!g.harvest) return;
     const bucket = verdictBucket(g.harvest.dpi);
-    const text = fillLine(pickLine(content.lines.shareLines[bucket], g.seed), {
-      dpi: fmtDpi(g.harvest.dpi),
-      firm: g.firmName,
-      fund: fmtM(g.fundSizeM),
-      returned: fmtM(g.harvest.returnedM),
-    });
+    const text =
+      fillLine(pickLine(content.lines.shareLines[bucket], g.seed), {
+        dpi: fmtDpi(g.harvest.dpi),
+        firm: g.firmName,
+        fund: fmtM(g.fundSizeM),
+        returned: fmtM(g.harvest.returnedM),
+      }) +
+      '\n' +
+      carryEquivalenceFor(g);
     try {
       const blob = await buildScorecardPng();
       const outcome = await services.share.share({
@@ -276,7 +339,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
       console.error(err);
       pushToast({ text: 'Sharing is unavailable here.', tone: 'red' });
     }
-  }, [buildScorecardPng, content.lines, pushToast, toastForShareOutcome]);
+  }, [buildScorecardPng, carryEquivalenceFor, content.lines, pushToast, toastForShareOutcome]);
 
   const shareCareer = useCallback(
     async (careerToShare: CareerState): Promise<void> => {
@@ -388,6 +451,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
         <ScorecardScreen
           game={game}
           lines={content.lines}
+          carryEq={content.carryEquivalences}
           onShare={() => void shareScorecard()}
           onContinue={() =>
             setScreen(nextCareer?.enlightened && !career.enlightened ? 'enlightenment' : 'rehire')
@@ -409,6 +473,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           }}
           onNewCareer={() => startRun(initialCareer())}
           onLedger={() => setScreen('ledger')}
+          onRegister={() => setScreen('register')}
         />
       )}
       {screen === 'gpOffers' && pendingCareer && (
@@ -436,6 +501,13 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           onBack={() => setScreen('rehire')}
         />
       )}
+      {screen === 'register' && (
+        <RegisterScreen
+          careerId={career.careerId}
+          lines={content.lines}
+          onBack={() => setScreen('rehire')}
+        />
+      )}
       {screen === 'enlightenment' && nextCareer && (
         <EnlightenmentScreen
           game={game}
@@ -444,8 +516,27 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           onEndless={() => startRun(nextCareer)}
         />
       )}
+      {screen === 'scorecard' && career.boardOptIn === null && (
+        <NameCarveSheet
+          onCarve={(name) => {
+            setCareer({
+              ...career,
+              playerName: name,
+              careerId: career.careerId ?? crypto.randomUUID(),
+              boardOptIn: true,
+            });
+            // The auto-submit effect fires once the updated career closes out.
+          }}
+          onDecline={() => setCareer({ ...career, boardOptIn: false })}
+        />
+      )}
       {settingsOpen && (
-        <SettingsSheet onClose={() => setSettingsOpen(false)} onResetCareer={resetCareer} />
+        <SettingsSheet
+          career={career}
+          onUpdateCareer={(updated) => setCareer(updated)}
+          onClose={() => setSettingsOpen(false)}
+          onResetCareer={resetCareer}
+        />
       )}
       {devPreviewUrl && (
         <div

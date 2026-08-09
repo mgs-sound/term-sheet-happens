@@ -1,16 +1,19 @@
 import type { GameState } from '../../game/types';
-import type { FlavorLines } from '../../content/types';
+import type { CarryEquivalences, FlavorLines } from '../../content/types';
+import { pickCarryLine } from '../../content/carry';
 import { verdictBucket } from '../../game/verdict';
-import { fmtDpi, fmtM, pickLine } from '../format';
+import { fillLine, fmtDpi, fmtM, pickLine } from '../format';
 
 export function ScorecardScreen({
   game,
   lines,
+  carryEq,
   onShare,
   onContinue,
 }: {
   game: GameState;
   lines: FlavorLines;
+  carryEq: CarryEquivalences;
   onShare: () => void;
   onContinue: () => void;
 }): JSX.Element {
@@ -19,6 +22,9 @@ export function ScorecardScreen({
   const bucket = verdictBucket(harvest.dpi);
   const verdict = pickLine(lines.verdicts[bucket], game.seed);
   const good = harvest.dpi >= 1;
+  const equivalence = fillLine(pickCarryLine(carryEq, harvest.carryM, game.seed), {
+    carry: fmtM(harvest.carryM),
+  });
 
   return (
     <section className="screen letterhead scorecard">
@@ -31,6 +37,10 @@ export function ScorecardScreen({
         <span className="dpi-value">{fmtDpi(harvest.dpi)}</span>
       </div>
       <p className="letterhead-thesis verdict-line">&ldquo;{verdict}&rdquo;</p>
+      <div className="carry-block">
+        <span className="carry-line">YOUR CARRY: {fmtM(harvest.carryM)}</span>
+        <p className="carry-equivalence">{equivalence}</p>
+      </div>
       <dl className="figures-row figures-wrap">
         <div>
           <dt>Fund</dt>

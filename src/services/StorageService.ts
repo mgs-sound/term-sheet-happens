@@ -7,7 +7,7 @@
  */
 
 /** Bump when the save shape changes; migrations key off this. */
-export const SAVE_SCHEMA_VERSION = 1;
+export const SAVE_SCHEMA_VERSION = 3; // v3: LP Register identity + queued score
 
 /** Envelope written around every persisted value. */
 export interface VersionedSave<T> {

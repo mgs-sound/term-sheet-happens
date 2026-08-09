@@ -21,12 +21,16 @@ const CARD = { x: 60, y: 60, w: W - 120, h: H - 120, shadow: 16, pad: 64 } as co
 
 export interface ScorecardShareArgs {
   firmName: string;
+  /** Deterministic firm mark (logogen SVG string), drawn top-right. */
+  logoSvg?: string;
   fundIndex: number;
   thesisLine: string;
   dpiLabel: string; // e.g. "0.62x"
   dpiGood: boolean;
   verdictStamp: string; // e.g. "UNDERWATER"
   verdictLine: string;
+  carryLabel: string; // e.g. "YOUR CARRY: $2.4M"
+  carryEquivalence: string; // the filled ladder line
   fundLabel: string; // e.g. "$9.0M"
   returnedLabel: string;
   checksLabel: string;
@@ -162,6 +166,24 @@ function drawFooter(ctx: CanvasRenderingContext2D): void {
   ctx.globalAlpha = 1;
 }
 
+/** Draw an SVG string onto the canvas via a data URL (no taint, async). */
+async function drawSvg(
+  ctx: CanvasRenderingContext2D,
+  svg: string,
+  x: number,
+  y: number,
+  size: number,
+): Promise<void> {
+  try {
+    const img = new Image();
+    img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    await img.decode();
+    ctx.drawImage(img, x, y, size, size);
+  } catch {
+    // A missing mark never blocks a share.
+  }
+}
+
 function toBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
@@ -175,6 +197,9 @@ export async function renderScorecardPng(args: ScorecardShareArgs): Promise<Blob
   const { canvas, ctx } = makeCanvas();
   drawPaperAndCard(ctx);
   drawHeaderRule(ctx, `Internal memorandum — Fund ${args.fundIndex} final`);
+  if (args.logoSvg) {
+    await drawSvg(ctx, args.logoSvg, CARD.x + CARD.w - CARD.pad - 96, CARD.y + CARD.pad + 52, 96);
+  }
 
   const x = CARD.x + CARD.pad;
   const textW = CARD.w - CARD.pad * 2;
@@ -205,13 +230,26 @@ export async function renderScorecardPng(args: ScorecardShareArgs): Promise<Blob
   y += 280;
 
   ctx.fillStyle = INK;
-  ctx.font = `italic 38px ${SERIF}`;
-  for (const line of wrapText(ctx, `“${args.verdictLine}”`, textW, 3)) {
+  ctx.font = `italic 36px ${SERIF}`;
+  for (const line of wrapText(ctx, `“${args.verdictLine}”`, textW, 2)) {
     ctx.fillText(line, x, y);
-    y += 50;
+    y += 48;
   }
 
-  drawFigures(ctx, Math.max(y + 26, 1010), [
+  // The carry ledger line + equivalence — the share's second punchline.
+  y += 18;
+  ctx.fillStyle = GREEN;
+  ctx.font = `700 28px ${MONO}`;
+  ctx.fillText(args.carryLabel.toUpperCase(), x, y);
+  y += 46;
+  ctx.fillStyle = INK;
+  ctx.font = `italic 30px ${SERIF}`;
+  for (const line of wrapText(ctx, args.carryEquivalence, textW, 3)) {
+    ctx.fillText(line, x, y);
+    y += 40;
+  }
+
+  drawFigures(ctx, Math.max(y + 24, 1030), [
     { label: 'Fund', value: args.fundLabel },
     { label: 'Returned', value: args.returnedLabel },
     { label: 'Checks', value: args.checksLabel },

@@ -1,0 +1,65 @@
+{
+  "_source": "RECALIBRATED DEMO BATCH (2026-07-28) — written to the revised bar ('sounds like a real deck until exactly one clause'). Awaiting human approval in review mode; NO bulk generation until this batch is approved.",
+  "pitches": [
+    {
+      "id": "space-kessler-analytics",
+      "name": "Kessler Analytics",
+      "idea": "Collision-risk forecasting for satellite operators, priced per near miss.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-apsis",
+      "name": "Apsis",
+      "idea": "Rideshare brokerage for smallsats; refunds issue as credit toward the next launch window.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-groundwork",
+      "name": "Groundwork",
+      "idea": "Ground-station-as-a-service with 99.9 percent uptime, measured at the stations that respond.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-ephemeris",
+      "name": "Ephemeris",
+      "idea": "Orbital traffic data licensed to insurers; the free tier is why premiums went up.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-dryline-propulsion",
+      "name": "Dryline Propulsion",
+      "idea": "Water-based thrusters for cubesats, TRL 6 pending one more definition of TRL 6.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-vantage-orbital",
+      "name": "Vantage Orbital",
+      "idea": "Earth imagery resold by the pixel, discounted for photos of your competitors.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-relay-nine",
+      "name": "Relay Nine",
+      "idea": "Lunar comms relay contracts; revenue recognition begins at whichever landing attempt succeeds.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-manifest",
+      "name": "Manifest",
+      "idea": "Launch-manifest optimization software; your payload moves up one slot per referral.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-halcyon-debris",
+      "name": "Halcyon Debris",
+      "idea": "Deorbit-as-a-service; the SLA covers everything except reentry location.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-cold-stack",
+      "name": "Cold Stack",
+      "idea": "Server racks in polar orbit for latency-tolerant workloads, which the deck lists as most.",
+      "sector": "Space"
+    }
+  ]
+}

@@ -307,6 +307,31 @@ export const CAREER = {
   gpOfferCount: 3,
 } as const;
 
+/**
+ * The LP Register (leaderboard) — shared client/server constants. Server-side
+ * caps come from engine plausibility: no legitimate career approaches them.
+ */
+export const LEADERBOARD = {
+  nameMinLen: 2,
+  nameMaxLen: 20,
+  /** Hard server cap on reported career returns. TUNE if the meta explodes. */
+  maxTotalReturnedM: 50_000, // $50B
+  maxBestDpi: 50,
+  maxBestFundSizeM: 5_000,
+  topN: 50,
+  /** Neighbors shown around your rank when outside the top. */
+  neighborSpan: 2,
+  /** IP rate limit for score submissions. */
+  submitsPerHour: 10,
+  rateWindowSec: 3600,
+} as const;
+
+/** Carry: the GP's cut of profits above the return of capital. */
+export const CARRY = {
+  /** Industry-standard 20% of (returned - fund size), never negative. */
+  rate: 0.2,
+} as const;
+
 /** Scorecard verdict bands: DPI upper bounds per bucket (content owns copy). */
 export const VERDICT_DPI = {
   wipeoutMax: 0.3,

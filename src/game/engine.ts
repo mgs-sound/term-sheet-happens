@@ -20,6 +20,7 @@ import type {
   PortfolioCompany,
 } from './types.ts';
 import { buildDeck } from './deck.ts';
+import { fundCarryM } from './carry.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
 import {
@@ -581,6 +582,7 @@ function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
     companies,
     returnedM,
     dpi: returnedM / s.fundSizeM,
+    carryM: fundCarryM(returnedM, s.fundSizeM),
     unicorns,
     vetoedUnicorns,
     visionaries,

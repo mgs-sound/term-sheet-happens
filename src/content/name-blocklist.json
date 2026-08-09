@@ -1,0 +1,30 @@
+{
+  "_source": "Register name blocklist. Terms are matched as substrings AFTER normalization (lowercase, lookalike characters mapped, non-alphanumerics stripped) — so 'F4GG 0T' still matches. Keep entries unambiguous: avoid short strings that hide inside ordinary words (the 'class'/'Scunthorpe' problem). Edit freely.",
+  "blocklist": [
+    "fuck",
+    "shit",
+    "bitch",
+    "cunt",
+    "whore",
+    "slut",
+    "nigger",
+    "nigga",
+    "faggot",
+    "kike",
+    "spic",
+    "wetback",
+    "chink",
+    "gook",
+    "tranny",
+    "retard",
+    "rapist",
+    "nazi",
+    "hitler",
+    "pedo",
+    "molest",
+    "penis",
+    "vagina",
+    "cumshot",
+    "porn"
+  ]
+}
