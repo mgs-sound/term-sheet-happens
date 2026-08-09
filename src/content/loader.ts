@@ -23,13 +23,14 @@ export async function loadContentAsync(): Promise<Content> {
         return [path, module.default] as const;
       }),
   );
-  const [theses, firmNames, lines, batches] = await Promise.all([
+  const [theses, firmNames, lines, carry, batches] = await Promise.all([
     import('./theses.json'),
     import('./firmNames.json'),
     import('./lines.json'),
+    import('./carry-equivalences.json'),
     batchesPromise,
   ]);
 
-  cached = assembleContent(batches, theses.default, firmNames.default, lines.default);
+  cached = assembleContent(batches, theses.default, firmNames.default, lines.default, carry.default);
   return cached;
 }

@@ -1,5 +1,10 @@
+import { useMemo } from 'react';
 import type { PitchCard } from '../../game/types';
+import { logoSvg, type LogoOverride } from '../../game/logogen';
+import logoOverridesJson from '../../content/logo-overrides.json';
 import { fmtArrK, fmtM, STAGE_LABELS } from '../format';
+
+const OVERRIDES = logoOverridesJson.overrides as Record<string, LogoOverride>;
 
 function Pips({ label, value, hot }: { label: string; value: number; hot?: boolean }): JSX.Element {
   return (
@@ -20,6 +25,11 @@ export function PitchCardView({
   card: PitchCard;
   memoNumber: number;
 }): JSX.Element {
+  const logo = useMemo(
+    () => logoSvg(card.name, card.sector, 40, OVERRIDES[card.name]),
+    [card.name, card.sector],
+  );
+
   return (
     <div className="pitch-card">
       {card.onThesis && <span className="thesis-tab">ON-THESIS</span>}
@@ -27,7 +37,10 @@ export function PitchCardView({
         <span>{card.sector.toUpperCase()}</span>
         <span>{STAGE_LABELS[card.stage]}</span>
       </div>
-      <h2 className="pitch-name">{card.name}</h2>
+      <div className="pitch-brand">
+        <span className="pitch-logo" dangerouslySetInnerHTML={{ __html: logo }} />
+        <h2 className="pitch-name">{card.name}</h2>
+      </div>
       <p className="pitch-idea">&ldquo;{card.idea}&rdquo;</p>
       <div className="pitch-stats">
         <Pips label="TEAM" value={card.team} />

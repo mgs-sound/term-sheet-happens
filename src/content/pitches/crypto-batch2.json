@@ -1,0 +1,65 @@
+{
+  "_source": "RECALIBRATED DEMO BATCH (2026-07-28) — written to the revised bar ('sounds like a real deck until exactly one clause'). Awaiting human approval in review mode; NO bulk generation until this batch is approved.",
+  "pitches": [
+    {
+      "id": "crypto-attestor",
+      "name": "Attestor",
+      "idea": "Proof-of-reserves audits, published quarterly and dated annually.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-ledgerline",
+      "name": "Ledgerline",
+      "idea": "Institutional custody with three of five keys held by people who have met.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-merkle-rowe",
+      "name": "Merkle & Rowe",
+      "idea": "White-glove on-chain forensics; the free consultation is how they found you.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-northgate-markets",
+      "name": "Northgate Markets",
+      "idea": "A compliant exchange in every jurisdiction that has not yet responded.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-cliffside",
+      "name": "Cliffside",
+      "idea": "Token-vesting infrastructure; the enterprise tier includes a countdown the whole company can see.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-gasless",
+      "name": "Gasless",
+      "idea": "Transaction-fee abstraction for consumer apps; the fees remain, relocated.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-ninth-wallet",
+      "name": "Ninth Wallet",
+      "idea": "Wallet recovery for estates; probate courts accept their PDF in two states.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-denominator",
+      "name": "Denominator",
+      "idea": "A stablecoin fully backed by treasuries, per an attestation from the issuer's other company.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-corridor",
+      "name": "Corridor",
+      "idea": "Travel Rule reporting middleware, sold to both sides of the same transfer.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-longhouse-markets",
+      "name": "Longhouse Markets",
+      "idea": "Perpetual futures on pre-IPO equity, cash-settled at the IPO, whenever that is.",
+      "sector": "Crypto"
+    }
+  ]
+}

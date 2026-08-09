@@ -8,6 +8,7 @@
 import thesesJson from './theses.json';
 import firmNamesJson from './firmNames.json';
 import linesJson from './lines.json';
+import carryJson from './carry-equivalences.json';
 import type { Content } from './types';
 import { assembleContent } from './validate';
 
@@ -28,6 +29,7 @@ export function loadContent(): Content {
       thesesJson,
       firmNamesJson,
       linesJson,
+      carryJson,
     );
   }
   return cached;

@@ -5,7 +5,7 @@
 
 import type { Thesis } from '../content/types.ts';
 import type { RNG } from './rng.ts';
-import type { CareerState, GameState, LpOffer } from './types.ts';
+import type { CareerState, GameState, LpOffer, ScoreSubmission } from './types.ts';
 import { trustSizeMultiplier } from './meters.ts';
 import { CAREER, FUND_SIZING, METERS } from './tuning.ts';
 import { clamp, roundM } from './util.ts';
@@ -18,6 +18,7 @@ export function initialCareer(): CareerState {
     lpTrust: METERS.startLpTrust,
     aumM: 0,
     totalReturnedM: 0,
+    careerCarryM: 0,
     bestDpi: 0,
     lastFundDpi: null,
     unicornsFound: 0,
@@ -29,6 +30,21 @@ export function initialCareer(): CareerState {
     pendingFund: null,
     pendingFirmName: null,
     ledger: [],
+    playerName: null,
+    careerId: null,
+    boardOptIn: null,
+  };
+}
+
+/** The register submission for a career, or null before identity exists. */
+export function scoreSubmissionFor(career: CareerState): ScoreSubmission | null {
+  if (!career.playerName || !career.careerId) return null;
+  return {
+    careerId: career.careerId,
+    name: career.playerName,
+    totalReturnedM: career.totalReturnedM,
+    bestFundDpi: career.bestDpi,
+    bestFundSizeM: career.ledger.reduce((max, e) => Math.max(max, e.fundSizeM), 0),
   };
 }
 
@@ -93,6 +109,7 @@ export function closeCareerFund(
     lpTrust: run.lpTrust,
     aumM: roundM(career.aumM + run.fundSizeM),
     totalReturnedM: roundM(career.totalReturnedM + harvest.returnedM),
+    careerCarryM: roundM(career.careerCarryM + harvest.carryM),
     bestDpi: Math.max(career.bestDpi, dpi),
     lastFundDpi: dpi,
     unicornsFound: career.unicornsFound + harvest.unicorns,
@@ -111,6 +128,7 @@ export function closeCareerFund(
         fundSizeM: run.fundSizeM,
         returnedM: harvest.returnedM,
         dpi,
+        carryM: harvest.carryM,
       },
     ],
   };

@@ -134,6 +134,8 @@ export interface HarvestResult {
   companies: HarvestCompanyResult[];
   returnedM: number;
   dpi: number;
+  /** The GP's cut: max(0, returned - fund) * CARRY.rate. */
+  carryM: number;
   unicorns: number;
   /** Vetoed companies that would have been unicorns — the heartbreak. */
   vetoedUnicorns: number;
@@ -202,6 +204,7 @@ export interface LedgerEntry {
   fundSizeM: number;
   returnedM: number;
   dpi: number;
+  carryM: number;
 }
 
 /** Plain serializable career object — the whole save is this plus settings. */
@@ -214,6 +217,8 @@ export interface CareerState {
   /** Career score: cumulative capital managed. */
   aumM: number;
   totalReturnedM: number;
+  /** Lifetime carry earned across all harvested funds. */
+  careerCarryM: number;
   bestDpi: number;
   lastFundDpi: number | null;
   unicornsFound: number;
@@ -230,6 +235,21 @@ export interface CareerState {
   pendingFirmName: string | null;
   /** One entry per harvested fund, oldest first. */
   ledger: LedgerEntry[];
+  /** LP Register identity — all null until the player carves a name. */
+  playerName: string | null;
+  /** Client-generated UUID (created UI-side; the engine stays seed-pure). */
+  careerId: string | null;
+  /** null = never asked; false = declined ("keep my fund private"). */
+  boardOptIn: boolean | null;
+}
+
+/** What a career reports to the LP Register. Plain data, server-validated. */
+export interface ScoreSubmission {
+  careerId: string;
+  name: string;
+  totalReturnedM: number;
+  bestFundDpi: number;
+  bestFundSizeM: number;
 }
 
 // ---------------------------------------------------------------------------

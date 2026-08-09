@@ -11,6 +11,7 @@ export function RehireScreen({
   onNextFund,
   onNewCareer,
   onLedger,
+  onRegister,
 }: {
   game: GameState;
   nextCareer: CareerState;
@@ -18,6 +19,7 @@ export function RehireScreen({
   onNextFund: () => void;
   onNewCareer: () => void;
   onLedger: () => void;
+  onRegister: () => void;
 }): JSX.Element {
   const promoted = nextCareer.tier !== game.tier;
   const line = promoted
@@ -49,6 +51,9 @@ export function RehireScreen({
         </button>
         <button type="button" className="btn btn-secondary" onClick={onLedger}>
           Career ledger
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={onRegister}>
+          The LP register
         </button>
         <button type="button" className="btn btn-text" onClick={onNewCareer}>
           Walk away. Start a new career.

@@ -114,10 +114,23 @@ export interface FlavorLines {
   shareLines: Record<VerdictBucket, string[]>;
   /** Career-level share flex ({returned}/{funds} tokens). */
   shareCareerLines: string[];
+  /** Shown when the LP Register (leaderboard) can't be reached. */
+  registerUnreachable: string[];
   /** Scorecard verdict copy per DPI band. */
   verdicts: Record<VerdictBucket, string[]>;
   /** Stamped label per exit outcome on the harvest screen. */
   harvestOutcomeLabels: Record<ExitBucket, string>;
+}
+
+/**
+ * The carry price ladder: what the money means. `{carry}` in a line is
+ * replaced with the formatted figure. The picker takes the highest
+ * thresholdM <= carry and rotates among entries sharing that threshold;
+ * zero/negative carry draws from the failure pool instead.
+ */
+export interface CarryEquivalences {
+  failure: string[];
+  ladder: Array<{ thresholdM: number; line: string }>;
 }
 
 /** Everything the content layer provides, fully validated. */
@@ -126,4 +139,5 @@ export interface Content {
   theses: Thesis[];
   firmNames: FirmNameParts;
   lines: FlavorLines;
+  carryEquivalences: CarryEquivalences;
 }

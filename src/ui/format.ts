@@ -2,6 +2,7 @@
 
 /** $8.4M / $120K style money labels from a millions figure. */
 export function fmtM(millions: number): string {
+  if (millions === 0) return '$0';
   if (Math.abs(millions) >= 1000) return `$${(millions / 1000).toFixed(1)}B`;
   if (Math.abs(millions) < 1) return `$${Math.round(millions * 1000)}K`;
   return `$${millions.toFixed(1)}M`;

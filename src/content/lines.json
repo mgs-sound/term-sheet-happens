@@ -114,6 +114,11 @@
     "{returned} returned to LPs across {funds} funds. The fees were extra. Term Sheet Happens.",
     "Career to date: {returned} back to LPs. You may now pitch me. Term Sheet Happens."
   ],
+  "registerUnreachable": [
+    "THE REGISTER IS UNREACHABLE. LPs are in Aspen.",
+    "The register did not pick up. It's a retreat week.",
+    "No connection to the register. The fax machine is being blamed."
+  ],
   "verdictStamps": {
     "wipeout": "WIPEOUT",
     "underwater": "UNDERWATER",

@@ -8,10 +8,10 @@ A satirical VC card-swipe roguelite. Mobile-first web (Vite + React 18 + TypeScr
 2. **All gameplay constants live in [src/game/tuning.ts](src/game/tuning.ts).** No magic numbers inside systems. New constants get a comment; guesses get a `TUNE` marker.
 3. **All platform features go behind the interfaces in `src/services/`** (`StorageService`, `ShareService`, `HapticsService`). Capacitor later swaps implementations only — no platform checks in game or UI code.
 4. **Pointer events only.** No mouse/hover-dependent UI, no touch/mouse event forks.
-5. **Fully offline.** 100% client-side; no backend, no SSR, no network calls of any kind. All content ships as static JSON in `src/content/`.
+5. **Fully offline gameplay.** 100% client-side; no backend, no SSR. All content ships as static JSON in `src/content/`. Single sanctioned exception: the optional LP Register leaderboard (`api/leaderboard.ts` + `LeaderboardService`, see [LEADERBOARD.md](LEADERBOARD.md)) — it may touch the network but must NEVER block or degrade play when unreachable.
 6. **Seeded RNG everywhere.** All game randomness flows through an injected `RNG` from [src/game/rng.ts](src/game/rng.ts) — never `Math.random` — so runs are reproducible in tests.
 7. **Keep the deal-memo aesthetic rules exactly** (see Visual identity below). The reference JSX in `reference/` is authoritative for feel.
-8. **All player-facing comedy copy lives in content JSON** (`src/content/`) — pitches, theses, firm names, rehire/veto/founder-walk/zombie-jab lines, LP quirks, verdicts, harvest labels. None of it is hardcoded in game logic or UI.
+8. **All player-facing comedy copy lives in content JSON** (`src/content/`) — pitches, theses, firm names, rehire/veto/founder-walk/zombie-jab lines, LP quirks, verdicts, harvest labels, carry equivalences. None of it is hardcoded in game logic or UI.
 
 ## Folder structure
 
@@ -19,6 +19,7 @@ A satirical VC card-swipe roguelite. Mobile-first web (Vite + React 18 + TypeScr
 - `src/content/` — static JSON content + TS loaders/types/validators. Pitches live in `pitches/*.json` (one file per sector batch); adding a JSON file there is the only step to add content (auto-discovered via `import.meta.glob`). New batches: follow `scripts/generate-pitches.md`, then run `npm run validate-content`.
 - `src/ui/` — React components + plain CSS (no UI framework, no Tailwind).
 - `src/services/` — platform interfaces + web implementations.
+- `src/server/` + `api/` — LP Register core (pure TS, Vitest-covered) and its Vercel adapter. `npm run dev:api` serves it locally in-memory.
 - `reference/` — `term-sheet-happens.jsx`, the authoritative prototype. Never imported; port from it.
 
 No router library — simple phase-based screen state.
@@ -72,6 +73,10 @@ A satirical VC card-swipe roguelite. Reigns/Tinder loop: each run is one fund at
 ## Content
 
 ~400 curated pitches across 10 sectors (AI, SaaS, Fintech, Consumer, Climate, Health, Crypto, Gaming, Space, Food); firm names from prefix+suffix generator; ~12+ theses each pinning 2 sectors with a one-liner. Generate wide with AI, curate hard — every card must land.
+
+## Content tone (revised)
+
+The bar: **a pitch sounds like a real deck until exactly one clause.** The reader should be nodding along at a plausible company and get ambushed by a single late clause — a pricing detail, a metric caveat, a governance arrangement. Not: premise-level absurdism, impossible physics, double twists, visual gags, or shouting. The twist never arrives in the first five words. Deadpan or nothing; the industry is funnier when it doesn't know it's joking. Calibration examples and the generation workflow live in [scripts/generate-pitches.md](scripts/generate-pitches.md); `npm run validate-content` lints for absurdism smells (all-caps words, exclamation marks, "literally"/"just", trailing "Wait—"). Human review happens in the in-browser review tool (`?review=1`, dev only) with `npm run apply-review` to commit decisions.
 
 ## Visual identity
 
