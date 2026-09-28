@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
-import './fonts/sectorFonts.css';
+import './fonts/cardFonts.css';
 import { preloadSectorFonts } from './fonts/preloadSectorFonts';
 import { loadContentAsync } from '../content/loader';
 import type { Content, FlavorLines } from '../content/types';

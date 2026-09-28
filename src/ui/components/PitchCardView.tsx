@@ -16,9 +16,12 @@ function Pips({ label, value, hot }: { label: string; value: number; hot?: boole
 export function PitchCardView({
   card,
   memoNumber,
+  nameFont,
 }: {
   card: PitchCard;
   memoNumber: number;
+  /** Font id for the company name (see ui/fonts/cardFonts.ts). */
+  nameFont?: string;
 }): JSX.Element {
   return (
     <div className="pitch-card">
@@ -27,7 +30,7 @@ export function PitchCardView({
         <span>{card.sector.toUpperCase()}</span>
         <span>{STAGE_LABELS[card.stage]}</span>
       </div>
-      <h2 className="pitch-name" data-sector={card.sector}>
+      <h2 className="pitch-name" data-font={nameFont}>
         {card.name}
       </h2>
       <p className="pitch-idea">&ldquo;{card.idea}&rdquo;</p>

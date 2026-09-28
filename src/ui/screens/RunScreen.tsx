@@ -13,6 +13,7 @@ import { PitchCardView } from '../components/PitchCardView';
 import { SwipeShell } from '../components/SwipeShell';
 import { InterruptCard } from '../components/InterruptCard';
 import { SignSheet } from '../components/SignSheet';
+import { pickCardFont } from '../fonts/cardFonts';
 
 const FLY_MS = 320;
 
@@ -50,6 +51,18 @@ export function RunScreen({
   if (card) lastCardRef.current = card;
   const labelCard = card ?? lastCardRef.current;
   const actionsActive = card !== null && game.phase === 'meeting' && !sheetOpen;
+
+  // Name font: from the card's sector pool, never the same as the previous
+  // card's. Picked once per card (keyed like SwipeShell) and remembered.
+  const fontRef = useRef<{ key: string; font: string } | null>(null);
+  const cardKey = card ? `${card.pitchId}-${game.meetingIndex}` : null;
+  if (card && cardKey && fontRef.current?.key !== cardKey) {
+    fontRef.current = {
+      key: cardKey,
+      font: pickCardFont(card.sector, card.pitchId, fontRef.current?.font ?? null),
+    };
+  }
+  const nameFont = fontRef.current?.font;
 
   const commitDistancePx = (): number =>
     (screenRef.current?.clientWidth ?? 390) * SWIPE.commitDistanceRatio;
@@ -172,7 +185,7 @@ export function RunScreen({
             stampLeft="PASS"
             stampRight="OFFER"
           >
-            <PitchCardView card={card} memoNumber={game.meetingIndex + 1} />
+            <PitchCardView card={card} memoNumber={game.meetingIndex + 1} nameFont={nameFont} />
           </SwipeShell>
         ) : (
           <div className="arena-empty">No founders left in the lobby.</div>
