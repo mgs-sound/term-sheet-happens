@@ -27,7 +27,9 @@ export function PitchCardView({
         <span>{card.sector.toUpperCase()}</span>
         <span>{STAGE_LABELS[card.stage]}</span>
       </div>
-      <h2 className="pitch-name">{card.name}</h2>
+      <h2 className="pitch-name" data-sector={card.sector}>
+        {card.name}
+      </h2>
       <p className="pitch-idea">&ldquo;{card.idea}&rdquo;</p>
       <div className="pitch-stats">
         <Pips label="TEAM" value={card.team} />

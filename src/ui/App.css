@@ -264,12 +264,13 @@
   background: var(--ledger-green);
 }
 
+/* Deliberately NOT position: relative — the offer .sheet anchors to
+   .run-screen so it can line up with the action dock's buttons. */
 .card-arena {
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
 
 /* The memo card never grows with the viewport. */
@@ -293,12 +294,18 @@
   max-width: 380px;
   margin: 0 auto;
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
-  min-height: calc(63px + env(safe-area-inset-bottom));
+  min-height: calc(60px + env(safe-area-inset-bottom)); /* 44px btn + 16px */
 }
 
 .swipe-actions {
   display: flex;
   gap: 12px;
+}
+
+/* Inactive: keeps its layout box (no shift), but is invisible and untappable. */
+.swipe-actions.is-hidden {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .swipe-actions .btn {
@@ -593,15 +600,33 @@
   font-size: 14px;
 }
 
+/* A printed result panel, not a button: solid fill, no drop shadow, and a thin
+   inset paper rule (a certificate/seal border). Green at 1x+, red below. */
 .dpi-block {
+  position: relative;
   margin-top: 18px;
-  border: 2px solid var(--ink);
-  box-shadow: 6px 6px 0 var(--ink);
-  background: var(--paper-bright);
-  padding: 18px;
+  padding: 26px 18px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 6px;
+  color: var(--paper-bright);
+}
+
+.dpi-block::after {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border: 2px solid rgb(253 252 247 / 70%);
+  pointer-events: none;
+}
+
+.dpi-good {
+  background: var(--ledger-green);
+}
+
+.dpi-bad {
+  background: var(--stamp-red);
 }
 
 .dpi-label {
@@ -612,18 +637,10 @@
 
 .dpi-value {
   font-family: var(--font-mono);
-  font-size: clamp(48px, 15vw, 64px);
+  font-size: clamp(56px, 18vw, 80px);
   font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-}
-
-.dpi-good .dpi-value {
-  color: var(--ledger-green);
-}
-
-.dpi-bad .dpi-value {
-  color: var(--stamp-red);
 }
 
 .verdict-line {
@@ -647,11 +664,14 @@
 
 .sheet {
   position: absolute;
-  left: 0;
-  right: 0;
+  /* Anchored to .run-screen. Side insets match the .screen padding; bottom
+     matches .action-dock's padding-bottom, so the sheet's bottom edge sits
+     exactly on the bottom edge of the (hidden) PASS / DRAFT TERMS buttons. */
+  left: clamp(10px, 2.5vw, 14px);
+  right: clamp(10px, 2.5vw, 14px);
   margin: 0 auto;
-  width: min(100%, 396px);
-  bottom: 4px;
+  max-width: 396px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
   z-index: 6;
   background: var(--paper-bright);
   border: 2px solid var(--ink);

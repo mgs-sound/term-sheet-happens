@@ -44,6 +44,12 @@ export function RunScreen({
 
   const card = game.currentCard;
   const busy = exiting !== null || advanceTimer.current !== null;
+  // Last card seen, so the hidden dock buttons keep a realistic label (and
+  // therefore height) during interrupts / between cards.
+  const lastCardRef = useRef(card);
+  if (card) lastCardRef.current = card;
+  const labelCard = card ?? lastCardRef.current;
+  const actionsActive = card !== null && game.phase === 'meeting' && !sheetOpen;
 
   const commitDistancePx = (): number =>
     (screenRef.current?.clientWidth ?? 390) * SWIPE.commitDistanceRatio;
@@ -199,14 +205,19 @@ export function RunScreen({
         )}
       </div>
 
-      {/* Fixed-height dock: buttons come and go without shifting the arena. */}
+      {/* The buttons are ALWAYS laid out and only hidden (visibility) when
+          inactive, so the dock keeps their exact height — even when a long
+          label wraps — and the card never shifts as they come and go. */}
       <div className="action-dock">
-        {card && game.phase === 'meeting' && !sheetOpen && (
-          <div className="swipe-actions">
+        {labelCard && (
+          <div
+            className={`swipe-actions ${actionsActive ? '' : 'is-hidden'}`}
+            aria-hidden={!actionsActive}
+          >
             <button
               type="button"
               className="btn btn-pass"
-              disabled={busy}
+              disabled={!actionsActive || busy}
               onClick={() => canSwipe('left') && commit('left')}
               aria-label="Pass on this deal"
             >
@@ -215,16 +226,20 @@ export function RunScreen({
             <button
               type="button"
               className="btn btn-sign"
-              disabled={busy || (game.isFundI && card.askM > game.capitalM)}
+              disabled={
+                !actionsActive || busy || (game.isFundI && labelCard.askM > game.capitalM)
+              }
               onClick={() => canSwipe('right') && commit('right')}
               aria-label={
-                game.isFundI ? `Sign at ask, ${fmtM(card.askM)}` : `Draft terms for ${card.name}`
+                game.isFundI
+                  ? `Sign at ask, ${fmtM(labelCard.askM)}`
+                  : `Draft terms for ${labelCard.name}`
               }
             >
               {game.isFundI ? (
-                <>Sign at ask &middot; {fmtM(card.askM)}</>
+                <>Sign at ask &middot; {fmtM(labelCard.askM)}</>
               ) : (
-                <>Draft terms &middot; {fmtM(card.askM)} ask</>
+                <>Draft terms &middot; {fmtM(labelCard.askM)} ask</>
               )}
             </button>
           </div>

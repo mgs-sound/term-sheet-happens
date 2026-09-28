@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
+import './fonts/sectorFonts.css';
+import { preloadSectorFonts } from './fonts/preloadSectorFonts';
 import { loadContentAsync } from '../content/loader';
 import type { Content, FlavorLines } from '../content/types';
 import { reduce } from '../game/engine';
@@ -98,7 +100,7 @@ export function App(): JSX.Element {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const content = await loadContentAsync();
+      const [content] = await Promise.all([loadContentAsync(), preloadSectorFonts()]);
       const envelope = await services.storage.read<unknown>(SAVE_KEY);
       const save = envelope ? migrateSave(envelope.schemaVersion, envelope.data) : null;
       if (!cancelled) setBoot({ content, save });

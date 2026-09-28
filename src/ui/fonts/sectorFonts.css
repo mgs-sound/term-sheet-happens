@@ -1,0 +1,42 @@
+/*
+ * Sector display fonts — used ONLY for the company name on pitch cards.
+ * Self-hosted (latin subset, one weight each) so the game stays 100% offline.
+ * Source: Google Fonts via @fontsource, SIL Open Font License (see LICENSE-*).
+ *
+ * Each sector gets a face that parodies how that kind of startup brands itself.
+ */
+
+@font-face { font-family: 'TSH AI';       src: url('./space-grotesk-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'TSH SaaS';     src: url('./montserrat-latin-800-normal.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'TSH Fintech';  src: url('./dm-serif-display-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'TSH Consumer'; src: url('./fredoka-latin-600-normal.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'TSH Climate';  src: url('./fraunces-latin-800-normal.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'TSH Health';   src: url('./nunito-latin-800-normal.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'TSH Crypto';   src: url('./unbounded-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'TSH Gaming';   src: url('./press-start-2p-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'TSH Space';    src: url('./orbitron-latin-800-normal.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'TSH Food';     src: url('./lobster-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+
+/* AI: the default "we're a research lab" grotesk. */
+.pitch-name[data-sector='AI']       { font-family: 'TSH AI', var(--font-serif); font-weight: 700; letter-spacing: -0.02em; }
+/* SaaS: heavy geometric sans, every B2B landing page ever. */
+.pitch-name[data-sector='SaaS']     { font-family: 'TSH SaaS', var(--font-serif); font-weight: 800; letter-spacing: -0.01em; }
+/* Fintech: old-money display serif, pretending to be a bank. */
+.pitch-name[data-sector='Fintech']  { font-family: 'TSH Fintech', var(--font-serif); font-weight: 400; }
+/* Consumer: soft, friendly DTC wordmark. */
+.pitch-name[data-sector='Consumer'] { font-family: 'TSH Consumer', var(--font-serif); font-weight: 600; }
+/* Climate: earthy, chunky serif — tote-bag energy. */
+.pitch-name[data-sector='Climate']  { font-family: 'TSH Climate', var(--font-serif); font-weight: 800; }
+/* Health: rounded, reassuring, HIPAA-adjacent. */
+.pitch-name[data-sector='Health']   { font-family: 'TSH Health', var(--font-serif); font-weight: 800; }
+/* Crypto: the wide rounded grotesk on every web3 landing page. Runs wide. */
+.pitch-name[data-sector='Crypto']   { font-family: 'TSH Crypto', var(--font-serif); font-weight: 700; font-size: clamp(20px, 6.6vw, 28px); }
+/* Gaming: 8-bit. Pixel faces run wide, so size down to keep names on the card. */
+.pitch-name[data-sector='Gaming']   { font-family: 'TSH Gaming', var(--font-mono); font-weight: 400; font-size: clamp(14px, 4.6vw, 19px); line-height: 1.25; }
+/* Space: sci-fi wordmark. Also wide — slightly smaller. */
+.pitch-name[data-sector='Space']    { font-family: 'TSH Space', var(--font-serif); font-weight: 800; font-size: clamp(19px, 6.2vw, 26px); text-transform: uppercase; letter-spacing: 0.04em; }
+/* Food: diner-sign script. */
+.pitch-name[data-sector='Food']     { font-family: 'TSH Food', var(--font-serif); font-weight: 400; }
+
+/* Long names must never break the card. */
+.pitch-name[data-sector] { overflow-wrap: anywhere; }
