@@ -359,6 +359,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
       {screen === 'reveal' && (
         <FirmReveal
           game={game}
+          lines={content.lines}
           onReroll={() =>
             dispatch({ type: 'START_RUN', career, seed: newSeed(), content: engineContent })
           }

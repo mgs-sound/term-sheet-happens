@@ -118,6 +118,11 @@ export interface FlavorLines {
   verdicts: Record<VerdictBucket, string[]>;
   /** Stamped label per exit outcome on the harvest screen. */
   harvestOutcomeLabels: Record<ExitBucket, string>;
+  /**
+   * Fund I difficulty bands shown on the engagement letter, index-aligned
+   * with the engine's difficultyBand(): [soft, standard, brutal].
+   */
+  fundIDifficulty: { label: string; blurb: string }[];
 }
 
 /** Everything the content layer provides, fully validated. */

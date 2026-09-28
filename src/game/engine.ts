@@ -22,6 +22,7 @@ import type {
 import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
+import { rollFundITerms } from './fundTerms.ts';
 import {
   acceptanceProbability,
   entryBonus,
@@ -66,10 +67,13 @@ export function createRun(
 ): GameState {
   const rng = createRng(seed);
   const isFundI = career.fundIndex === 1;
-  const meetingsTotal = isFundI ? FUND_I.meetings : MEETINGS_BY_TIER[career.tier];
+  // Fund I: size / meetings / starting trust come from one difficulty dial
+  // (own salted RNG — see fundTerms.ts). Fund II+: from the career.
+  const fundITerms = isFundI ? rollFundITerms(seed) : null;
+  const meetingsTotal = fundITerms ? fundITerms.meetings : MEETINGS_BY_TIER[career.tier];
 
-  const fundSizeM = isFundI
-    ? roundM(rng.float(FUND_I.sizeMinM, FUND_I.sizeMaxM))
+  const fundSizeM = fundITerms
+    ? fundITerms.sizeM
     : roundM(
         career.pendingFund?.sizeM ??
           career.nextFundSizeM ??
@@ -101,7 +105,8 @@ export function createRun(
     fundSizeM,
     capitalM: fundSizeM,
     reputation: clampMeter(career.reputation),
-    lpTrust: clampMeter(career.lpTrust),
+    lpTrust: clampMeter(career.lpTrust + (fundITerms?.lpTrustOffset ?? 0)),
+    ...(fundITerms ? { fundIDifficulty: fundITerms.difficulty } : {}),
     meetingsTotal,
     meetingIndex: 0,
     quarter: 1,

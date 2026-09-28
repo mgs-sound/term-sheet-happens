@@ -24,10 +24,7 @@ export const CLOCK = {
 
 /** Fund I: the 3-minute doomed tutorial. Simplified rules, stacked deck. */
 export const FUND_I = {
-  /** Fund size rolled uniformly in [min, max] millions. */
-  sizeMinM: 8,
-  sizeMaxM: 10,
-  meetings: 15,
+  /** Fund size / meetings / starting LP trust come from FUND_I_TERMS below. */
   /** Hidden quality shifted down — the deck is quietly stacked. TUNE */
   qualityShift: -0.15,
   /** No card in Fund I exceeds this quality — no unicorn bait-outs. TUNE */
@@ -36,6 +33,26 @@ export const FUND_I = {
   vetoBase: 0.3,
   /** Fund I sees earlier-stage, smaller-check deals. TUNE */
   stageWeights: { preSeed: 0.4, seed: 0.45, seriesA: 0.15, seriesB: 0 },
+} as const;
+
+/**
+ * Fund I terms — the "pick your difficulty" reroll on the very first fund.
+ * Each reroll draws ONE difficulty dial t in [0, 1) and lerps all three terms
+ * from easy to hard together, so rerolling is choosing a difficulty, not
+ * slot-machining for max-everything. DPI = returned / fund size and undeployed
+ * capital returns nothing, so a bigger fund with fewer meetings is harder.
+ * Fund II+ terms come from the career instead (unchanged).
+ */
+export const FUND_I_TERMS = {
+  /** XORed into the run seed for a separate RNG, so rolling terms never
+   *  shifts the main stream (firm name / thesis / deck stay seed-stable). */
+  rngSalt: 0x7e57,
+  sizeM: { easy: 8, hard: 10 },
+  meetings: { easy: 18, hard: 12 }, // TUNE — deck has 80 pitches total
+  /** Added to the career's starting LP trust (METERS.startLpTrust). TUNE */
+  lpTrustOffset: { easy: 10, hard: -10 },
+  /** Dial cutoffs for the 3 labelled bands: soft < 1/3 <= standard < 2/3 <= brutal. */
+  bandCutoffs: [1 / 3, 2 / 3],
 } as const;
 
 export const MEETINGS_BY_TIER = {

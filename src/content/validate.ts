@@ -253,5 +253,16 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     }
   }
 
+  const bands = data.fundIDifficulty;
+  if (
+    !Array.isArray(bands) ||
+    bands.length !== 3 ||
+    !bands.every((b) => isRecord(b) && isNonEmptyString(b.label) && isNonEmptyString(b.blurb))
+  ) {
+    errors.push(
+      'lines.json: "fundIDifficulty" must be exactly 3 { label, blurb } entries (soft, standard, brutal)',
+    );
+  }
+
   return { lines: errors.length > 0 ? null : (data as unknown as FlavorLines), errors };
 }

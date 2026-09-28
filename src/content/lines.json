@@ -127,5 +127,19 @@
     "base": "MODEST EXIT",
     "win": "STRONG EXIT",
     "unicorn": "UNICORN"
-  }
+  },
+  "fundIDifficulty": [
+    {
+      "label": "SOFT LANDING",
+      "blurb": "Small fund, long calendar, LPs who still believe in you. Practically a grant."
+    },
+    {
+      "label": "STANDARD ISSUE",
+      "blurb": "Ordinary terms. Ordinary disappointment."
+    },
+    {
+      "label": "BRUTAL",
+      "blurb": "Too much money, too few meetings, LPs already drafting the email."
+    }
+  ]
 }

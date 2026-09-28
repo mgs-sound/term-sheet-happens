@@ -174,6 +174,10 @@ export interface GameState {
   lastCapitalCallQuarter: number;
   events: GameEvent[];
   harvest: HarvestResult | null;
+  /** Fund I only: the difficulty dial this run's terms were rolled from
+   *  (0 softest .. 1 most brutal; see FUND_I_TERMS). Optional so older saves
+   *  stay valid. */
+  fundIDifficulty?: number;
 }
 
 // ---------------------------------------------------------------------------

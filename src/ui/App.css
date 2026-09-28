@@ -135,6 +135,25 @@
   letter-spacing: 0.08em;
 }
 
+/* Fund I engagement letter: the difficulty stamp + one-line terms note. */
+.terms-difficulty {
+  margin-top: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.terms-difficulty .harvest-label {
+  flex: 0 0 auto;
+}
+
+.terms-blurb {
+  margin: 0;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
 .figures-row {
   margin: 18px 0 0;
   display: flex;
