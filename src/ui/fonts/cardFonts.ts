@@ -46,3 +46,29 @@ export function pickCardFont(sector: Sector, pitchId: string, previousFont: stri
   }
   return pool[0];
 }
+
+/**
+ * The name font of every company in a run, keyed by pitchId. Cards are shown
+ * strictly in deck order (engine draws deck[0], deck[1], ...), so walking the
+ * deck reproduces exactly what each card showed — on the run screen, on the
+ * harvest screen, and after a reload — with nothing extra to save.
+ */
+export function fontsForDeck(deck: readonly { pitchId: string; sector: Sector }[]): Map<string, string> {
+  const fonts = new Map<string, string>();
+  let previous: string | null = null;
+  for (const card of deck) {
+    previous = pickCardFont(card.sector, card.pitchId, previous);
+    fonts.set(card.pitchId, previous);
+  }
+  return fonts;
+}
+
+/**
+ * Font for a portfolio company. The engine ids companies as
+ * `${pitchId}@m${meetingIndex}` (engine.ts), so strip the suffix to get the
+ * pitch id the card was shown under.
+ */
+export function fontForCompany(fonts: Map<string, string>, companyId: string): string | undefined {
+  const at = companyId.indexOf('@');
+  return fonts.get(at === -1 ? companyId : companyId.slice(0, at));
+}

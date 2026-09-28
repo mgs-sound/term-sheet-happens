@@ -36,69 +36,85 @@
 @font-face { font-family: 'TSH pacifico'; src: url('./pacifico-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'TSH shrikhand'; src: url('./shrikhand-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 
-/* Base size is .pitch-name's clamp(); wide faces scale it down via --name-scale. */
+/* The face rules below set family/weight (+ --name-scale for wide faces) on
+   any [data-font] element; each place that shows a name sets its own base
+   size and multiplies it by --name-scale. */
 .pitch-name[data-font] {
   font-size: calc(clamp(22px, 7.2vw, 30px) * var(--name-scale, 1));
   overflow-wrap: anywhere;
 }
 
+/* Harvest / distribution notice: same face, smaller, so the page still reads
+   as a document. */
+.harvest-name[data-font] {
+  font-size: calc(18px * var(--name-scale, 1));
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
 /* AI: "research lab" grotesk */
-.pitch-name[data-font='space-grotesk'] { font-family: 'TSH space-grotesk', var(--font-serif); font-weight: 700; letter-spacing: -0.02em; }
+[data-font='space-grotesk'] { font-family: 'TSH space-grotesk', var(--font-serif); font-weight: 700; letter-spacing: -0.02em; }
 /* AI: pitch-deck geometric */
-.pitch-name[data-font='sora'] { font-family: 'TSH sora', var(--font-serif); font-weight: 700; }
+[data-font='sora'] { font-family: 'TSH sora', var(--font-serif); font-weight: 700; }
 /* AI: terminal / "we ship models" */
-.pitch-name[data-font='ibm-plex-mono'] { font-family: 'TSH ibm-plex-mono', var(--font-serif); font-weight: 700; --name-scale: 0.95; letter-spacing: -0.02em; }
+[data-font='ibm-plex-mono'] { font-family: 'TSH ibm-plex-mono', var(--font-serif); font-weight: 700; --name-scale: 0.95; letter-spacing: -0.02em; }
 /* SaaS: every B2B landing page */
-.pitch-name[data-font='montserrat'] { font-family: 'TSH montserrat', var(--font-serif); font-weight: 800; letter-spacing: -0.01em; }
+[data-font='montserrat'] { font-family: 'TSH montserrat', var(--font-serif); font-weight: 800; letter-spacing: -0.01em; }
 /* SaaS: the other B2B landing page */
-.pitch-name[data-font='poppins'] { font-family: 'TSH poppins', var(--font-serif); font-weight: 700; }
+[data-font='poppins'] { font-family: 'TSH poppins', var(--font-serif); font-weight: 700; }
 /* SaaS: the Series B rebrand */
-.pitch-name[data-font='plus-jakarta-sans'] { font-family: 'TSH plus-jakarta-sans', var(--font-serif); font-weight: 800; }
+[data-font='plus-jakarta-sans'] { font-family: 'TSH plus-jakarta-sans', var(--font-serif); font-weight: 800; }
 /* Fintech: pretending to be a bank */
-.pitch-name[data-font='dm-serif-display'] { font-family: 'TSH dm-serif-display', var(--font-serif); font-weight: 400; }
+[data-font='dm-serif-display'] { font-family: 'TSH dm-serif-display', var(--font-serif); font-weight: 400; }
 /* Fintech: private wealth */
-.pitch-name[data-font='playfair-display'] { font-family: 'TSH playfair-display', var(--font-serif); font-weight: 800; }
+[data-font='playfair-display'] { font-family: 'TSH playfair-display', var(--font-serif); font-weight: 800; }
 /* Fintech: "est. 2023" */
-.pitch-name[data-font='libre-baskerville'] { font-family: 'TSH libre-baskerville', var(--font-serif); font-weight: 700; }
+[data-font='libre-baskerville'] { font-family: 'TSH libre-baskerville', var(--font-serif); font-weight: 700; }
 /* Consumer: friendly DTC */
-.pitch-name[data-font='fredoka'] { font-family: 'TSH fredoka', var(--font-serif); font-weight: 600; }
+[data-font='fredoka'] { font-family: 'TSH fredoka', var(--font-serif); font-weight: 600; }
 /* Consumer: playful app icon */
-.pitch-name[data-font='baloo-2'] { font-family: 'TSH baloo-2', var(--font-serif); font-weight: 800; }
+[data-font='baloo-2'] { font-family: 'TSH baloo-2', var(--font-serif); font-weight: 800; }
 /* Consumer: retro-cool merch */
-.pitch-name[data-font='righteous'] { font-family: 'TSH righteous', var(--font-serif); font-weight: 400; }
+[data-font='righteous'] { font-family: 'TSH righteous', var(--font-serif); font-weight: 400; }
 /* Climate: tote-bag earthy */
-.pitch-name[data-font='fraunces'] { font-family: 'TSH fraunces', var(--font-serif); font-weight: 800; }
+[data-font='fraunces'] { font-family: 'TSH fraunces', var(--font-serif); font-weight: 800; }
 /* Climate: farmers-market chalkboard */
-.pitch-name[data-font='young-serif'] { font-family: 'TSH young-serif', var(--font-serif); font-weight: 400; }
+[data-font='young-serif'] { font-family: 'TSH young-serif', var(--font-serif); font-weight: 400; }
 /* Climate: sturdy, "industrial decarbonization" */
-.pitch-name[data-font='zilla-slab'] { font-family: 'TSH zilla-slab', var(--font-serif); font-weight: 700; }
+[data-font='zilla-slab'] { font-family: 'TSH zilla-slab', var(--font-serif); font-weight: 700; }
 /* Health: rounded, reassuring */
-.pitch-name[data-font='nunito'] { font-family: 'TSH nunito', var(--font-serif); font-weight: 800; }
+[data-font='nunito'] { font-family: 'TSH nunito', var(--font-serif); font-weight: 800; }
 /* Health: wellness app */
-.pitch-name[data-font='quicksand'] { font-family: 'TSH quicksand', var(--font-serif); font-weight: 700; }
+[data-font='quicksand'] { font-family: 'TSH quicksand', var(--font-serif); font-weight: 700; }
 /* Health: telehealth clean */
-.pitch-name[data-font='figtree'] { font-family: 'TSH figtree', var(--font-serif); font-weight: 800; }
+[data-font='figtree'] { font-family: 'TSH figtree', var(--font-serif); font-weight: 800; }
 /* Crypto: web3 landing page */
-.pitch-name[data-font='unbounded'] { font-family: 'TSH unbounded', var(--font-serif); font-weight: 700; --name-scale: 0.9; }
+[data-font='unbounded'] { font-family: 'TSH unbounded', var(--font-serif); font-weight: 700; --name-scale: 0.9; }
 /* Crypto: trading-terminal */
-.pitch-name[data-font='chakra-petch'] { font-family: 'TSH chakra-petch', var(--font-serif); font-weight: 700; }
+[data-font='chakra-petch'] { font-family: 'TSH chakra-petch', var(--font-serif); font-weight: 700; }
 /* Crypto: "the chain" sci-fi */
-.pitch-name[data-font='oxanium'] { font-family: 'TSH oxanium', var(--font-serif); font-weight: 700; }
+[data-font='oxanium'] { font-family: 'TSH oxanium', var(--font-serif); font-weight: 700; }
 /* Gaming: 8-bit */
-.pitch-name[data-font='press-start-2p'] { font-family: 'TSH press-start-2p', var(--font-serif); font-weight: 400; --name-scale: 0.62; line-height: 1.25; }
+[data-font='press-start-2p'] { font-family: 'TSH press-start-2p', var(--font-serif); font-weight: 400; --name-scale: 0.62; line-height: 1.25; }
 /* Gaming: pixel HUD */
-.pitch-name[data-font='silkscreen'] { font-family: 'TSH silkscreen', var(--font-serif); font-weight: 700; --name-scale: 0.8; }
+[data-font='silkscreen'] { font-family: 'TSH silkscreen', var(--font-serif); font-weight: 700; --name-scale: 0.8; }
 /* Gaming: arcade marquee */
-.pitch-name[data-font='bungee'] { font-family: 'TSH bungee', var(--font-serif); font-weight: 400; --name-scale: 0.9; }
+[data-font='bungee'] { font-family: 'TSH bungee', var(--font-serif); font-weight: 400; --name-scale: 0.9; }
 /* Space: sci-fi wordmark */
-.pitch-name[data-font='orbitron'] { font-family: 'TSH orbitron', var(--font-serif); font-weight: 800; --name-scale: 0.85; text-transform: uppercase; letter-spacing: 0.04em; }
+[data-font='orbitron'] { font-family: 'TSH orbitron', var(--font-serif); font-weight: 800; --name-scale: 0.85; text-transform: uppercase; letter-spacing: 0.04em; }
 /* Space: mission patch */
-.pitch-name[data-font='audiowide'] { font-family: 'TSH audiowide', var(--font-serif); font-weight: 400; --name-scale: 0.85; }
+[data-font='audiowide'] { font-family: 'TSH audiowide', var(--font-serif); font-weight: 400; --name-scale: 0.85; }
 /* Space: aerospace hairline */
-.pitch-name[data-font='michroma'] { font-family: 'TSH michroma', var(--font-serif); font-weight: 400; --name-scale: 0.8; }
+[data-font='michroma'] { font-family: 'TSH michroma', var(--font-serif); font-weight: 400; --name-scale: 0.8; }
 /* Food: diner sign */
-.pitch-name[data-font='lobster'] { font-family: 'TSH lobster', var(--font-serif); font-weight: 400; }
+[data-font='lobster'] { font-family: 'TSH lobster', var(--font-serif); font-weight: 400; }
 /* Food: food-truck script */
-.pitch-name[data-font='pacifico'] { font-family: 'TSH pacifico', var(--font-serif); font-weight: 400; }
+[data-font='pacifico'] { font-family: 'TSH pacifico', var(--font-serif); font-weight: 400; }
 /* Food: retro menu */
-.pitch-name[data-font='shrikhand'] { font-family: 'TSH shrikhand', var(--font-serif); font-weight: 400; }
+[data-font='shrikhand'] { font-family: 'TSH shrikhand', var(--font-serif); font-weight: 400; }
+
+/* Urgent memos (follow-on / bridge): the company name inside the caps
+   headline, sized relative to the headline. */
+.interrupt-company[data-font] {
+  font-size: calc(1em * var(--name-scale, 1));
+}

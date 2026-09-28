@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Action, GameState } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import { offerBounds } from '../../game/negotiation';
@@ -13,7 +13,7 @@ import { PitchCardView } from '../components/PitchCardView';
 import { SwipeShell } from '../components/SwipeShell';
 import { InterruptCard } from '../components/InterruptCard';
 import { SignSheet } from '../components/SignSheet';
-import { pickCardFont } from '../fonts/cardFonts';
+import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 
 const FLY_MS = 320;
 
@@ -53,16 +53,9 @@ export function RunScreen({
   const actionsActive = card !== null && game.phase === 'meeting' && !sheetOpen;
 
   // Name font: from the card's sector pool, never the same as the previous
-  // card's. Picked once per card (keyed like SwipeShell) and remembered.
-  const fontRef = useRef<{ key: string; font: string } | null>(null);
-  const cardKey = card ? `${card.pitchId}-${game.meetingIndex}` : null;
-  if (card && cardKey && fontRef.current?.key !== cardKey) {
-    fontRef.current = {
-      key: cardKey,
-      font: pickCardFont(card.sector, card.pitchId, fontRef.current?.font ?? null),
-    };
-  }
-  const nameFont = fontRef.current?.font;
+  // card's. Derived from deck order, so the harvest screen matches exactly.
+  const deckFonts = useMemo(() => fontsForDeck(game.deck), [game.deck]);
+  const nameFont = card ? deckFonts.get(card.pitchId) : undefined;
 
   const commitDistancePx = (): number =>
     (screenRef.current?.clientWidth ?? 390) * SWIPE.commitDistanceRatio;
@@ -172,6 +165,11 @@ export function RunScreen({
           <InterruptCard
             event={game.interrupt}
             game={game}
+            companyFont={
+              game.interrupt.kind === 'capitalCall'
+                ? undefined
+                : fontForCompany(deckFonts, game.interrupt.companyId)
+            }
             onResolve={(accept) => {
               void services.haptics.tap();
               dispatch({ type: 'RESOLVE_INTERRUPT', accept });

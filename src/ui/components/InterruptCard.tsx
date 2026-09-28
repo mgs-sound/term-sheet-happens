@@ -8,12 +8,23 @@ import { fmtM } from '../format';
 export function InterruptCard({
   event,
   game,
+  companyFont,
   onResolve,
 }: {
   event: InterruptEvent;
   game: GameState;
+  /** Font id the company had on its pitch card (see ui/fonts/cardFonts.ts). */
+  companyFont?: string;
   onResolve: (accept: boolean) => void;
 }): JSX.Element {
+  // The company name keeps its own face and casing inside the caps headline,
+  // like a logo dropped into a newspaper head.
+  const company = (name: string): JSX.Element => (
+    <span className="interrupt-company" data-font={companyFont}>
+      {name}
+    </span>
+  );
+
   if (event.kind === 'followOn') {
     const affordable = event.proRataCostM <= game.capitalM;
     return (
@@ -23,7 +34,7 @@ export function InterruptCard({
           <span>PORTFOLIO</span>
           <span>FOLLOW-ON</span>
         </div>
-        <h2 className="pitch-name">{event.companyName.toUpperCase()} IS RAISING AGAIN</h2>
+        <h2 className="pitch-name">{company(event.companyName)} IS RAISING AGAIN</h2>
         <p className="pitch-idea">
           {fmtM(event.raiseM)} at {fmtM(event.newPreM)} pre. Your pro rata:{' '}
           <strong>{fmtM(event.proRataCostM)}</strong>. Wire it or shrink.
@@ -55,7 +66,7 @@ export function InterruptCard({
           <span>PORTFOLIO</span>
           <span>BRIDGE</span>
         </div>
-        <h2 className="pitch-name">{event.companyName.toUpperCase()} NEEDS A BRIDGE</h2>
+        <h2 className="pitch-name">{company(event.companyName)} NEEDS A BRIDGE</h2>
         <p className="pitch-idea">
           Needs a {fmtM(event.costM)} bridge to make payroll. Without it, the lights go out.
         </p>

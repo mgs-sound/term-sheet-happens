@@ -1,6 +1,7 @@
 import type { GameState } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import { fillLine, fmtM, pickLine } from '../format';
+import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 
 export function HarvestScreen({
   game,
@@ -15,6 +16,8 @@ export function HarvestScreen({
   if (!harvest) return <section className="screen" />;
 
   const heartbreaks = game.events.filter((e) => e.kind === 'vetoHeartbreak');
+  // Same face each company had on its pitch card (companyId === pitchId).
+  const deckFonts = fontsForDeck(game.deck);
 
   return (
     <section className="screen letterhead harvest-screen">
@@ -28,7 +31,9 @@ export function HarvestScreen({
           {harvest.companies.map((c) => (
             <li key={c.companyId} className="harvest-row">
               <div className="harvest-row-top">
-                <span className="harvest-name">{c.name}</span>
+                <span className="harvest-name" data-font={fontForCompany(deckFonts, c.companyId)}>
+                  {c.name}
+                </span>
                 <span
                   className={`harvest-label ${
                     c.bucket === 'zero' ? 'label-red' : c.bucket === 'acquihire' ? '' : 'label-green'
