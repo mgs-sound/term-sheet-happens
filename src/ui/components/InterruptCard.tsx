@@ -40,12 +40,13 @@ export function InterruptCard({
           <strong>{fmtM(event.proRataCostM)}</strong>. Wire it or shrink.
         </p>
         <div className="interrupt-actions">
-          <button type="button" className="btn btn-pass" onClick={() => onResolve(false)}>
+          <button type="button" className="btn btn-pass" data-sfx="pass" onClick={() => onResolve(false)}>
             Get diluted
           </button>
           <button
             type="button"
             className="btn btn-sign"
+            data-sfx="sign"
             disabled={!affordable}
             onClick={() => onResolve(true)}
           >
@@ -71,12 +72,13 @@ export function InterruptCard({
           Needs a {fmtM(event.costM)} bridge to make payroll. Without it, the lights go out.
         </p>
         <div className="interrupt-actions">
-          <button type="button" className="btn btn-pass" onClick={() => onResolve(false)}>
+          <button type="button" className="btn btn-pass" data-sfx="pass" onClick={() => onResolve(false)}>
             Let it die
           </button>
           <button
             type="button"
             className="btn btn-sign"
+            data-sfx="sign"
             disabled={!affordable}
             onClick={() => onResolve(true)}
           >
@@ -97,10 +99,10 @@ export function InterruptCard({
       <h2 className="pitch-name">AN LP IS SLOW-WALKING {fmtM(event.amountM)}</h2>
       <p className="pitch-idea">Press them and keep the capital, or eat the shortfall quietly.</p>
       <div className="interrupt-actions">
-        <button type="button" className="btn btn-pass" onClick={() => onResolve(false)}>
+        <button type="button" className="btn btn-pass" data-sfx="pass" onClick={() => onResolve(false)}>
           Eat it
         </button>
-        <button type="button" className="btn btn-sign" onClick={() => onResolve(true)}>
+        <button type="button" className="btn btn-sign" data-sfx="sign" onClick={() => onResolve(true)}>
           Press them
         </button>
       </div>

@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import type { GameState } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import { verdictBucket } from '../../game/verdict';
 import { fmtDpi, fmtM, pickLine } from '../format';
 import { FirmName } from '../components/FirmName';
+import { services } from '../../services';
 
 export function ScorecardScreen({
   game,
@@ -16,6 +18,11 @@ export function ScorecardScreen({
   onContinue: () => void;
 }): JSX.Element {
   const harvest = game.harvest;
+  const won = harvest ? harvest.dpi >= 1 : null;
+  // Close the loop: a small fanfare as the DPI is revealed, win or lose.
+  useEffect(() => {
+    if (won !== null) services.audio.play(won ? 'fanfareGood' : 'fanfareBad');
+  }, [won]);
   if (!harvest) return <section className="screen" />;
   const bucket = verdictBucket(harvest.dpi);
   const verdict = pickLine(lines.verdicts[bucket], game.seed);

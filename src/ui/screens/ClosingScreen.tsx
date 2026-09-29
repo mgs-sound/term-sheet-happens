@@ -21,7 +21,7 @@ export function ClosingScreen({
       </p>
       <div className="closing-stamp">FUND CLOSED</div>
       <div className="screen-actions">
-        <button type="button" className="btn btn-sign" onClick={onHarvest}>
+        <button type="button" className="btn btn-sign" data-sfx="fastForward" onClick={onHarvest}>
           Fast-forward {EXITS.harvestYears} years
         </button>
       </div>

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import type { GameState } from '../../game/types';
+import { services } from '../../services';
+import { SFX_IDS } from '../../services/AudioService';
 
 export type DevJump = 'fundI' | 'associate' | 'partner' | 'gp' | 'gate';
 
@@ -50,6 +52,12 @@ export function DevPanel({
           <button type="button" disabled={!harvested} onClick={() => onForceDpi(3.4, true)}>
             3.4x+gate
           </button>
+          <span className="dev-label">sfx (placeholder soundboard)</span>
+          {SFX_IDS.map((id) => (
+            <button key={id} type="button" data-sfx="none" onClick={() => services.audio.play(id)}>
+              {id}
+            </button>
+          ))}
           <span className="dev-label">share</span>
           <button type="button" disabled={!harvested} onClick={onPreviewShare}>
             preview png

@@ -87,10 +87,10 @@ export function PortfolioSheet({
       )}
 
       <div className="screen-actions">
-        <button type="button" className="btn btn-sign" onClick={onClose}>
+        <button type="button" className="btn btn-sign" data-sfx="close" onClick={onClose}>
           Back to the meetings
         </button>
-        <button type="button" className="btn btn-text" onClick={onSettings}>
+        <button type="button" className="btn btn-text" data-sfx="open" onClick={onSettings}>
           Settings
         </button>
       </div>

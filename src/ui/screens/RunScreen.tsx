@@ -17,6 +17,8 @@ import { PortfolioSheet } from '../components/PortfolioSheet';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 
 const FLY_MS = 320;
+/** Result cue lands just after the stamp cue, so the two read as cause/effect. */
+const RESULT_SFX_DELAY_MS = 180;
 /** Breathing room (px) between the lifted card's DEAL HEAT row and the sheet. */
 const LIFT_GAP_PX = 8;
 
@@ -104,6 +106,10 @@ export function RunScreen({
     setSheetOpen(false);
     const res = state.resolution;
     if (!res) return;
+    // Callers already played the action cue (sign / pass / gavel); this adds
+    // the outcome the engine decided.
+    const outcome = res === 'signed' ? 'dealWon' : res === 'vetoed' || res === 'founderWalked' ? 'dealFail' : null;
+    if (outcome) window.setTimeout(() => services.audio.play(outcome), RESULT_SFX_DELAY_MS);
     flyOut(res === 'signed' || res === 'vetoed' ? 'right' : 'left');
   };
 
@@ -113,13 +119,16 @@ export function RunScreen({
     if (cardRef.current) showStamp(cardRef.current, dir);
     void services.haptics.tap(); // on commit only, never on drag start
     if (dir === 'left') {
+      services.audio.play('pass');
       dispatch({ type: 'PASS' });
       flyOut('left');
       return;
     }
     if (game.isFundI) {
+      services.audio.play('sign');
       finishFromResolution(dispatch({ type: 'SIGN_AT_ASK' }));
     } else {
+      services.audio.play('draft'); // the term sheet comes out of the folder
       setSheetOpen(true); // terms sheet decides; no engine action yet
     }
   };
@@ -219,6 +228,7 @@ export function RunScreen({
         <button
           type="button"
           className="btn btn-secondary btn-portfolio"
+          data-sfx="open"
           onClick={() => setPortfolioOpen(true)}
           aria-label={`Portfolio, ${game.portfolio.length} companies`}
         >
@@ -278,19 +288,28 @@ export function RunScreen({
             }}
             onSignAtAsk={(boardSeat) => {
               void services.haptics.tap();
+              services.audio.play('sign');
               finishFromResolution(dispatch({ type: 'SIGN_AT_ASK', boardSeat }));
             }}
             onNegotiate={() => {
               dispatch({ type: 'OPEN_NEGOTIATION' });
             }}
             onSendOffer={(offer) => {
+              const wasFinal = game.negotiation?.round === 1;
               const next = dispatch({ type: 'SEND_OFFER', ...offer });
-              if (next.phase !== 'negotiation') {
+              if (next.phase === 'negotiation') {
+                // Still talking: the founder parried with a counter.
+                if (next.negotiation?.counter) services.audio.play('counter');
+              } else {
+                services.audio.play(wasFinal ? 'finalOffer' : 'sign');
                 void services.haptics.tap();
                 finishFromResolution(next);
               }
             }}
-            onWalk={() => finishFromResolution(dispatch({ type: 'WALK_AWAY' }))}
+            onWalk={() => {
+              services.audio.play('pass');
+              finishFromResolution(dispatch({ type: 'WALK_AWAY' }));
+            }}
           />
         )}
       </div>
@@ -307,6 +326,7 @@ export function RunScreen({
             <button
               type="button"
               className="btn btn-pass"
+              data-sfx="none"
               disabled={!actionsActive || busy}
               onClick={() => canSwipe('left') && commit('left')}
               aria-label="Pass on this deal"
@@ -316,6 +336,7 @@ export function RunScreen({
             <button
               type="button"
               className="btn btn-sign"
+              data-sfx="none"
               disabled={
                 !actionsActive || busy || (game.isFundI && labelCard.askM > game.capitalM)
               }

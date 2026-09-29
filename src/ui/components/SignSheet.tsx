@@ -83,12 +83,13 @@ export function SignSheet({
             )}
           </div>
           <div className="sheet-actions">
-            <button type="button" className="btn btn-text" onClick={onCancel}>
+            <button type="button" className="btn btn-text" data-sfx="close" onClick={onCancel}>
               Back
             </button>
             <button
               type="button"
               className="btn btn-secondary"
+              data-sfx="draft"
               disabled={!canNegotiate}
               onClick={onNegotiate}
             >
@@ -97,6 +98,7 @@ export function SignSheet({
             <button
               type="button"
               className="btn btn-sign"
+              data-sfx="none"
               disabled={card.askM > game.capitalM}
               onClick={() => onSignAtAsk(boardSeat)}
             >
@@ -172,6 +174,7 @@ export function SignSheet({
               <button
                 type="button"
                 className="btn btn-secondary btn-small"
+                data-sfx="meetCounter"
                 disabled={!canMeetCounter}
                 onClick={() => {
                   setCheckM(Math.min(counter.checkM, checkMaxM));
@@ -184,10 +187,10 @@ export function SignSheet({
           )}
 
           <div className="sheet-actions">
-            <button type="button" className="btn btn-pass" onClick={onWalk}>
+            <button type="button" className="btn btn-pass" data-sfx="none" onClick={onWalk}>
               Walk away
             </button>
-            <button type="button" className="btn btn-sign" onClick={() => onSendOffer(offer)}>
+            <button type="button" className="btn btn-sign" data-sfx="none" onClick={() => onSendOffer(offer)}>
               {round === 0 ? 'Send the offer' : 'Final offer'}
             </button>
           </div>

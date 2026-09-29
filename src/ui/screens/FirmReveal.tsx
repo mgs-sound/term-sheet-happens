@@ -58,13 +58,13 @@ export function FirmReveal({
         </div>
       )}
       <div className="screen-actions">
-        <button type="button" className="btn btn-secondary" onClick={onReroll}>
+        <button type="button" className="btn btn-secondary" data-sfx="reroll" onClick={onReroll}>
           Reroll the firm
         </button>
-        <button type="button" className="btn btn-sign" onClick={onOpen}>
+        <button type="button" className="btn btn-sign" data-sfx="start" onClick={onOpen}>
           Take the meetings
         </button>
-        <button type="button" className="btn btn-text" onClick={onSettings}>
+        <button type="button" className="btn btn-text" data-sfx="open" onClick={onSettings}>
           Settings
         </button>
       </div>

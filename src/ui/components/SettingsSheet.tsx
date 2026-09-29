@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { services } from '../../services';
 
 /** Settings overlay. One setting that matters: the resignation letter. */
 export function SettingsSheet({
@@ -9,6 +10,7 @@ export function SettingsSheet({
   onResetCareer: () => void;
 }): JSX.Element {
   const [confirming, setConfirming] = useState(false);
+  const [soundOn, setSoundOn] = useState(() => !services.audio.isMuted());
 
   return (
     <div className="settings-backdrop" role="dialog" aria-label="Settings">
@@ -19,6 +21,17 @@ export function SettingsSheet({
             <p className="settings-note">
               Progress autosaves after every meeting and every fund close.
             </p>
+            <label className="seat-label settings-sound">
+              <input
+                type="checkbox"
+                checked={soundOn}
+                onChange={(e) => {
+                  services.audio.setMuted(!e.target.checked);
+                  setSoundOn(e.target.checked);
+                }}
+              />
+              Sound effects
+            </label>
             <button
               type="button"
               className="btn btn-pass"
@@ -26,7 +39,7 @@ export function SettingsSheet({
             >
               Leave the industry
             </button>
-            <button type="button" className="btn btn-secondary" onClick={onClose}>
+            <button type="button" className="btn btn-secondary" data-sfx="close" onClick={onClose}>
               Back to work
             </button>
           </>
@@ -36,7 +49,7 @@ export function SettingsSheet({
               Your career, ledger, and every fund on it will be forgotten. The
               industry already has.
             </p>
-            <button type="button" className="btn btn-pass" onClick={onResetCareer}>
+            <button type="button" className="btn btn-pass" data-sfx="dealFail" onClick={onResetCareer}>
               Sign the resignation
             </button>
             <button

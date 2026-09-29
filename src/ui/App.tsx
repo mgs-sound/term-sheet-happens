@@ -14,7 +14,7 @@ import { migrateSave, type SaveData } from '../game/save';
 import { careerForTier, simulateRun } from '../game/sim';
 import type { Action, CareerState, EngineContent, GameEvent, GameState } from '../game/types';
 import { verdictBucket } from '../game/verdict';
-import { services } from '../services';
+import { services, type SfxId } from '../services';
 import { fillLine, fmtDpi, fmtM, pickLine } from './format';
 import { renderCareerPng, renderScorecardPng } from './share/renderShareCard';
 import { FirmReveal } from './screens/FirmReveal';
@@ -113,6 +113,20 @@ export function App(): JSX.Element {
 
   if (!boot) return <main className="game-surface app-shell" />;
   return <GameApp content={boot.content} save={boot.save} />;
+}
+
+/**
+ * The one sound rule: every button (and checkbox) interaction makes a sound.
+ * Default is a generic blip; a button can pick its own cue with
+ * data-sfx="<SfxId>", or data-sfx="none" when its sound is played from logic
+ * (e.g. deal results that depend on what the engine decided).
+ */
+function playButtonSfx(e: React.MouseEvent): void {
+  const el = (e.target as Element).closest('button, input[type="checkbox"]');
+  if (!el || (el as HTMLButtonElement).disabled) return;
+  const cue = el.getAttribute('data-sfx');
+  if (cue === 'none') return;
+  services.audio.play((cue as SfxId | null) ?? (el.tagName === 'INPUT' ? 'tick' : 'tap'));
 }
 
 function GameApp({ content, save }: { content: Content; save: SaveData | null }): JSX.Element {
@@ -356,7 +370,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
   };
 
   return (
-    <main className="game-surface app-shell">
+    <main className="game-surface app-shell" onClickCapture={playButtonSfx}>
       {screen === 'reveal' && (
         <FirmReveal
           game={game}

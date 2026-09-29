@@ -64,7 +64,7 @@ export function HarvestScreen({
       ))}
 
       <div className="screen-actions">
-        <button type="button" className="btn btn-sign" onClick={onContinue}>
+        <button type="button" className="btn btn-sign" data-sfx="none" onClick={onContinue}>
           To the scorecard
         </button>
       </div>

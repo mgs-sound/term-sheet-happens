@@ -1190,6 +1190,11 @@ input[type='range']::-moz-range-thumb {
   gap: 14px;
 }
 
+.settings-sound {
+  font-size: 14px;
+  min-height: 44px;
+}
+
 .settings-note {
   margin: 0;
   font-size: 14px;
