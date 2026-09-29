@@ -37,12 +37,18 @@ export const SFX_IDS: readonly SfxId[] = [
 export interface AudioService {
   /** Fire-and-forget. Never throws; silently does nothing when muted/unavailable. */
   play(id: SfxId): void;
+  /**
+   * Slider detent tick whose pitch follows the thumb: `position` 0 (left,
+   * low) .. 1 (right, high). Self-throttled, so call it on every change.
+   */
+  slide(position: number): void;
   isMuted(): boolean;
   setMuted(muted: boolean): void;
 }
 
 export class NoopAudioService implements AudioService {
   play(): void {}
+  slide(): void {}
   isMuted(): boolean {
     return true;
   }
@@ -72,6 +78,11 @@ interface Voice {
 }
 
 const MASTER_VOLUME = 0.18;
+/** Slider tick range: left end → right end, in Hz (three octaves). */
+const SLIDE_LOW_HZ = 220;
+const SLIDE_HIGH_HZ = 1760;
+/** Min ms between slider ticks, so a fast drag chirps instead of buzzing. */
+const SLIDE_THROTTLE_MS = 35;
 const MUTE_KEY = 'tsh.sfxMuted';
 
 // Note helpers (equal temperament, A4 = 440).
@@ -192,6 +203,7 @@ const CUES: Record<SfxId, Voice[]> = {
 
 export class WebAudioService implements AudioService {
   private ctx: AudioContext | null = null;
+  private lastSlideAt = 0;
   private noise: AudioBuffer | null = null;
   private muted: boolean;
 
@@ -228,6 +240,24 @@ export class WebAudioService implements AudioService {
       if (ctx.state === 'suspended') void ctx.resume();
       const t0 = ctx.currentTime + 0.005;
       for (const v of CUES[id]) this.voice(ctx, v, t0);
+    } catch {
+      // Audio must never break the game.
+    }
+  }
+
+  slide(position: number): void {
+    if (this.muted) return;
+    const now = typeof performance === 'undefined' ? Date.now() : performance.now();
+    if (now - this.lastSlideAt < SLIDE_THROTTLE_MS) return;
+    this.lastSlideAt = now;
+    try {
+      const ctx = this.context();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') void ctx.resume();
+      const p = Math.min(1, Math.max(0, position));
+      // Exponential mapping so equal slider distance = equal musical interval.
+      const f = SLIDE_LOW_HZ * Math.pow(SLIDE_HIGH_HZ / SLIDE_LOW_HZ, p);
+      this.voice(ctx, { at: 0, dur: 0.03, wave: 'square', f, vol: 0.3 }, ctx.currentTime + 0.002);
     } catch {
       // Audio must never break the game.
     }

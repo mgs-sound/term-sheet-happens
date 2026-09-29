@@ -4,6 +4,7 @@ import type { GameState, PitchCard } from '../../game/types';
 import { acceptanceProbability, offerBounds } from '../../game/negotiation';
 import { ownershipFromCheck } from '../../game/followons';
 import { fmtM, pickLine } from '../format';
+import { services } from '../../services';
 
 export interface OfferDraft {
   checkM: number;
@@ -121,7 +122,11 @@ export function SignSheet({
               max={checkMaxM}
               step={0.1}
               value={checkM}
-              onChange={(e) => setCheckM(Number(e.target.value))}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                setCheckM(v);
+                services.audio.slide((v - bounds.checkMinM) / Math.max(0.0001, checkMaxM - bounds.checkMinM));
+              }}
               aria-label="Check size"
             />
           </label>
@@ -135,7 +140,11 @@ export function SignSheet({
               max={bounds.valMaxM}
               step={0.1}
               value={valuationM}
-              onChange={(e) => setValuationM(Number(e.target.value))}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                setValuationM(v);
+                services.audio.slide((v - bounds.valMinM) / Math.max(0.0001, bounds.valMaxM - bounds.valMinM));
+              }}
               aria-label="Pre-money valuation"
             />
           </label>
