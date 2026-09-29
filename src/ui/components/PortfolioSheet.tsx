@@ -3,6 +3,7 @@ import type { GameState } from '../../game/types';
 import { fmtM, pickLine, STAGE_LABELS } from '../format';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 import { FirmName } from './FirmName';
+import { BOARD_SEATS } from '../../game/tuning';
 
 /**
  * Mid-run portfolio: the companies signed so far, styled like the harvest
@@ -14,16 +15,22 @@ export function PortfolioSheet({
   lines,
   onClose,
   onSettings,
+  onTogglePush,
+  closeLabel = 'Back to the meetings',
 }: {
   game: GameState;
   lines: FlavorLines;
   onClose: () => void;
+  /** Flip the board-seat exit push for a company (engine: TOGGLE_PUSH_EXIT). */
+  onTogglePush: (companyId: string) => void;
+  closeLabel?: string;
   /** Settings (incl. "Leave the industry" reset), reachable mid-run from here. */
   onSettings: () => void;
 }): JSX.Element {
   const deckFonts = fontsForDeck(game.deck);
   const deployedM = game.portfolio.reduce((sum, c) => sum + c.investedM, 0);
   const alive = game.portfolio.filter((c) => c.status === 'active').length;
+  const improvePct = Math.round(BOARD_SEATS.pushImproveChance * 100);
 
   return (
     <section
@@ -80,6 +87,22 @@ export function PortfolioSheet({
                   in {fmtM(c.investedM)} &middot; {(c.ownership * 100).toFixed(1)}% owned
                 </div>
                 <div className="portfolio-tags">{tags.join(' · ')}</div>
+                {c.boardSeat && !dead && (
+                  <label className={`push-row ${c.pushExit ? 'push-on' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={c.pushExit === true}
+                      onChange={() => onTogglePush(c.companyId)}
+                    />
+                    <span>
+                      <strong>Push the exit</strong> at harvest{' '}
+                      <span className="push-odds">
+                        {improvePct}%: &times;{BOARD_SEATS.pushMultiplier} &middot;{' '}
+                        {100 - improvePct}%: zero
+                      </span>
+                    </span>
+                  </label>
+                )}
               </li>
             );
           })}
@@ -88,7 +111,7 @@ export function PortfolioSheet({
 
       <div className="screen-actions">
         <button type="button" className="btn btn-sign" data-sfx="close" onClick={onClose}>
-          Back to the meetings
+          {closeLabel}
         </button>
         <button type="button" className="btn btn-text" data-sfx="open" onClick={onSettings}>
           Settings

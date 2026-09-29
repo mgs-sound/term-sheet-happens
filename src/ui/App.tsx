@@ -394,6 +394,9 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
       {screen === 'closing' && (
         <ClosingScreen
           game={game}
+          lines={content.lines}
+          onTogglePush={(companyId) => dispatch({ type: 'TOGGLE_PUSH_EXIT', companyId })}
+          onSettings={() => setSettingsOpen(true)}
           onHarvest={() => {
             dispatch({ type: 'HARVEST' });
             setScreen('harvest');

@@ -167,6 +167,9 @@ export function reduce(state: GameState | null, action: Action): GameState {
     case 'CLOSE_FUND':
       handleCloseFund(s);
       break;
+    case 'TOGGLE_PUSH_EXIT':
+      handleTogglePushExit(s, action.companyId);
+      break;
     case 'HARVEST':
       handleHarvest(s, rng, action.push ?? []);
       break;
@@ -542,9 +545,26 @@ function handleCloseFund(s: GameState): void {
   s.phase = 'fundClosed';
 }
 
+/** Board-seat exit push: a free, reversible choice until harvest. */
+function handleTogglePushExit(s: GameState, companyId: string): void {
+  if (s.phase === 'harvested') throw new Error('TOGGLE_PUSH_EXIT: already harvested');
+  const company = mustFindCompany(s, companyId);
+  if (!company.boardSeat) {
+    throw new Error(`TOGGLE_PUSH_EXIT: no board seat at ${companyId}`);
+  }
+  if (company.status !== 'active') {
+    throw new Error(`TOGGLE_PUSH_EXIT: ${companyId} is written off`);
+  }
+  company.pushExit = !company.pushExit;
+}
+
 function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
   if (s.phase !== 'fundClosed') throw new Error('HARVEST: fund is not closed');
-  const pushSet = new Set(push);
+  // Pushes marked in-run (TOGGLE_PUSH_EXIT) plus any passed explicitly.
+  const pushSet = new Set([
+    ...push,
+    ...s.portfolio.filter((c) => c.pushExit).map((c) => c.companyId),
+  ]);
   for (const id of pushSet) {
     const company = mustFindCompany(s, id);
     if (!company.boardSeat) {

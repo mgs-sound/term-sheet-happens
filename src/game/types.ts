@@ -59,6 +59,13 @@ export interface PortfolioCompany {
   followOnEvents: number; // taken + declined, for FOLLOW_ONS.maxPerCompany
   bridged: boolean;
   status: 'active' | 'writtenOff';
+  /**
+   * Board-seat exit timing (Partner+): when true, the exit is pushed at
+   * harvest — BOARD_SEATS.pushImproveChance to multiply it, else it zeroes.
+   * Toggled any time before harvest via TOGGLE_PUSH_EXIT. Optional so older
+   * saves stay valid.
+   */
+  pushExit?: boolean;
 }
 
 export interface VetoedRecord {
@@ -250,4 +257,5 @@ export type Action =
   | { type: 'RESOLVE_INTERRUPT'; accept: boolean }
   | { type: 'ADVANCE' }
   | { type: 'CLOSE_FUND' }
+  | { type: 'TOGGLE_PUSH_EXIT'; companyId: string }
   | { type: 'HARVEST'; push?: string[] };

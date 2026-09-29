@@ -313,6 +313,52 @@
   padding: 1px 5px;
 }
 
+/* Board-seat exit push toggle, per company in the portfolio. */
+.push-row {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 13px;
+  border: 2px dashed var(--ink);
+  padding: 4px 8px;
+}
+
+.push-row.push-on {
+  border-style: solid;
+  background: var(--sign-yellow);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.push-odds {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Fund-close reminder: last call for exit pushes. */
+.closing-screen {
+  position: relative;
+}
+
+.push-reminder {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 8px 0;
+}
+
+.push-reminder-line {
+  margin: 0;
+  font-size: 14px;
+  font-style: italic;
+}
+
 /* Portfolio overlay: covers the whole run screen (ledger included). */
 .portfolio-sheet {
   position: absolute;
