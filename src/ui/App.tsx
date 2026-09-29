@@ -374,6 +374,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           dispatch={dispatch}
           lines={content.lines}
           onBlockedSwipe={() => pushToast({ text: 'Check exceeds dry powder.', tone: 'red' })}
+          onSettings={() => setSettingsOpen(true)}
         />
       )}
       {screen === 'closing' && (

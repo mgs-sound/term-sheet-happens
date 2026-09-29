@@ -13,10 +13,13 @@ export function PortfolioSheet({
   game,
   lines,
   onClose,
+  onSettings,
 }: {
   game: GameState;
   lines: FlavorLines;
   onClose: () => void;
+  /** Settings (incl. "Leave the industry" reset), reachable mid-run from here. */
+  onSettings: () => void;
 }): JSX.Element {
   const deckFonts = fontsForDeck(game.deck);
   const deployedM = game.portfolio.reduce((sum, c) => sum + c.investedM, 0);
@@ -86,6 +89,9 @@ export function PortfolioSheet({
       <div className="screen-actions">
         <button type="button" className="btn btn-sign" onClick={onClose}>
           Back to the meetings
+        </button>
+        <button type="button" className="btn btn-text" onClick={onSettings}>
+          Settings
         </button>
       </div>
     </section>

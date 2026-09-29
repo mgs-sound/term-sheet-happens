@@ -29,11 +29,14 @@ export function RunScreen({
   dispatch,
   lines,
   onBlockedSwipe,
+  onSettings,
 }: {
   game: GameState;
   dispatch: (action: Action) => GameState;
   lines: FlavorLines;
   onBlockedSwipe: () => void;
+  /** Opens the app-level Settings sheet (reachable from the portfolio). */
+  onSettings: () => void;
 }): JSX.Element {
   const reducedMotion = useReducedMotion();
   const [exiting, setExiting] = useState<SwipeDir | null>(null);
@@ -280,7 +283,15 @@ export function RunScreen({
       </div>
 
       {portfolioOpen && (
-        <PortfolioSheet game={game} lines={lines} onClose={() => setPortfolioOpen(false)} />
+        <PortfolioSheet
+          game={game}
+          lines={lines}
+          onClose={() => setPortfolioOpen(false)}
+          onSettings={() => {
+            setPortfolioOpen(false);
+            onSettings();
+          }}
+        />
       )}
 
       {/* Directional color wash at the column edges during drags. */}
