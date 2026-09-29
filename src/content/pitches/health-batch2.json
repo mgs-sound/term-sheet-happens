@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "health-waitlistr",
+      "name": "Waitlistr",
+      "idea": "Books specialist appointments instantly, for 2028.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-biohackr",
+      "name": "Biohackr",
+      "idea": "Daily at-home blood tests so you can worry in real time.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-placebo-plus",
+      "name": "Placebo+",
+      "idea": "Evidence-based placebo pills, now available in extra strength.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-symptomly",
+      "name": "Symptomly",
+      "idea": "A symptom checker tuned to be exactly as alarming as the internet.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-chartr",
+      "name": "Chartr",
+      "idea": "An electronic health record that takes 43 clicks to document a sneeze.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-cleanse-co",
+      "name": "Cleanse Co.",
+      "idea": "A detox tea that reliably removes $80 a month.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-sipwise",
+      "name": "Sipwise",
+      "idea": "A smart water bottle that reminds you to drink, then reminds your manager.",
+      "sector": "Health"
+    },
+    {
+      "id": "health-contrarian-health",
+      "name": "Contrarian Health",
+      "idea": "An AI second opinion that always disagrees with the first.",
+      "sector": "Health"
+    }
+  ]
+}

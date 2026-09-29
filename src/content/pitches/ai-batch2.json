@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "ai-rubberduck-ai",
+      "name": "Rubberduck AI",
+      "idea": "A coding assistant that confidently fixes bugs it introduced three suggestions ago.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-recallr",
+      "name": "Recallr",
+      "idea": "An AI note-taker that remembers everything said in the meeting except what was decided.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-wrappr",
+      "name": "Wrappr",
+      "idea": "A foundation model company whose foundation model is a prompt to someone else's.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-agentic-holdings",
+      "name": "Agentic Holdings",
+      "idea": "Autonomous AI agents that file expense reports for each other's lunches.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-benchmaxx",
+      "name": "Benchmaxx",
+      "idea": "A model that tops every leaderboard it was trained on.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-humanly",
+      "name": "Humanly",
+      "idea": "Human-in-the-loop AI where the human is the founder's cousin, working nights.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-ghostwritr",
+      "name": "Ghostwritr",
+      "idea": "AI that writes your performance review, your manager's response, and your appeal.",
+      "sector": "AI"
+    },
+    {
+      "id": "ai-inferno-compute",
+      "name": "Inferno Compute",
+      "idea": "GPU cloud with guaranteed capacity, located in one overheating garage in Reno.",
+      "sector": "AI"
+    }
+  ]
+}

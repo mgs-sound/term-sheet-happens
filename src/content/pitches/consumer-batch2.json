@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "consumer-unboxd",
+      "name": "Unboxd",
+      "idea": "Unboxing videos of your own package, delivered before the package.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-quietcar",
+      "name": "Quietcar",
+      "idea": "Rideshare with a premium tier where the driver stops recommending podcasts.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-rootbound",
+      "name": "Rootbound",
+      "idea": "A houseplant subscription whose replacement plan assumes you'll kill it.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-snoozle",
+      "name": "Snoozle",
+      "idea": "An alarm app that texts your mother after the third snooze.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-chillbox",
+      "name": "Chillbox",
+      "idea": "A smart fridge that reorders groceries based on what your roommate eats.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-ghostly",
+      "name": "Ghostly",
+      "idea": "A friendship app that schedules catch-ups you both intend to cancel.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-wishlistr",
+      "name": "Wishlistr",
+      "idea": "A gift registry for things you already bought yourself.",
+      "sector": "Consumer"
+    },
+    {
+      "id": "consumer-lineholder",
+      "name": "Lineholder",
+      "idea": "Pay a stranger to wait in line for a restaurant that takes reservations.",
+      "sector": "Consumer"
+    }
+  ]
+}

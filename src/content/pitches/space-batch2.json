@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "space-skyboard",
+      "name": "Skyboard",
+      "idea": "Billboards in low Earth orbit, legible during a clear eclipse.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-karman-lounge",
+      "name": "Karman Lounge",
+      "idea": "Suborbital tourism with a lounge, a gift shop, and occasionally a flight.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-liftoff-mutual",
+      "name": "Liftoff Mutual",
+      "idea": "Launch insurance priced by how confident the founder sounds on podcasts.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-eternal-orbit",
+      "name": "Eternal Orbit",
+      "idea": "Memorial ashes launched to orbit, returned by gravity, relaunched quarterly.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-cubicly",
+      "name": "Cubicly",
+      "idea": "A CubeSat company whose satellite is fully operational in its box.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-selene-springs",
+      "name": "Selene Springs",
+      "idea": "Bottled lunar ice water, available for pre-order since before the lunar lander.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-beamline",
+      "name": "Beamline",
+      "idea": "Space-based solar power, beamed to one very warm field in Nevada.",
+      "sector": "Space"
+    },
+    {
+      "id": "space-red-rehearsal",
+      "name": "Red Rehearsal",
+      "idea": "Mars-habitat simulations run out of a Utah vacation rental.",
+      "sector": "Space"
+    }
+  ]
+}

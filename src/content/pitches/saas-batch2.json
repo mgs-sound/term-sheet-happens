@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "saas-dashboardly",
+      "name": "Dashboardly",
+      "idea": "A dashboard for monitoring the uptime of your other dashboards.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-renewl",
+      "name": "Renewl",
+      "idea": "Contract-management software that auto-renews itself before your free trial ends.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-onboardr",
+      "name": "Onboardr",
+      "idea": "Employee onboarding software with a fourteen-week onboarding program for the software.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-tickety",
+      "name": "Tickety",
+      "idea": "A help desk that closes tickets by marking the customer as resolved.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-sunsetter",
+      "name": "Sunsetter",
+      "idea": "Enterprise software whose public roadmap is exclusively features being deprecated.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-integrately",
+      "name": "Integrately",
+      "idea": "A no-code platform; setup requires three engineers and a consultant.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-permissio",
+      "name": "Permissio",
+      "idea": "Access control so secure the admin has been locked out since March.",
+      "sector": "SaaS"
+    },
+    {
+      "id": "saas-syncd",
+      "name": "Syncd",
+      "idea": "Real-time collaboration software; your edits appear for everyone else by Thursday.",
+      "sector": "SaaS"
+    }
+  ]
+}

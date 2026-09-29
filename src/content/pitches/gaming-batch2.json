@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "gaming-passpass",
+      "name": "PassPass",
+      "idea": "A battle pass for the battle pass, unlocked at tier 100.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-nestbox",
+      "name": "Nestbox",
+      "idea": "Loot boxes containing smaller loot boxes, each legally distinct.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-perpetual-beta",
+      "name": "Perpetual Beta",
+      "idea": "A studio whose flagship title has been in early access since 2016.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-remasterd",
+      "name": "Remasterd",
+      "idea": "Remasters of games released eighteen months ago, now with brighter fog.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-crunchless",
+      "name": "Crunchless",
+      "idea": "A studio guaranteeing zero crunch by shipping nothing.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-afk-industries",
+      "name": "AFK Industries",
+      "idea": "An idle game that plays itself and sends you the bill.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-modtoll",
+      "name": "Modtoll",
+      "idea": "A marketplace charging players for mods that were free yesterday.",
+      "sector": "Gaming"
+    },
+    {
+      "id": "gaming-tiltd",
+      "name": "Tiltd",
+      "idea": "A streaming platform where viewers pay to make the streamer lose.",
+      "sector": "Gaming"
+    }
+  ]
+}

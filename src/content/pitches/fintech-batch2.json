@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "fintech-tipsy",
+      "name": "Tipsy",
+      "idea": "A point-of-sale tipping screen that suggests 30 percent before you've ordered.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-overdraftly",
+      "name": "Overdraftly",
+      "idea": "A neobank that celebrates every overdraft with confetti.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-reconcily",
+      "name": "Reconcily",
+      "idea": "Accounting software that reconciles the books by adjusting reality.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-invoicr",
+      "name": "Invoicr",
+      "idea": "Invoice factoring for invoices the client hasn't technically agreed to.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-earnd",
+      "name": "Earnd",
+      "idea": "Earned-wage access so fast you're paid before you've technically been hired.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-splittr",
+      "name": "Splittr",
+      "idea": "A bill-splitting app that tracks who owes what, forever, publicly.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-hindsight-wealth",
+      "name": "Hindsight Wealth",
+      "idea": "A robo-advisor that rebalances you into whatever did well last year.",
+      "sector": "Fintech"
+    },
+    {
+      "id": "fintech-refundly",
+      "name": "Refundly",
+      "idea": "Chargebacks as a service for customers who enjoyed the product.",
+      "sector": "Fintech"
+    }
+  ]
+}

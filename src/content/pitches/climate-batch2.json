@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "climate-greenwashr",
+      "name": "Greenwashr",
+      "idea": "An ESG report generator with a slider labeled 'plausibility.'",
+      "sector": "Climate"
+    },
+    {
+      "id": "climate-treeceipt",
+      "name": "Treeceipt",
+      "idea": "Plants one tree per purchase, all on the same square meter.",
+      "sector": "Climate"
+    },
+    {
+      "id": "climate-heatpumpd",
+      "name": "Heatpumpd",
+      "idea": "Heat-pump installs financed by the savings you'll see around 2061.",
+      "sector": "Climate"
+    },
+    {
+      "id": "climate-kelpworks",
+      "name": "Kelpworks",
+      "idea": "Ocean kelp carbon capture, measured by one diver with good intentions.",
+      "sector": "Climate"
+    },
+    {
+      "id": "climate-gridlock-energy",
+      "name": "Gridlock Energy",
+      "idea": "A battery startup storing renewable energy mostly in press releases.",
+      "sector": "Climate"
+    },
+    {
+      "id": "climate-compostly",
+      "name": "Compostly",
+      "idea": "A countertop composter that turns food scraps into a subscription.",
+      "sector": "Climate"
+    },
+    {
+      "id": "climate-net-zero-labs",
+      "name": "Net Zero Labs",
+      "idea": "Helps companies reach net zero by redefining zero.",
+      "sector": "Climate"
+    },
+    {
+      "id": "climate-hydrogenerous",
+      "name": "Hydrogenerous",
+      "idea": "Green hydrogen; the green refers to the logo.",
+      "sector": "Climate"
+    }
+  ]
+}

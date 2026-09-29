@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "crypto-airdropr",
+      "name": "Airdropr",
+      "idea": "A bot that farms airdrops from other airdrop-farming bots.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-bridgeworthy",
+      "name": "Bridgeworthy",
+      "idea": "A cross-chain bridge insured by a token issued on the same bridge.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-dogfolio",
+      "name": "Dogfolio",
+      "idea": "An actively managed memecoin index; the manager is a Discord poll.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-gasless",
+      "name": "Gasless",
+      "idea": "Zero gas fees, replaced by a monthly subscription that costs more.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-proof-of-vibe",
+      "name": "Proof of Vibe",
+      "idea": "A consensus mechanism where validators stake their follower count.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-fractionly",
+      "name": "Fractionly",
+      "idea": "Fractional ownership of a sandwich, currently trading below the sandwich.",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-whitepapr",
+      "name": "Whitepapr",
+      "idea": "Whitepapers on demand; every roadmap ends at 'mainnet soon.'",
+      "sector": "Crypto"
+    },
+    {
+      "id": "crypto-custodia",
+      "name": "Custodia",
+      "idea": "Institutional custody; the private keys live in a very serious filing cabinet.",
+      "sector": "Crypto"
+    }
+  ]
+}

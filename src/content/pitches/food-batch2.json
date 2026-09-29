@@ -1,0 +1,53 @@
+{
+  "_source": "Claude-authored batch 2 (2026-09-29), written to scripts/generate-pitches.md tone rules. Added so 50-meeting funds (30 on-thesis slots) never repeat a pitch. Curate freely.",
+  "pitches": [
+    {
+      "id": "food-starterly",
+      "name": "Starterly",
+      "idea": "Sourdough starter as a service; you're billed monthly for the yeast's upkeep.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-culturd",
+      "name": "Culturd",
+      "idea": "Cultivated chicken at $400 a nugget, with a roadmap to $399.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-groatly",
+      "name": "Groatly",
+      "idea": "An oat milk brand disrupting oat milk with a slightly different oat.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-brewbotic",
+      "name": "Brewbotic",
+      "idea": "A robot barista that takes four minutes per latte and one photo.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-tenmin",
+      "name": "Tenmin",
+      "idea": "Ten-minute grocery delivery from a warehouse that opens at eleven.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-omakasebox",
+      "name": "Omakasebox",
+      "idea": "A nineteen-course tasting menu delivered in one bag.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-tapestry-water",
+      "name": "Tapestry Water",
+      "idea": "Premium bottled water, ethically sourced from a slightly nicer tap.",
+      "sector": "Food"
+    },
+    {
+      "id": "food-swole-foods",
+      "name": "Swole Foods",
+      "idea": "High-protein everything, including water, now at thirty grams.",
+      "sector": "Food"
+    }
+  ]
+}
