@@ -1,6 +1,7 @@
 import type { GameState } from '../../game/types';
 import { reputationStage } from '../../game/meters';
 import { fmtM } from '../format';
+import { FirmName } from './FirmName';
 
 /** Top ledger strip: firm line + mono meters. */
 export function LedgerBar({
@@ -14,7 +15,7 @@ export function LedgerBar({
   return (
     <header className="ledger-bar">
       <div className="ledger-firm">
-        <span>{game.firmName}</span>
+        <FirmName name={game.firmName} />
         <span className="ledger-quarter">Q{game.quarter}</span>
       </div>
       <dl className="ledger-meters">

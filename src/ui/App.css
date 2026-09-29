@@ -253,12 +253,86 @@
 .run-screen {
   position: relative;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  /* ledger / mandate + portfolio / card / actions */
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   gap: 12px;
   overflow: hidden;
   padding-bottom: 0; /* .action-dock owns the bottom inset */
   touch-action: none;
   overscroll-behavior: none;
+}
+
+/* Mandate reminder + persistent portfolio button, under the ledger. */
+.run-subbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.run-mandate {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  min-width: 0;
+}
+
+.btn-portfolio {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  padding: 8px 12px;
+}
+
+/* Three hard-edged bars (no icon font): top/bottom borders + a middle bar. */
+.burger {
+  position: relative;
+  width: 14px;
+  height: 10px;
+  border-top: 2px solid currentcolor;
+  border-bottom: 2px solid currentcolor;
+}
+
+.burger::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 2px;
+  height: 2px;
+  background: currentcolor;
+}
+
+.portfolio-count {
+  font-variant-numeric: tabular-nums;
+  background: var(--ink);
+  color: var(--paper-bright);
+  padding: 1px 5px;
+}
+
+/* Portfolio overlay: covers the whole run screen (ledger included). */
+.portfolio-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  background: var(--paper);
+}
+
+.portfolio-dead .harvest-name,
+.portfolio-dead .harvest-row-nums {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.portfolio-tags {
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
 }
 
 /* Directional color wash at the column edge during drags — visible even

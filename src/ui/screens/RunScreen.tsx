@@ -13,6 +13,7 @@ import { PitchCardView } from '../components/PitchCardView';
 import { SwipeShell } from '../components/SwipeShell';
 import { InterruptCard } from '../components/InterruptCard';
 import { SignSheet } from '../components/SignSheet';
+import { PortfolioSheet } from '../components/PortfolioSheet';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 
 const FLY_MS = 320;
@@ -37,6 +38,7 @@ export function RunScreen({
   const reducedMotion = useReducedMotion();
   const [exiting, setExiting] = useState<SwipeDir | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [portfolioOpen, setPortfolioOpen] = useState(false);
   const advanceTimer = useRef<number | null>(null);
   const screenRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -121,6 +123,7 @@ export function RunScreen({
     game.phase === 'meeting' &&
     game.resolution === null &&
     !sheetOpen &&
+    !portfolioOpen &&
     exiting === null &&
     advanceTimer.current === null;
 
@@ -159,6 +162,25 @@ export function RunScreen({
   return (
     <section className="screen run-screen" ref={screenRef} {...swipe}>
       <LedgerBar game={game} stageLabels={lines.reputationStages} />
+
+      {/* Always-visible mandate + the persistent portfolio button. */}
+      <div className="run-subbar">
+        <p className="run-mandate">
+          Mandate: {game.thesis.sectors[0]} &middot; {game.thesis.sectors[1]}
+        </p>
+        <button
+          type="button"
+          className="btn btn-secondary btn-portfolio"
+          onClick={() => setPortfolioOpen(true)}
+          aria-label={`Portfolio, ${game.portfolio.length} companies`}
+        >
+          <span className="burger" aria-hidden="true" />
+          Portfolio
+          {game.portfolio.length > 0 && (
+            <span className="portfolio-count">{game.portfolio.length}</span>
+          )}
+        </button>
+      </div>
 
       <div className="card-arena">
         {game.phase === 'interrupt' && game.interrupt ? (
@@ -256,6 +278,10 @@ export function RunScreen({
           </div>
         )}
       </div>
+
+      {portfolioOpen && (
+        <PortfolioSheet game={game} lines={lines} onClose={() => setPortfolioOpen(false)} />
+      )}
 
       {/* Directional color wash at the column edges during drags. */}
       <span ref={tintLeftRef} className="swipe-tint tint-left" aria-hidden="true" />

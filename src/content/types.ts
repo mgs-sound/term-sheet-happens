@@ -123,6 +123,10 @@ export interface FlavorLines {
    * with the engine's difficultyBand(): [soft, standard, brutal].
    */
   fundIDifficulty: { label: string; blurb: string }[];
+  /** Mid-run portfolio screen: status stamp per company state. */
+  portfolioStatusLabels: { active: string; writtenOff: string };
+  /** Mid-run portfolio screen when nothing is signed yet. */
+  portfolioEmpty: string[];
 }
 
 /** Everything the content layer provides, fully validated. */

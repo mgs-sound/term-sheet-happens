@@ -194,6 +194,7 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     'finalCardPitches',
     'enlightenmentLines',
     'creditsLines',
+    'portfolioEmpty',
   ] as const;
   for (const pool of pools) {
     if (!isStringArray(data[pool])) {
@@ -262,6 +263,11 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     errors.push(
       'lines.json: "fundIDifficulty" must be exactly 3 { label, blurb } entries (soft, standard, brutal)',
     );
+  }
+
+  const status = data.portfolioStatusLabels;
+  if (!isRecord(status) || !isNonEmptyString(status.active) || !isNonEmptyString(status.writtenOff)) {
+    errors.push('lines.json: "portfolioStatusLabels" must have non-empty "active" and "writtenOff"');
   }
 
   return { lines: errors.length > 0 ? null : (data as unknown as FlavorLines), errors };

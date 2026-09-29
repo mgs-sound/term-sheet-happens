@@ -128,6 +128,14 @@
     "win": "STRONG EXIT",
     "unicorn": "UNICORN"
   },
+  "portfolioStatusLabels": {
+    "active": "ALIVE",
+    "writtenOff": "WRITTEN OFF"
+  },
+  "portfolioEmpty": [
+    "No positions yet. Your LPs are paying 2% for vibes.",
+    "Nothing signed. Technically a perfect track record."
+  ],
   "fundIDifficulty": [
     {
       "label": "SOFT LANDING",

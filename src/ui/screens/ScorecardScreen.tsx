@@ -2,6 +2,7 @@ import type { GameState } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import { verdictBucket } from '../../game/verdict';
 import { fmtDpi, fmtM, pickLine } from '../format';
+import { FirmName } from '../components/FirmName';
 
 export function ScorecardScreen({
   game,
@@ -24,7 +25,7 @@ export function ScorecardScreen({
     <section className="screen letterhead scorecard">
       <div className="letterhead-rule">Internal memorandum &mdash; final</div>
       <p className="letterhead-kicker">
-        {game.firmName} &middot; Fund {game.fundIndex}
+        <FirmName name={game.firmName} /> &middot; Fund {game.fundIndex}
       </p>
       <div className={`dpi-block ${good ? 'dpi-good' : 'dpi-bad'}`}>
         <span className="dpi-label">DPI</span>

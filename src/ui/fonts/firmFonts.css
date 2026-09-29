@@ -1,0 +1,31 @@
+/*
+ * VC firm-name faces (see firmFonts.ts). Self-hosted latin subsets, one
+ * weight each, so the game stays 100% offline. Google Fonts via @fontsource,
+ * SIL Open Font License (see LICENSE-*).
+ */
+
+@font-face { font-family: 'TSH firm cinzel'; src: url('./cinzel-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'TSH firm cormorant-garamond'; src: url('./cormorant-garamond-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'TSH firm eb-garamond'; src: url('./eb-garamond-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'TSH firm libre-caslon-text'; src: url('./libre-caslon-text-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'TSH firm bodoni-moda'; src: url('./bodoni-moda-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'TSH firm old-standard-tt'; src: url('./old-standard-tt-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'TSH firm prata'; src: url('./prata-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'TSH firm marcellus'; src: url('./marcellus-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+
+/* Roman inscription caps — the "est. 1887" look. */
+[data-firm-font='cinzel'] { font-family: 'TSH firm cinzel', var(--font-serif); font-weight: 700; }
+/* Garamond display — old publishing house. */
+[data-firm-font='cormorant-garamond'] { font-family: 'TSH firm cormorant-garamond', var(--font-serif); font-weight: 700; }
+/* Bookish Garamond — trust-department letterhead. */
+[data-firm-font='eb-garamond'] { font-family: 'TSH firm eb-garamond', var(--font-serif); font-weight: 700; }
+/* Caslon — the Declaration-of-Independence bank. */
+[data-firm-font='libre-caslon-text'] { font-family: 'TSH firm libre-caslon-text', var(--font-serif); font-weight: 700; }
+/* Bodoni — private wealth, fashion-magazine money. */
+[data-firm-font='bodoni-moda'] { font-family: 'TSH firm bodoni-moda', var(--font-serif); font-weight: 700; }
+/* Victorian news type — railroad-baron energy. */
+[data-firm-font='old-standard-tt'] { font-family: 'TSH firm old-standard-tt', var(--font-serif); font-weight: 700; }
+/* High-contrast Didone — the brass plaque by the elevator. */
+[data-firm-font='prata'] { font-family: 'TSH firm prata', var(--font-serif); font-weight: 400; }
+/* Carved-stone caps — the marble lobby. */
+[data-firm-font='marcellus'] { font-family: 'TSH firm marcellus', var(--font-serif); font-weight: 400; }

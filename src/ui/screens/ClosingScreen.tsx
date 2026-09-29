@@ -1,5 +1,6 @@
 import type { GameState } from '../../game/types';
 import { EXITS } from '../../game/tuning';
+import { FirmName } from '../components/FirmName';
 
 export function ClosingScreen({
   game,
@@ -11,7 +12,9 @@ export function ClosingScreen({
   return (
     <section className="screen letterhead">
       <div className="letterhead-rule">Notice of fund close</div>
-      <h1 className="letterhead-title">{game.firmName}</h1>
+      <h1 className="letterhead-title">
+        <FirmName name={game.firmName} />
+      </h1>
       <p className="letterhead-thesis">
         The checkbook is closed. {game.portfolio.length} companies, {EXITS.harvestYears} years,
         one envelope.

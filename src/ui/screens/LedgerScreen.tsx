@@ -2,6 +2,7 @@ import type { Content } from '../../content/types';
 import type { CareerState } from '../../game/types';
 import { verdictBucket } from '../../game/verdict';
 import { fmtDpi, fmtM } from '../format';
+import { FirmName } from '../components/FirmName';
 
 const TIER_SHORT = { associate: 'ASSOC', partner: 'PTNR', gp: 'GP' };
 
@@ -53,7 +54,7 @@ export function LedgerScreen({
               <li key={entry.fundIndex} className="ledger-row">
                 <div className="ledger-row-top">
                   <span className="ledger-row-firm">
-                    <span className="mono">F{entry.fundIndex}</span> {entry.firmName}
+                    <span className="mono">F{entry.fundIndex}</span> <FirmName name={entry.firmName} />
                   </span>
                   <span className={`harvest-label ${good ? 'label-green' : 'label-red'}`}>
                     {stamp}

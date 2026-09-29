@@ -2,6 +2,7 @@ import type { FlavorLines } from '../../content/types';
 import { difficultyBand } from '../../game/fundTerms';
 import type { GameState } from '../../game/types';
 import { fmtM } from '../format';
+import { FirmName } from '../components/FirmName';
 
 const BAND_CLASS = ['label-green', '', 'label-red'] as const;
 
@@ -29,7 +30,9 @@ export function FirmReveal({
       <p className="letterhead-kicker">
         Fund {game.fundIndex} &middot; {TIER_LABELS[game.tier]}
       </p>
-      <h1 className="letterhead-title">{game.firmName}</h1>
+      <h1 className="letterhead-title">
+        <FirmName name={game.firmName} />
+      </h1>
       <p className="letterhead-thesis">&ldquo;{game.thesis.line}&rdquo;</p>
       <p className="letterhead-sectors">
         Mandate: {game.thesis.sectors[0]} &middot; {game.thesis.sectors[1]}

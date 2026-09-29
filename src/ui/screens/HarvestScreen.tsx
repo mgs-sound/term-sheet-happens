@@ -2,6 +2,7 @@ import type { GameState } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import { fillLine, fmtM, pickLine } from '../format';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
+import { FirmName } from '../components/FirmName';
 
 export function HarvestScreen({
   game,
@@ -22,7 +23,9 @@ export function HarvestScreen({
   return (
     <section className="screen letterhead harvest-screen">
       <div className="letterhead-rule">Distribution notice</div>
-      <p className="letterhead-kicker">{game.firmName}</p>
+      <p className="letterhead-kicker">
+        <FirmName name={game.firmName} />
+      </p>
 
       {harvest.companies.length === 0 ? (
         <p className="letterhead-thesis">No investments were made. The fees, however, were.</p>
