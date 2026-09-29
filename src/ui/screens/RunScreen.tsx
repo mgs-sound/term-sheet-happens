@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Action, GameState } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import { offerBounds } from '../../game/negotiation';
@@ -17,6 +17,20 @@ import { PortfolioSheet } from '../components/PortfolioSheet';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 
 const FLY_MS = 320;
+/** Breathing room (px) between the lifted card's DEAL HEAT row and the sheet. */
+const LIFT_GAP_PX = 8;
+
+/** Layout-only top of `el` within `root` (offsetTop chain — ignores the
+ *  transforms used for swiping/lifting, so measuring never feeds back). */
+function topWithin(el: HTMLElement, root: HTMLElement): number {
+  let y = 0;
+  let node: HTMLElement | null = el;
+  while (node && node !== root) {
+    y += node.offsetTop;
+    node = node.offsetParent as HTMLElement | null;
+  }
+  return y;
+}
 
 /**
  * The swipe loop. Horizontal swipes work from ANYWHERE in the column —
@@ -49,6 +63,8 @@ export function RunScreen({
   const tintRightRef = useRef<HTMLSpanElement>(null);
 
   const card = game.currentCard;
+  const liftRef = useRef<HTMLDivElement>(null);
+  const [lift, setLift] = useState(0);
   const busy = exiting !== null || advanceTimer.current !== null;
   // Last card seen, so the hidden dock buttons keep a realistic label (and
   // therefore height) during interrupts / between cards.
@@ -162,6 +178,35 @@ export function RunScreen({
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // While the terms sheet is open, slide the pitch card up just enough that
+  // its TEAM / TRACTION / DEAL HEAT rows clear the sheet — measured, so it
+  // adapts to the sheet's height (sign vs negotiate, counter, board seat) and
+  // to the screen size. Never lifts past the ledger bar.
+  useLayoutEffect(() => {
+    const root = screenRef.current;
+    if (!sheetOpen || !root) {
+      setLift(0);
+      return;
+    }
+    const measure = (): void => {
+      const wrap = liftRef.current;
+      const stats = wrap?.querySelector<HTMLElement>('.pitch-stats');
+      const sheet = root.querySelector<HTMLElement>('.sheet');
+      const ledger = root.querySelector<HTMLElement>('.ledger-bar');
+      if (!wrap || !stats || !sheet || !ledger) return;
+      const statsBottom = topWithin(stats, root) + stats.offsetHeight;
+      const need = statsBottom + LIFT_GAP_PX - topWithin(sheet, root);
+      const room = topWithin(wrap, root) - (topWithin(ledger, root) + ledger.offsetHeight + LIFT_GAP_PX);
+      setLift(Math.max(0, Math.min(need, room)));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(root);
+    const sheet = root.querySelector<HTMLElement>('.sheet');
+    if (sheet) ro.observe(sheet);
+    return () => ro.disconnect();
+  }, [sheetOpen, game.phase, card?.pitchId]);
+
   return (
     <section className="screen run-screen" ref={screenRef} {...swipe}>
       <LedgerBar game={game} stageLabels={lines.reputationStages} />
@@ -201,15 +246,24 @@ export function RunScreen({
             }}
           />
         ) : card ? (
-          <SwipeShell
-            key={`${card.pitchId}-${game.meetingIndex}`}
-            ref={cardRef}
-            exiting={exiting}
-            stampLeft="PASS"
-            stampRight="OFFER"
+          <div
+            ref={liftRef}
+            className="card-lift"
+            style={{
+              transform: lift ? `translateY(${-lift}px)` : undefined,
+              transition: reducedMotion ? 'none' : undefined,
+            }}
           >
-            <PitchCardView card={card} memoNumber={game.meetingIndex + 1} nameFont={nameFont} />
-          </SwipeShell>
+            <SwipeShell
+              key={`${card.pitchId}-${game.meetingIndex}`}
+              ref={cardRef}
+              exiting={exiting}
+              stampLeft="PASS"
+              stampRight="OFFER"
+            >
+              <PitchCardView card={card} memoNumber={game.meetingIndex + 1} nameFont={nameFont} />
+            </SwipeShell>
+          </div>
         ) : (
           <div className="arena-empty">No founders left in the lobby.</div>
         )}

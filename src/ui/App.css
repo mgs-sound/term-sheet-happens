@@ -366,6 +366,15 @@
   justify-content: center;
 }
 
+/* Wrapper that slides the pitch card up while the terms sheet is open
+   (transform only — the swipe gesture transforms the inner .swipe-card). */
+.card-lift {
+  width: 100%;
+  max-width: 380px;
+  margin-inline: auto;
+  transition: transform 0.25s ease-out;
+}
+
 /* The memo card never grows with the viewport. */
 .swipe-card,
 .card-arena > .pitch-card {

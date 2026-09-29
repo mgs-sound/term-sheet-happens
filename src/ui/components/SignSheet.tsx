@@ -148,6 +148,22 @@ export function SignSheet({
             </span>
           </div>
 
+          {/* Board seat stays negotiable every round (the engine takes it per
+              offer, and the founder mood above already prices it in) — e.g.
+              drop the seat on the final round to land the deal. */}
+          {seatAvailable && (
+            <div className="seat-row">
+              <label className="seat-label">
+                <input
+                  type="checkbox"
+                  checked={boardSeat}
+                  onChange={(e) => setBoardSeat(e.target.checked)}
+                />
+                Demand a board seat <span className="seat-note">(founders get nervous)</span>
+              </label>
+            </div>
+          )}
+
           {counter && (
             <div className="counter-block">
               <span>
