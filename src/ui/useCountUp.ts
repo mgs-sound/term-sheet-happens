@@ -27,7 +27,8 @@ export function useCountUp(
     const t0 = performance.now();
     let raf = 0;
     const step = (now: number): void => {
-      const p = Math.min(1, (now - t0) / durationMs);
+      // rAF timestamps can predate t0 by a frame: clamp so we never undershoot.
+      const p = Math.min(1, Math.max(0, (now - t0) / durationMs));
       const eased = 1 - Math.pow(1 - p, 3); // ease-out cubic
       const v = start + (target - start) * eased;
       valueRef.current = v;

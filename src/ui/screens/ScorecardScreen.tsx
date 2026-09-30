@@ -58,7 +58,8 @@ export function ScorecardScreen({
         </div>
         <div>
           <dt>Returned</dt>
-          <dd>{fmtM(harvest.returnedM)}</dd>
+          {/* Counts up in lockstep with the DPI (same tween). */}
+          <dd>{fmtM(landed ? harvest.returnedM : shownDpi * game.fundSizeM)}</dd>
         </div>
         <div>
           <dt>Checks</dt>

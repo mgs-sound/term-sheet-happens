@@ -262,6 +262,90 @@
   overscroll-behavior: none;
 }
 
+/* ---------------------------------------------------- spend juice */
+
+/* Anchor for the floating "−$X" receipt. */
+.dry-powder {
+  position: relative;
+}
+
+.spend-flash {
+  animation: spend-flash 0.6s ease-out;
+}
+
+@keyframes spend-flash {
+  0%,
+  35% {
+    color: var(--stamp-red);
+  }
+  100% {
+    color: inherit;
+  }
+}
+
+/* The receipt: peels off the number, drifts down, fades. */
+.spend-floater {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--stamp-red);
+  background: var(--paper-bright);
+  border: 2px solid var(--stamp-red);
+  padding: 1px 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 12;
+  animation: spend-float 1.1s ease-out forwards;
+}
+
+@keyframes spend-float {
+  0% {
+    transform: translateY(-14px) scale(1.3) rotate(-4deg);
+    opacity: 0;
+  }
+  15% {
+    transform: translateY(0) scale(1) rotate(-4deg);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(26px) rotate(3deg);
+    opacity: 0;
+  }
+}
+
+/* Portfolio badge: pops when a company lands. */
+.count-pop {
+  display: inline-block;
+  animation: count-pop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.6);
+}
+
+@keyframes count-pop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.7);
+    background: var(--ledger-green);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spend-flash,
+  .spend-floater,
+  .count-pop {
+    animation: none;
+  }
+}
+
 /* Mandate reminder + persistent portfolio button, under the ledger. */
 .run-subbar {
   display: flex;
@@ -752,6 +836,67 @@
 
 .harvest-tally {
   margin-top: 10px;
+}
+
+/* Money coming IN: a green "+$X" chip rises into Returned and sinks in. */
+.tally-returned {
+  position: relative;
+}
+
+.inflow-flash {
+  animation: inflow-flash 0.6s ease-out;
+}
+
+@keyframes inflow-flash {
+  0% {
+    color: var(--ledger-green);
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.inflow-chip {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--paper-bright);
+  background: var(--ledger-green);
+  border: 2px solid var(--ink);
+  padding: 1px 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 3;
+  animation: inflow-rise 0.9s cubic-bezier(0.3, 0.6, 0.4, 1) forwards;
+}
+
+@keyframes inflow-rise {
+  0% {
+    transform: translateY(34px) scale(1.2) rotate(3deg);
+    opacity: 0;
+  }
+  25% {
+    transform: translateY(18px) scale(1.1) rotate(-2deg);
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-18px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inflow-flash,
+  .inflow-chip {
+    animation: none;
+  }
 }
 
 /* Skip / To the scorecard stays reachable under long portfolios. */
@@ -1430,7 +1575,8 @@ input[type='range']::-moz-range-thumb {
 
 .toast-rail {
   position: absolute;
-  top: calc(58px + env(safe-area-inset-top));
+  /* Run screen sets --toast-top to just under the ledger divider. */
+  top: var(--toast-top, calc(58px + env(safe-area-inset-top)));
   left: 14px;
   right: 14px;
   z-index: 10;
@@ -1458,6 +1604,18 @@ input[type='range']::-moz-range-thumb {
 .toast-green {
   border-color: var(--ledger-green);
   box-shadow: 4px 4px 0 var(--ledger-green);
+}
+
+/* Gentle exit: fade + lift before the toast is removed. */
+.toast-leaving {
+  animation: toast-out 0.28s ease-in forwards;
+}
+
+@keyframes toast-out {
+  to {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
 }
 
 @keyframes toast-in {

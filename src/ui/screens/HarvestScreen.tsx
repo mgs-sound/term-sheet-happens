@@ -18,6 +18,8 @@ const REVEAL_TOTAL_MS = 6500;
 /** Extra suspense before a unicorn lands. */
 const UNICORN_PAUSE_MS = 450;
 const TALLY_TWEEN_MS = 450;
+/** "+$X" chip flight into the Returned tally. Matches the CSS animation. */
+const INFLOW_MS = 900;
 
 const REVEAL_SFX: Record<ExitBucket, SfxId> = {
   zero: 'dealFail',
@@ -48,6 +50,10 @@ export function HarvestScreen({
   const [revealed, setRevealed] = useState(reducedMotion ? companies.length : 0);
   const done = revealed >= companies.length;
   const rowRefs = useRef<(HTMLLIElement | null)[]>([]);
+  // Green "+$X" chips that fly up into Returned as each exit pays out.
+  const [inflows, setInflows] = useState<{ id: number; amountM: number }[]>([]);
+  const inflowTimers = useRef<number[]>([]);
+  useEffect(() => () => inflowTimers.current.forEach((t) => window.clearTimeout(t)), []);
 
   // Drive the reveal: schedule the next company, play its stamp cue.
   useEffect(() => {
@@ -61,11 +67,20 @@ export function HarvestScreen({
       (revealed === 0 ? FIRST_REVEAL_MS : beat) +
       (next?.bucket === 'unicorn' ? UNICORN_PAUSE_MS : 0);
     const t = window.setTimeout(() => {
-      if (next) services.audio.play(REVEAL_SFX[next.bucket]);
+      if (next) {
+        services.audio.play(REVEAL_SFX[next.bucket]);
+        if (next.proceedsM > 0 && !reducedMotion) {
+          const id = revealed + 1;
+          setInflows((f) => [...f, { id, amountM: next.proceedsM }]);
+          inflowTimers.current.push(
+            window.setTimeout(() => setInflows((f) => f.filter((x) => x.id !== id)), INFLOW_MS),
+          );
+        }
+      }
       setRevealed((r) => r + 1);
     }, delay);
     return () => window.clearTimeout(t);
-  }, [revealed, done, companies]);
+  }, [revealed, done, companies, reducedMotion]);
 
   // Keep the newest stamp on screen on long portfolios.
   useEffect(() => {
@@ -96,9 +111,22 @@ export function HarvestScreen({
           <dt>Fund</dt>
           <dd>{fmtM(game.fundSizeM)}</dd>
         </div>
-        <div>
+        <div className="tally-returned">
           <dt>Returned</dt>
-          <dd className={tally >= game.fundSizeM ? 'tally-over' : ''}>{fmtM(tally)}</dd>
+          {/* key replays the green flash each time money lands */}
+          <dd
+            key={inflows.length ? inflows[inflows.length - 1]!.id : 0}
+            className={`${tally >= game.fundSizeM ? 'tally-over' : ''} ${
+              inflows.length ? 'inflow-flash' : ''
+            }`}
+          >
+            {fmtM(tally)}
+          </dd>
+          {inflows.map((f) => (
+            <span key={f.id} className="inflow-chip" aria-hidden="true">
+              +{fmtM(f.amountM)}
+            </span>
+          ))}
         </div>
         <div>
           <dt>Opened</dt>

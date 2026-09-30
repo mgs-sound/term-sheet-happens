@@ -187,6 +187,28 @@ export function RunScreen({
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // Toasts (partner vetoes, markups…) drop in just under the ledger divider,
+  // top-aligned with the mandate / portfolio row, so they never cover the
+  // money or the meters. Measured live and handed to the app-level toast rail
+  // as a CSS variable; other screens fall back to the rail's default.
+  useLayoutEffect(() => {
+    const root = screenRef.current;
+    const shell = root?.closest<HTMLElement>('.app-shell');
+    const sub = root?.querySelector<HTMLElement>('.run-subbar');
+    if (!root || !shell || !sub) return;
+    const place = (): void => {
+      const top = sub.getBoundingClientRect().top - shell.getBoundingClientRect().top;
+      shell.style.setProperty('--toast-top', `${Math.round(top)}px`);
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(root);
+    return () => {
+      ro.disconnect();
+      shell.style.removeProperty('--toast-top');
+    };
+  }, []);
+
   // While the terms sheet is open, slide the pitch card up just enough that
   // its TEAM / TRACTION / DEAL HEAT rows clear the sheet — measured, so it
   // adapts to the sheet's height (sign vs negotiate, counter, board seat) and
@@ -235,7 +257,9 @@ export function RunScreen({
           <span className="burger" aria-hidden="true" />
           Portfolio
           {game.portfolio.length > 0 && (
-            <span className="portfolio-count">{game.portfolio.length}</span>
+            <span key={game.portfolio.length} className="portfolio-count count-pop">
+              {game.portfolio.length}
+            </span>
           )}
         </button>
       </div>
