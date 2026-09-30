@@ -1,10 +1,15 @@
-import { useEffect } from 'react';
+import { useCallback, useRef } from 'react';
 import type { GameState } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import { verdictBucket } from '../../game/verdict';
 import { fmtDpi, fmtM, pickLine } from '../format';
 import { FirmName } from '../components/FirmName';
 import { services } from '../../services';
+import { useReducedMotion } from '../useReducedMotion';
+import { useCountUp } from '../useCountUp';
+
+/** DPI count-up length; the fanfare fires when it lands. */
+const DPI_COUNT_MS = 1400;
 
 export function ScorecardScreen({
   game,
@@ -18,15 +23,22 @@ export function ScorecardScreen({
   onContinue: () => void;
 }): JSX.Element {
   const harvest = game.harvest;
-  const won = harvest ? harvest.dpi >= 1 : null;
-  // Close the loop: a small fanfare as the DPI is revealed, win or lose.
-  useEffect(() => {
-    if (won !== null) services.audio.play(won ? 'fanfareGood' : 'fanfareBad');
-  }, [won]);
+  const reducedMotion = useReducedMotion();
+  const finalDpi = harvest?.dpi ?? 0;
+  // Close the loop: the DPI ticks up from 0.00x, then a small fanfare lands.
+  const fanfared = useRef(false);
+  const onLanded = useCallback(() => {
+    if (fanfared.current || !harvest) return;
+    fanfared.current = true;
+    services.audio.play(harvest.dpi >= 1 ? 'fanfareGood' : 'fanfareBad');
+  }, [harvest]);
+  const shownDpi = useCountUp(finalDpi, DPI_COUNT_MS, { instant: reducedMotion, onDone: onLanded });
+  const landed = shownDpi === finalDpi;
   if (!harvest) return <section className="screen" />;
   const bucket = verdictBucket(harvest.dpi);
   const verdict = pickLine(lines.verdicts[bucket], game.seed);
-  const good = harvest.dpi >= 1;
+  // Colour follows the ticking number, so crossing 1x flips red to green live.
+  const good = shownDpi >= 1;
 
   return (
     <section className="screen letterhead scorecard">
@@ -34,9 +46,9 @@ export function ScorecardScreen({
       <p className="letterhead-kicker">
         <FirmName name={game.firmName} /> &middot; Fund {game.fundIndex}
       </p>
-      <div className={`dpi-block ${good ? 'dpi-good' : 'dpi-bad'}`}>
+      <div className={`dpi-block ${good ? 'dpi-good' : 'dpi-bad'} ${landed ? 'dpi-landed' : ''}`}>
         <span className="dpi-label">DPI</span>
-        <span className="dpi-value">{fmtDpi(harvest.dpi)}</span>
+        <span className="dpi-value">{fmtDpi(shownDpi)}</span>
       </div>
       <p className="letterhead-thesis verdict-line">&ldquo;{verdict}&rdquo;</p>
       <dl className="figures-row figures-wrap">

@@ -25,13 +25,16 @@ export type SfxId =
   | 'meetCounter' // accept the counter's numbers
   | 'finalOffer' // gavel
   | 'fastForward' // VHS fast-forward
+  | 'exitModest' // harvest reveal: acquihire / modest exit
+  | 'unicorn' // harvest reveal: the big one
   | 'fanfareGood' // results, DPI >= 1x
   | 'fanfareBad'; // results, DPI < 1x
 
 /** Every cue, in the order the dev soundboard lists them. */
 export const SFX_IDS: readonly SfxId[] = [
   'tap', 'tick', 'open', 'close', 'reroll', 'start', 'pass', 'sign', 'dealWon', 'dealFail',
-  'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'fanfareGood', 'fanfareBad',
+  'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'exitModest', 'unicorn',
+  'fanfareGood', 'fanfareBad',
 ];
 
 export interface AudioService {
@@ -181,6 +184,24 @@ const CUES: Record<SfxId, Voice[]> = {
     { at: 0, dur: 0.6, wave: 'sawtooth', f: 180, to: 1400, vol: 0.28, vib: 18 },
     { at: 0, dur: 0.6, wave: 'noise', f: 4500, vol: 0.18 },
     { at: 0.6, dur: 0.05, wave: 'square', f: 1400, vol: 0.3 },
+  ],
+  // Shrug: two flat mid notes.
+  exitModest: [
+    { at: 0, dur: 0.08, wave: 'square', f: E5, vol: 0.4 },
+    { at: 0.09, dur: 0.12, wave: 'square', f: D4 * 2, vol: 0.35 },
+  ],
+  // The big one: rapid rising sparkle run + held chord.
+  unicorn: [
+    ...[C5, E5, G5, C6, E6, G6].map((f, i) => ({
+      at: i * 0.045,
+      dur: 0.06,
+      wave: 'square' as const,
+      f,
+      vol: 0.4,
+    })),
+    { at: 0.28, dur: 0.5, wave: 'triangle', f: C6, vol: 0.55 },
+    { at: 0.28, dur: 0.5, wave: 'square', f: G6, vol: 0.3, vib: 8 },
+    { at: 0.28, dur: 0.4, wave: 'noise', f: 8000, vol: 0.2 },
   ],
   // Subtle win fanfare.
   fanfareGood: [

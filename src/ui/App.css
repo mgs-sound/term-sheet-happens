@@ -748,6 +748,117 @@
   font-size: 14px;
 }
 
+/* ------------------------------------------------ harvest reveal juice */
+
+.harvest-tally {
+  margin-top: 10px;
+}
+
+/* Skip / To the scorecard stays reachable under long portfolios. */
+.harvest-actions {
+  position: sticky;
+  bottom: 0;
+  background: var(--paper);
+  padding-bottom: 4px;
+  z-index: 1;
+}
+
+.harvest-tally dd {
+  transition: color 0.2s;
+}
+
+/* Tally turns ledger-green once the fund has been paid back (>= 1x). */
+.harvest-tally .tally-over {
+  color: var(--ledger-green);
+}
+
+/* Unrevealed rows keep their space so nothing below jumps around. */
+.harvest-row.reveal-pending {
+  visibility: hidden;
+}
+
+.reveal-in {
+  animation: reveal-slide 0.28s ease-out;
+}
+
+.reveal-in .harvest-label {
+  display: inline-block;
+  animation: stamp-slam 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+
+@keyframes reveal-slide {
+  from {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* Rubber stamp: comes in big and tilted, slams flat. */
+@keyframes stamp-slam {
+  0% {
+    transform: scale(2.4) rotate(-12deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.92) rotate(2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+/* Unicorn row: a sign-here yellow flash behind the row. */
+.reveal-unicorn {
+  animation:
+    reveal-slide 0.28s ease-out,
+    unicorn-flash 0.9s ease-out;
+}
+
+@keyframes unicorn-flash {
+  0%,
+  30% {
+    background: var(--sign-yellow);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+/* Scorecard: the DPI panel thumps once when the count lands. */
+.dpi-block {
+  transition: background 0.25s;
+}
+
+.dpi-landed {
+  animation: dpi-thump 0.35s ease-out;
+}
+
+@keyframes dpi-thump {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-in,
+  .reveal-in .harvest-label,
+  .reveal-unicorn,
+  .dpi-landed {
+    animation: none;
+  }
+}
+
 /* A printed result panel, not a button: solid fill, no drop shadow, and a thin
    inset paper rule (a certificate/seal border). Green at 1x+, red below. */
 .dpi-block {
