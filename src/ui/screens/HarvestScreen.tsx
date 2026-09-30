@@ -4,6 +4,7 @@ import type { ExitBucket, FlavorLines } from '../../content/types';
 import { fillLine, fmtM, pickLine } from '../format';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 import { FirmName } from '../components/FirmName';
+import { ScrollFade } from '../components/ScrollFade';
 import { services, type SfxId } from '../../services';
 import { useReducedMotion } from '../useReducedMotion';
 import { useCountUp } from '../useCountUp';
@@ -100,7 +101,7 @@ export function HarvestScreen({
   const deckFonts = fontsForDeck(game.deck);
 
   return (
-    <section className="screen letterhead harvest-screen">
+    <section className="screen letterhead fixed-frame">
       <div className="letterhead-rule">Distribution notice</div>
       <p className="letterhead-kicker">
         <FirmName name={game.firmName} />
@@ -136,6 +137,7 @@ export function HarvestScreen({
         </div>
       </dl>
 
+      <ScrollFade>
       {companies.length === 0 ? (
         <p className="letterhead-thesis">No investments were made. The fees, however, were.</p>
       ) : (
@@ -184,8 +186,9 @@ export function HarvestScreen({
             })}
           </p>
         ))}
+      </ScrollFade>
 
-      <div className="screen-actions harvest-actions">
+      <div className="screen-actions">
         {done ? (
           <button type="button" className="btn btn-sign" data-sfx="none" onClick={onContinue}>
             To the scorecard

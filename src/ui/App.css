@@ -899,13 +899,74 @@
   }
 }
 
-/* Skip / To the scorecard stays reachable under long portfolios. */
-.harvest-actions {
-  position: sticky;
+/* Fixed frame for list screens (portfolio, distribution notice): header and
+   actions stay put, only the middle ScrollFade region scrolls. */
+.fixed-frame {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.fixed-frame .screen-actions {
+  padding-top: 12px;
+}
+
+/* Close the figures header with a rule too, so the scrolling list clearly
+   starts below it (distribution notice + portfolio). */
+.fixed-frame > .figures-row {
+  border-bottom: 1px solid var(--ink);
+}
+
+/* Breathing room between the figures and the rule; on the columns so the
+   vertical separators still run all the way down to it. */
+.fixed-frame > .figures-row > div {
+  padding-bottom: 10px;
+}
+
+.scroll-fade {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.scroll-fade-inner {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  /* room for overlay scrollbars so they don't sit on the stamps */
+  padding-right: 8px;
+}
+
+/* "Content continues" fades — only shown while something is hidden that way. */
+.scroll-fade::before,
+.scroll-fade::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 52px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 2;
+}
+
+.scroll-fade::before {
+  top: 0;
+  background: linear-gradient(var(--paper), rgb(247 245 238 / 0%));
+}
+
+.scroll-fade::after {
   bottom: 0;
-  background: var(--paper);
-  padding-bottom: 4px;
-  z-index: 1;
+  background: linear-gradient(rgb(247 245 238 / 0%), var(--paper));
+}
+
+.scroll-fade.more-above::before,
+.scroll-fade.more-below::after {
+  opacity: 1;
 }
 
 .harvest-tally dd {

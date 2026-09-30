@@ -3,6 +3,7 @@ import type { GameState } from '../../game/types';
 import { fmtM, pickLine, STAGE_LABELS } from '../format';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 import { FirmName } from './FirmName';
+import { ScrollFade } from './ScrollFade';
 import { BOARD_SEATS } from '../../game/tuning';
 
 /**
@@ -34,7 +35,7 @@ export function PortfolioSheet({
 
   return (
     <section
-      className="screen letterhead harvest-screen portfolio-sheet"
+      className="screen letterhead portfolio-sheet fixed-frame"
       role="dialog"
       aria-label="Portfolio"
     >
@@ -60,6 +61,7 @@ export function PortfolioSheet({
         </div>
       </dl>
 
+      <ScrollFade>
       {game.portfolio.length === 0 ? (
         <p className="letterhead-thesis">{pickLine(lines.portfolioEmpty, game.seed)}</p>
       ) : (
@@ -108,6 +110,7 @@ export function PortfolioSheet({
           })}
         </ul>
       )}
+      </ScrollFade>
 
       <div className="screen-actions">
         <button type="button" className="btn btn-sign" data-sfx="close" onClick={onClose}>
