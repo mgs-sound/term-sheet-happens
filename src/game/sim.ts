@@ -51,6 +51,8 @@ function nextAction(
       }
       return { type: 'RESOLVE_INTERRUPT', accept: false }; // eat the capital call
     }
+    case 'vetoChallenge':
+      return { type: 'RESOLVE_VETO_CHALLENGE', call: 'heads' };
     case 'fundClosed':
       return { type: 'HARVEST' };
     default:

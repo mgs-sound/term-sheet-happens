@@ -15,12 +15,14 @@ export function DevPanel({
   onAutoplay,
   onForceDpi,
   onPreviewShare,
+  onCoinFlip,
 }: {
   game: GameState;
   onJump: (jump: DevJump) => void;
   onAutoplay: () => void;
   onForceDpi: (dpi: number, enlightenGrade: boolean) => void;
   onPreviewShare: () => void;
+  onCoinFlip: () => void;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const harvested = game.phase === 'harvested';
@@ -51,6 +53,14 @@ export function DevPanel({
           </button>
           <button type="button" disabled={!harvested} onClick={() => onForceDpi(3.4, true)}>
             3.4x+gate
+          </button>
+          <span className="dev-label">partner veto</span>
+          <button
+            type="button"
+            disabled={game.phase !== 'meeting' || !game.currentCard || game.resolution !== null}
+            onClick={onCoinFlip}
+          >
+            coin flip
           </button>
           <span className="dev-label">sfx (placeholder soundboard)</span>
           {SFX_IDS.map((id) => (

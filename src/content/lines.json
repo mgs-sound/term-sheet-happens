@@ -136,6 +136,23 @@
     "No positions yet. Your LPs are paying 2% for vibes.",
     "Nothing signed. Technically a perfect track record."
   ],
+  "vetoChallenge": {
+    "title": "Leadership challenge",
+    "youChose": "You chose",
+    "intros": [
+      "Your partner challenges your decision on a coin flip.",
+      "Your partner refuses to sign, but will accept the judgement of a quarter.",
+      "Your partner proposes the firm's most rigorous diligence process: a coin."
+    ],
+    "won": [
+      "Called it. Your partner signs, visibly annoyed.",
+      "The coin agrees with you. Conviction confirmed, scientifically."
+    ],
+    "lost": [
+      "Wrong call. The coin has spoken, and it sides with your partner.",
+      "The coin votes no. Your partner pockets it as a keepsake."
+    ]
+  },
   "fundIDifficulty": [
     {
       "label": "SOFT LANDING",

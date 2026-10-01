@@ -265,6 +265,18 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     );
   }
 
+  const vc = data.vetoChallenge;
+  if (
+    !isRecord(vc) ||
+    !isNonEmptyString(vc.title) ||
+    !isNonEmptyString(vc.youChose) ||
+    !isStringArray(vc.intros) ||
+    !isStringArray(vc.won) ||
+    !isStringArray(vc.lost)
+  ) {
+    errors.push('lines.json: "vetoChallenge" needs a title and non-empty intros / won / lost arrays');
+  }
+
   const status = data.portfolioStatusLabels;
   if (!isRecord(status) || !isNonEmptyString(status.active) || !isNonEmptyString(status.writtenOff)) {
     errors.push('lines.json: "portfolioStatusLabels" must have non-empty "active" and "writtenOff"');

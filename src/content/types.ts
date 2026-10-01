@@ -123,6 +123,15 @@ export interface FlavorLines {
    * with the engine's difficultyBand(): [soft, standard, brutal].
    */
   fundIDifficulty: { label: string; blurb: string }[];
+  /** Partner's coin-flip veto challenge panel. */
+  vetoChallenge: {
+    title: string;
+    /** Tag under the side the player called. */
+    youChose: string;
+    intros: string[];
+    won: string[];
+    lost: string[];
+  };
   /** Mid-run portfolio screen: status stamp per company state. */
   portfolioStatusLabels: { active: string; writtenOff: string };
   /** Mid-run portfolio screen when nothing is signed yet. */

@@ -13,6 +13,12 @@ import { PitchCardView } from '../components/PitchCardView';
 import { SwipeShell } from '../components/SwipeShell';
 import { InterruptCard } from '../components/InterruptCard';
 import { SignSheet } from '../components/SignSheet';
+import {
+  COIN_HOLD_MS,
+  COIN_SPIN_MS,
+  VetoChallengeSheet,
+} from '../components/VetoChallengeSheet';
+import type { CoinSide } from '../../game/types';
 import { PortfolioSheet } from '../components/PortfolioSheet';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 
@@ -58,6 +64,13 @@ export function RunScreen({
   const [exiting, setExiting] = useState<SwipeDir | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [portfolioOpen, setPortfolioOpen] = useState(false);
+  // Partner's coin-flip challenge: the flip result + resolved state, held
+  // on screen while the coin spins and lands, before the card flies.
+  const [coin, setCoin] = useState<{
+    flip: { call: CoinSide; landed: CoinSide; won: boolean };
+    next: GameState;
+  } | null>(null);
+  const challengeOpen = game.phase === 'vetoChallenge' || coin !== null;
   const advanceTimer = useRef<number | null>(null);
   const screenRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -73,7 +86,8 @@ export function RunScreen({
   const lastCardRef = useRef(card);
   if (card) lastCardRef.current = card;
   const labelCard = card ?? lastCardRef.current;
-  const actionsActive = card !== null && game.phase === 'meeting' && !sheetOpen;
+  const actionsActive =
+    card !== null && game.phase === 'meeting' && !sheetOpen && !challengeOpen;
 
   // Name font: from the card's sector pool, never the same as the previous
   // card's. Derived from deck order, so the harvest screen matches exactly.
@@ -151,6 +165,7 @@ export function RunScreen({
     game.phase === 'meeting' &&
     game.resolution === null &&
     !sheetOpen &&
+    !challengeOpen &&
     !portfolioOpen &&
     exiting === null &&
     advanceTimer.current === null;
@@ -215,7 +230,7 @@ export function RunScreen({
   // to the screen size. Never lifts past the ledger bar.
   useLayoutEffect(() => {
     const root = screenRef.current;
-    if (!sheetOpen || !root) {
+    if ((!sheetOpen && !challengeOpen) || !root) {
       setLift(0);
       return;
     }
@@ -236,7 +251,7 @@ export function RunScreen({
     const sheet = root.querySelector<HTMLElement>('.sheet');
     if (sheet) ro.observe(sheet);
     return () => ro.disconnect();
-  }, [sheetOpen, game.phase, card?.pitchId]);
+  }, [sheetOpen, challengeOpen, game.phase, card?.pitchId]);
 
   return (
     <section className="screen run-screen" ref={screenRef} {...swipe}>
@@ -300,6 +315,26 @@ export function RunScreen({
           </div>
         ) : (
           <div className="arena-empty">No founders left in the lobby.</div>
+        )}
+        {challengeOpen && card && (
+          <VetoChallengeSheet
+            key={`${card.pitchId}-${game.meetingIndex}`}
+            lines={lines}
+            seed={game.seed + game.meetingIndex}
+            result={coin?.flip ?? null}
+            onCall={(call) => {
+              const next = dispatch({ type: 'RESOLVE_VETO_CHALLENGE', call });
+              const flip = next.lastCoinFlip;
+              if (!flip) return;
+              setCoin({ flip, next });
+              // Spin, land, let the verdict sink in, then the usual stamp beat.
+              window.setTimeout(() => {
+                services.audio.play(flip.won ? 'sign' : 'pass');
+                setCoin(null);
+                finishFromResolution(next);
+              }, COIN_SPIN_MS + COIN_HOLD_MS);
+            }}
+          />
         )}
         {sheetOpen && card && (
           <SignSheet

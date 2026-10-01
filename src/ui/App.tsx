@@ -7,7 +7,7 @@ import { loadContentAsync } from '../content/loader';
 import type { Content, FlavorLines } from '../content/types';
 import { reduce } from '../game/engine';
 import { acceptLpOffer, closeCareerFund, initialCareer, withFirmName } from '../game/career';
-import { careerAtEnlightenmentGate, forceHarvestResult } from '../game/devtools';
+import { careerAtEnlightenmentGate, forceHarvestResult, forceVetoChallenge } from '../game/devtools';
 import { generateFirmName } from '../game/firm';
 import { FIRM_OPTION_COUNT, pickFirmOptions } from '../game/firmOptions';
 import { createRng } from '../game/rng';
@@ -503,6 +503,13 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           onAutoplay={devAutoplay}
           onForceDpi={devForceDpi}
           onPreviewShare={() => void devPreviewShare()}
+          onCoinFlip={() => {
+            try {
+              setGameDirect(forceVetoChallenge(gameRef.current));
+            } catch (err) {
+              console.error(err);
+            }
+          }}
         />
       )}
     </main>

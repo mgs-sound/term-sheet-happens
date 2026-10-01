@@ -148,6 +148,13 @@ export const TRUST = {
 // ---------------------------------------------------------------------------
 
 export const VETO = {
+  /**
+   * When a veto fires, chance the partner instead settles it on a coin flip
+   * ("leadership challenge"): call it right and the deal goes through. TUNE
+   */
+  challengeChance: 1 / 3,
+  /** The coin. A fair one, despite everything. */
+  coinWinChance: 0.5,
   associateBase: 0.15,
   offThesisBonus: 0.2,
   /** Traction at or below this counts as "low". */

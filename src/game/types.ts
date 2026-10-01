@@ -115,7 +115,9 @@ export type GameEventKind =
   | 'capitalCallPressed'
   | 'capitalCallEaten'
   | 'visionary'
-  | 'vetoHeartbreak';
+  | 'vetoHeartbreak'
+  | 'vetoChallenge'
+  | 'challengeWon';
 
 /** Structured log entry — the UI maps kinds to flavor lines from content. */
 export interface GameEvent {
@@ -148,7 +150,22 @@ export interface HarvestResult {
   visionaries: number;
 }
 
-export type Phase = 'meeting' | 'negotiation' | 'interrupt' | 'fundClosed' | 'harvested';
+export type Phase =
+  | 'meeting'
+  | 'negotiation'
+  | 'vetoChallenge'
+  | 'interrupt'
+  | 'fundClosed'
+  | 'harvested';
+
+export type CoinSide = 'heads' | 'tails';
+
+/** Agreed terms parked while the partner's coin-flip challenge is pending. */
+export interface VetoChallenge {
+  checkM: number;
+  dealValuationM: number;
+  boardSeat: boolean;
+}
 
 export interface GameState {
   phase: Phase;
@@ -185,6 +202,10 @@ export interface GameState {
    *  (0 softest .. 1 most brutal; see FUND_I_TERMS). Optional so older saves
    *  stay valid. */
   fundIDifficulty?: number;
+  /** Pending partner coin-flip challenge (phase 'vetoChallenge'). */
+  vetoChallenge?: VetoChallenge | null;
+  /** The last coin flip, so the UI can show how it landed. */
+  lastCoinFlip?: { call: CoinSide; landed: CoinSide; won: boolean } | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -258,4 +279,5 @@ export type Action =
   | { type: 'ADVANCE' }
   | { type: 'CLOSE_FUND' }
   | { type: 'TOGGLE_PUSH_EXIT'; companyId: string }
+  | { type: 'RESOLVE_VETO_CHALLENGE'; call: CoinSide }
   | { type: 'HARVEST'; push?: string[] };

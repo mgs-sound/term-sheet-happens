@@ -26,6 +26,7 @@ export type SfxId =
   | 'finalOffer' // gavel
   | 'fastForward' // VHS fast-forward
   | 'countTick' // score-counter tick while a number counts up
+  | 'coinFlip' // partner's coin: thumb flick, spin, landing clink
   | 'exitModest' // harvest reveal: acquihire / modest exit
   | 'unicorn' // harvest reveal: the big one
   | 'fanfareGood' // results, DPI >= 1x
@@ -34,7 +35,7 @@ export type SfxId =
 /** Every cue, in the order the dev soundboard lists them. */
 export const SFX_IDS: readonly SfxId[] = [
   'tap', 'tick', 'open', 'close', 'reroll', 'start', 'pass', 'sign', 'dealWon', 'dealFail',
-  'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'countTick', 'exitModest', 'unicorn',
+  'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'countTick', 'coinFlip', 'exitModest', 'unicorn',
   'fanfareGood', 'fanfareBad',
 ];
 
@@ -185,6 +186,19 @@ const CUES: Record<SfxId, Voice[]> = {
     { at: 0, dur: 0.6, wave: 'sawtooth', f: 180, to: 1400, vol: 0.28, vib: 18 },
     { at: 0, dur: 0.6, wave: 'noise', f: 4500, vol: 0.18 },
     { at: 0.6, dur: 0.05, wave: 'square', f: 1400, vol: 0.3 },
+  ],
+  // Coin: flick, a slowing spin of alternating pings, then the landing clink.
+  coinFlip: [
+    { at: 0, dur: 0.03, wave: 'noise', f: 5000, vol: 0.5 },
+    ...[0.06, 0.15, 0.25, 0.36, 0.48, 0.61, 0.75, 0.9].map((at, i) => ({
+      at,
+      dur: 0.035,
+      wave: 'square' as const,
+      f: i % 2 ? 1568 : 1319,
+      vol: 0.22,
+    })),
+    { at: 1.05, dur: 0.03, wave: 'noise', f: 3500, vol: 0.6 },
+    { at: 1.05, dur: 0.18, wave: 'triangle', f: 2093, vol: 0.4 },
   ],
   // Arcade score counter: a short, low-mid "pip" (not shrill).
   countTick: [{ at: 0, dur: 0.03, wave: 'square', f: 392, vol: 0.28 }],

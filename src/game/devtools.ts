@@ -29,6 +29,23 @@ export function forceHarvestResult(
   return s;
 }
 
+/**
+ * Throw the partner's coin-flip challenge on the current card right now, at
+ * the asked terms — for feeling out the interaction without fishing for a
+ * natural veto (1 in 3 of a 15–65% roll).
+ */
+export function forceVetoChallenge(state: GameState): GameState {
+  const card = state.currentCard;
+  if (state.phase !== 'meeting' || !card || state.resolution !== null) {
+    throw new Error('forceVetoChallenge: needs an open meeting card');
+  }
+  const s = structuredClone(state) as GameState;
+  s.phase = 'vetoChallenge';
+  s.vetoChallenge = { checkM: card.askM, dealValuationM: card.valuationM, boardSeat: false };
+  s.negotiation = null;
+  return s;
+}
+
 /** A GP career one great fund away from Enlightenment. */
 export function careerAtEnlightenmentGate(): CareerState {
   return {

@@ -16,6 +16,7 @@ import type {
   GameEventKind,
   GameState,
   HarvestCompanyResult,
+  CoinSide,
   InterruptEvent,
   PortfolioCompany,
 } from './types.ts';
@@ -170,6 +171,9 @@ export function reduce(state: GameState | null, action: Action): GameState {
     case 'TOGGLE_PUSH_EXIT':
       handleTogglePushExit(s, action.companyId);
       break;
+    case 'RESOLVE_VETO_CHALLENGE':
+      handleResolveVetoChallenge(s, rng, action.call);
+      break;
     case 'HARVEST':
       handleHarvest(s, rng, action.push ?? []);
       break;
@@ -238,14 +242,54 @@ function completeSigning(
   if (!card) throw new Error('completeSigning without a card');
 
   if (rng.chance(vetoProbability(s, card))) {
-    s.vetoed.push({ card, atMeeting: s.meetingIndex });
-    s.resolution = 'vetoed';
-    s.negotiation = null;
-    bumpRep(s, REPUTATION.vetoDelta);
-    log(s, 'vetoed', { company: card.name });
+    if (rng.chance(VETO.challengeChance)) {
+      // The partner would rather settle it on a coin flip. Park the terms.
+      s.phase = 'vetoChallenge';
+      s.vetoChallenge = { ...terms };
+      s.negotiation = null;
+      log(s, 'vetoChallenge', { company: card.name });
+      return;
+    }
+    applyVeto(s, card);
     return;
   }
 
+  invest(s, card, terms);
+}
+
+function applyVeto(s: GameState, card: NonNullable<GameState['currentCard']>): void {
+  s.vetoed.push({ card, atMeeting: s.meetingIndex });
+  s.resolution = 'vetoed';
+  s.negotiation = null;
+  bumpRep(s, REPUTATION.vetoDelta);
+  log(s, 'vetoed', { company: card.name });
+}
+
+/** Partner's coin-flip challenge: call it right and the parked deal signs. */
+function handleResolveVetoChallenge(s: GameState, rng: RNG, call: CoinSide): void {
+  if (s.phase !== 'vetoChallenge' || !s.vetoChallenge || !s.currentCard) {
+    throw new Error('RESOLVE_VETO_CHALLENGE: no challenge pending');
+  }
+  const won = rng.chance(VETO.coinWinChance);
+  const landed: CoinSide = won ? call : call === 'heads' ? 'tails' : 'heads';
+  const terms = s.vetoChallenge;
+  s.phase = 'meeting';
+  s.vetoChallenge = null;
+  s.lastCoinFlip = { call, landed, won };
+  if (won) {
+    log(s, 'challengeWon', { company: s.currentCard.name });
+    invest(s, s.currentCard, terms);
+  } else {
+    applyVeto(s, s.currentCard);
+  }
+}
+
+/** The deal closes: money out, company in. */
+function invest(
+  s: GameState,
+  card: NonNullable<GameState['currentCard']>,
+  terms: { checkM: number; dealValuationM: number; boardSeat: boolean },
+): void {
   const company: PortfolioCompany = {
     // Shallow content pools can repeat a pitch within one deck, so the
     // portfolio id must be per-signing, not per-pitch.
