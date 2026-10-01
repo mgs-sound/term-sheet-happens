@@ -270,6 +270,9 @@ function handleResolveVetoChallenge(s: GameState, rng: RNG, call: CoinSide): voi
   if (s.phase !== 'vetoChallenge' || !s.vetoChallenge || !s.currentCard) {
     throw new Error('RESOLVE_VETO_CHALLENGE: no challenge pending');
   }
+  if (s.vetoChallenge.checkM > s.capitalM) {
+    throw new Error('RESOLVE_VETO_CHALLENGE: parked check exceeds capital');
+  }
   const won = rng.chance(VETO.coinWinChance);
   const landed: CoinSide = won ? call : call === 'heads' ? 'tails' : 'heads';
   const terms = s.vetoChallenge;

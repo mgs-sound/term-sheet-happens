@@ -57,7 +57,12 @@ export function DevPanel({
           <span className="dev-label">partner veto</span>
           <button
             type="button"
-            disabled={game.phase !== 'meeting' || !game.currentCard || game.resolution !== null}
+            disabled={
+              game.phase !== 'meeting' ||
+              !game.currentCard ||
+              game.resolution !== null ||
+              game.currentCard.askM > game.capitalM
+            }
             onClick={onCoinFlip}
           >
             coin flip

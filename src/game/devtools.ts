@@ -39,6 +39,9 @@ export function forceVetoChallenge(state: GameState): GameState {
   if (state.phase !== 'meeting' || !card || state.resolution !== null) {
     throw new Error('forceVetoChallenge: needs an open meeting card');
   }
+  if (card.askM > state.capitalM) {
+    throw new Error('forceVetoChallenge: the ask exceeds dry powder');
+  }
   const s = structuredClone(state) as GameState;
   s.phase = 'vetoChallenge';
   s.vetoChallenge = { checkM: card.askM, dealValuationM: card.valuationM, boardSeat: false };

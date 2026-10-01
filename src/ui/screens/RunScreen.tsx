@@ -21,6 +21,7 @@ import {
 import type { CoinSide } from '../../game/types';
 import { PortfolioSheet } from '../components/PortfolioSheet';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
+import { reduce } from '../../game/engine';
 
 const FLY_MS = 320;
 /** Result cue lands just after the stamp cue, so the two read as cause/effect. */
@@ -323,16 +324,23 @@ export function RunScreen({
             seed={game.seed + game.meetingIndex}
             result={coin?.flip ?? null}
             onCall={(call) => {
-              const next = dispatch({ type: 'RESOLVE_VETO_CHALLENGE', call });
-              const flip = next.lastCoinFlip;
+              const action = { type: 'RESOLVE_VETO_CHALLENGE', call } as const;
+              // Preview the flip with the pure reducer so the coin can animate
+              // toward the real result — but don't COMMIT it yet: money and
+              // the portfolio badge must not move until the coin lands.
+              // Same state + seeded RNG = the commit below matches exactly.
+              const preview = reduce(game, action);
+              const flip = preview.lastCoinFlip;
               if (!flip) return;
-              setCoin({ flip, next });
-              // Spin, land, let the verdict sink in, then the usual stamp beat.
+              setCoin({ flip, next: preview });
               window.setTimeout(() => {
-                services.audio.play(flip.won ? 'sign' : 'pass');
-                setCoin(null);
-                finishFromResolution(next);
-              }, COIN_SPIN_MS + COIN_HOLD_MS);
+                const committed = dispatch(action); // coin lands: now it's real
+                window.setTimeout(() => {
+                  services.audio.play(flip.won ? 'sign' : 'pass');
+                  setCoin(null);
+                  finishFromResolution(committed);
+                }, COIN_HOLD_MS);
+              }, COIN_SPIN_MS);
             }}
           />
         )}
