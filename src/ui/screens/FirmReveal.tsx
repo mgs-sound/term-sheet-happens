@@ -11,12 +11,17 @@ const TIER_LABELS = { associate: 'ASSOCIATE', partner: 'PARTNER', gp: 'GENERAL P
 export function FirmReveal({
   game,
   lines,
+  optionIndex,
+  optionCount,
   onReroll,
   onOpen,
   onSettings,
 }: {
   game: GameState;
   lines: FlavorLines;
+  /** Which of the fixed firm options is showing (0-based) and how many exist. */
+  optionIndex: number;
+  optionCount: number;
   onReroll: () => void;
   onOpen: () => void;
   onSettings: () => void;
@@ -59,7 +64,7 @@ export function FirmReveal({
       )}
       <div className="screen-actions">
         <button type="button" className="btn btn-secondary" data-sfx="reroll" onClick={onReroll}>
-          Reroll the firm
+          Reroll the firm &middot; {optionIndex + 1}/{optionCount}
         </button>
         <button type="button" className="btn btn-sign" data-sfx="start" onClick={onOpen}>
           Take the meetings

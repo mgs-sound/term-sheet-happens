@@ -9,6 +9,7 @@ import { reduce } from '../game/engine';
 import { acceptLpOffer, closeCareerFund, initialCareer, withFirmName } from '../game/career';
 import { careerAtEnlightenmentGate, forceHarvestResult } from '../game/devtools';
 import { generateFirmName } from '../game/firm';
+import { FIRM_OPTION_COUNT, pickFirmOptions } from '../game/firmOptions';
 import { createRng } from '../game/rng';
 import { migrateSave, type SaveData } from '../game/save';
 import { careerForTier, simulateRun } from '../game/sim';
@@ -148,6 +149,8 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
       }),
   );
   const [screen, setScreen] = useState<Screen>(() => (save ? screenForResume(save) : 'reveal'));
+  // The fixed set of run seeds "Reroll the firm" cycles through (see firmOptions.ts).
+  const [firmOptions, setFirmOptions] = useState<number[] | null>(null);
   const [pendingCareer, setPendingCareer] = useState<CareerState | null>(
     () => save?.pendingCareer ?? null,
   );
@@ -226,7 +229,9 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
         : nextCareerState;
       setCareer(resolved);
       setPendingCareer(null);
-      dispatch({ type: 'START_RUN', career: resolved, seed: newSeed(), content: engineContent });
+      const options = pickFirmOptions(resolved, engineContent, newSeed());
+      setFirmOptions(options);
+      dispatch({ type: 'START_RUN', career: resolved, seed: options[0] ?? newSeed(), content: engineContent });
       setScreen('reveal');
     },
     [dispatch, engineContent],
@@ -375,9 +380,19 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
         <FirmReveal
           game={game}
           lines={content.lines}
-          onReroll={() =>
-            dispatch({ type: 'START_RUN', career, seed: newSeed(), content: engineContent })
-          }
+          optionIndex={firmOptions ? Math.max(0, firmOptions.indexOf(game.seed)) : 0}
+          optionCount={FIRM_OPTION_COUNT}
+          onReroll={() => {
+            // Rebuild the set around the current firm if we don't have it
+            // (e.g. after a reload), then step to the next of the three.
+            const options =
+              firmOptions && firmOptions.includes(game.seed)
+                ? firmOptions
+                : pickFirmOptions(career, engineContent, newSeed(), game.seed);
+            const next = options[(options.indexOf(game.seed) + 1) % options.length] ?? newSeed();
+            setFirmOptions(options);
+            dispatch({ type: 'START_RUN', career, seed: next, content: engineContent });
+          }}
           onOpen={() => setScreen('run')}
           onSettings={() => setSettingsOpen(true)}
         />

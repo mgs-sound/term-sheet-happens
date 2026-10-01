@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { GameState } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import { verdictBucket } from '../../game/verdict';
@@ -10,6 +10,9 @@ import { useCountUp } from '../useCountUp';
 
 /** DPI count-up length; the fanfare fires when it lands. */
 const DPI_COUNT_MS = 1400;
+/** One counter "pip" per this much DPI (0.05x), at most one per TICK_MIN_MS. */
+const TICK_EVERY_DPI = 0.05;
+const TICK_MIN_MS = 45;
 
 export function ScorecardScreen({
   game,
@@ -34,6 +37,20 @@ export function ScorecardScreen({
   }, [harvest]);
   const shownDpi = useCountUp(finalDpi, DPI_COUNT_MS, { instant: reducedMotion, onDone: onLanded });
   const landed = shownDpi === finalDpi;
+
+  // Score-counter pips while the DPI climbs; silent once it lands (fanfare).
+  const lastStep = useRef(0);
+  const lastTickAt = useRef(0);
+  useEffect(() => {
+    if (landed) return;
+    const step = Math.floor(shownDpi / TICK_EVERY_DPI);
+    if (step === lastStep.current) return;
+    lastStep.current = step;
+    const now = performance.now();
+    if (now - lastTickAt.current < TICK_MIN_MS) return;
+    lastTickAt.current = now;
+    services.audio.play('countTick');
+  }, [shownDpi, landed]);
   if (!harvest) return <section className="screen" />;
   const bucket = verdictBucket(harvest.dpi);
   const verdict = pickLine(lines.verdicts[bucket], game.seed);

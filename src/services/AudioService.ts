@@ -25,6 +25,7 @@ export type SfxId =
   | 'meetCounter' // accept the counter's numbers
   | 'finalOffer' // gavel
   | 'fastForward' // VHS fast-forward
+  | 'countTick' // score-counter tick while a number counts up
   | 'exitModest' // harvest reveal: acquihire / modest exit
   | 'unicorn' // harvest reveal: the big one
   | 'fanfareGood' // results, DPI >= 1x
@@ -33,7 +34,7 @@ export type SfxId =
 /** Every cue, in the order the dev soundboard lists them. */
 export const SFX_IDS: readonly SfxId[] = [
   'tap', 'tick', 'open', 'close', 'reroll', 'start', 'pass', 'sign', 'dealWon', 'dealFail',
-  'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'exitModest', 'unicorn',
+  'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'countTick', 'exitModest', 'unicorn',
   'fanfareGood', 'fanfareBad',
 ];
 
@@ -185,6 +186,8 @@ const CUES: Record<SfxId, Voice[]> = {
     { at: 0, dur: 0.6, wave: 'noise', f: 4500, vol: 0.18 },
     { at: 0.6, dur: 0.05, wave: 'square', f: 1400, vol: 0.3 },
   ],
+  // Arcade score counter: a short, low-mid "pip" (not shrill).
+  countTick: [{ at: 0, dur: 0.03, wave: 'square', f: 392, vol: 0.28 }],
   // Shrug: two flat mid notes.
   exitModest: [
     { at: 0, dur: 0.08, wave: 'square', f: E5, vol: 0.4 },
