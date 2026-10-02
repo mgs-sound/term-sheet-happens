@@ -14,6 +14,7 @@ export function FirmReveal({
   firmParts,
   optionIndex,
   optionCount,
+  canReroll,
   onReroll,
   onOpen,
   onSettings,
@@ -24,6 +25,8 @@ export function FirmReveal({
   /** Which of the fixed firm options is showing (0-based) and how many exist. */
   optionIndex: number;
   optionCount: number;
+  /** False when nothing visible would change (GP-named firm + LP thesis). */
+  canReroll: boolean;
   onReroll: () => void;
   onOpen: () => void;
   onSettings: () => void;
@@ -63,9 +66,11 @@ export function FirmReveal({
         </div>
       )}
       <div className="screen-actions">
-        <button type="button" className="btn btn-secondary" data-sfx="reroll" onClick={onReroll}>
-          Reroll the firm &middot; {optionIndex + 1}/{optionCount}
-        </button>
+        {canReroll && (
+          <button type="button" className="btn btn-secondary" data-sfx="reroll" onClick={onReroll}>
+            Reroll the firm &middot; {optionIndex + 1}/{optionCount}
+          </button>
+        )}
         <button type="button" className="btn btn-sign" data-sfx="start" onClick={onOpen}>
           Take the meetings
         </button>

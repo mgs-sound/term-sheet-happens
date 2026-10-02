@@ -383,6 +383,9 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           firmParts={content.firmNames}
           optionIndex={firmOptions ? Math.max(0, firmOptions.indexOf(game.seed)) : 0}
           optionCount={FIRM_OPTION_COUNT}
+          // GP with a chosen name AND an LP-pinned thesis: rerolling would only
+          // reshuffle the hidden deck (nothing visible changes), so no button.
+          canReroll={career.pendingFirmName === null || !career.pendingFund}
           onReroll={() => {
             // Rebuild the set around the current firm if we don't have it
             // (e.g. after a reload), then step to the next of the three.
