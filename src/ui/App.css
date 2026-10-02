@@ -486,6 +486,60 @@
   }
 }
 
+/* Verdict stamp: slams across the middle of the challenge panel. */
+.result-stamp {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 34px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 6px 18px;
+  border: 5px solid;
+  background: var(--paper-bright);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-8deg) scale(2.6);
+  animation: result-slam 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.3) 0.25s forwards;
+}
+
+.result-won {
+  color: var(--ledger-green);
+  border-color: var(--ledger-green);
+}
+
+.result-lost {
+  color: var(--stamp-red);
+  border-color: var(--stamp-red);
+}
+
+@keyframes result-slam {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-8deg) scale(2.6);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-8deg) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-8deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-stamp {
+    animation: none;
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-8deg);
+  }
+}
+
 .challenge-actions {
   display: flex;
   gap: 14px;

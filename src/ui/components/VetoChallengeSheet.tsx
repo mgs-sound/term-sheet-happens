@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import type { FlavorLines } from '../../content/types';
 import type { CoinSide } from '../../game/types';
 import { pickLine } from '../format';
+import { ResultStamp } from './ResultStamp';
 
 /** Spin length before the coin shows how it landed (matches the coinFlip cue). */
 export const COIN_SPIN_MS = 1100;
 /** How long the result stays up before the card flies off. */
-export const COIN_HOLD_MS = 1100;
+export const COIN_HOLD_MS = 2000;
 /** Face swap speed while spinning. */
 const SPIN_FACE_MS = 90;
 
@@ -79,6 +80,10 @@ export function VetoChallengeSheet({
           {face ? FACE[face] : '?'}
         </div>
       </div>
+
+      {landed && (
+        <ResultStamp won={result.won} text={result.won ? copy.stampWon : copy.stampLost} />
+      )}
 
       <div className="challenge-actions">
         {(['heads', 'tails'] as const).map((side) => {

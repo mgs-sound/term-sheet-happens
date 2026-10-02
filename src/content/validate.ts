@@ -270,6 +270,8 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     !isRecord(vc) ||
     !isNonEmptyString(vc.title) ||
     !isNonEmptyString(vc.youChose) ||
+    !isNonEmptyString(vc.stampWon) ||
+    !isNonEmptyString(vc.stampLost) ||
     !isStringArray(vc.intros) ||
     !isStringArray(vc.won) ||
     !isStringArray(vc.lost) ||

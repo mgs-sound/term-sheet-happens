@@ -139,6 +139,8 @@
   "vetoChallenge": {
     "title": "Leadership challenge",
     "youChose": "You chose",
+    "stampWon": "You win",
+    "stampLost": "You lose",
     "intros": [
       "Your partner challenges your decision on a coin flip.",
       "Your partner refuses to sign, but will accept the judgement of a quarter.",

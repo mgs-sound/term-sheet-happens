@@ -128,6 +128,9 @@ export interface FlavorLines {
     title: string;
     /** Tag under the side the player called. */
     youChose: string;
+    /** Big rubber stamp slammed on the panel once the result is in. */
+    stampWon: string;
+    stampLost: string;
     intros: string[];
     won: string[];
     lost: string[];

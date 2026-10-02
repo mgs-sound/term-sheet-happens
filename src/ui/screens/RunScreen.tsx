@@ -27,6 +27,8 @@ import { reduce } from '../../game/engine';
 const FLY_MS = 320;
 /** Result cue lands just after the stamp cue, so the two read as cause/effect. */
 const RESULT_SFX_DELAY_MS = 180;
+/** Matches the .result-stamp animation-delay: the verdict stamp's thunk. */
+const RESULT_STAMP_DELAY_MS = 250;
 /** Breathing room (px) between the lifted card's DEAL HEAT row and the sheet. */
 const LIFT_GAP_PX = 8;
 
@@ -338,8 +340,12 @@ export function RunScreen({
               window.setTimeout(() => {
                 const committed = dispatch(action);
                 const won = committed.lastCoinFlip?.won ?? committed.lastHighLow?.won ?? false;
+                // The YOU WIN / YOU LOSE stamp lands a beat after the reveal.
+                window.setTimeout(
+                  () => services.audio.play(won ? 'sign' : 'pass'),
+                  RESULT_STAMP_DELAY_MS,
+                );
                 window.setTimeout(() => {
-                  services.audio.play(won ? 'sign' : 'pass');
                   setChallengeShow(null);
                   finishFromResolution(committed);
                 }, COIN_HOLD_MS);

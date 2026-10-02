@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FlavorLines } from '../../content/types';
 import type { HighLowCall, PlayingCard } from '../../game/types';
 import { pickLine } from '../format';
+import { ResultStamp } from './ResultStamp';
 
 /** Suspense before the hidden card turns over (matches the cardFlip cue). */
 export const CARD_REVEAL_MS = 700;
@@ -92,6 +93,10 @@ export function HighLowChallengeSheet({
           )}
         </div>
       </div>
+
+      {result && revealed && (
+        <ResultStamp won={result.won} text={result.won ? copy.stampWon : copy.stampLost} />
+      )}
 
       <div className="challenge-actions">
         {(['lower', 'higher'] as const).map((side) => {
