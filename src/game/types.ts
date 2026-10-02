@@ -159,12 +159,28 @@ export type Phase =
   | 'harvested';
 
 export type CoinSide = 'heads' | 'tails';
+export type HighLowCall = 'higher' | 'lower';
+export type ChallengeCall = CoinSide | HighLowCall;
+/** Which partner minigame settles a veto. */
+export type ChallengeGame = 'coin' | 'highLow';
 
-/** Agreed terms parked while the partner's coin-flip challenge is pending. */
+export const SUITS = ['spades', 'hearts', 'diamonds', 'clubs'] as const;
+export type Suit = (typeof SUITS)[number];
+export interface PlayingCard {
+  /** 2..14 (J=11, Q=12, K=13, A=14). */
+  rank: number;
+  suit: Suit;
+}
+
+/** Agreed terms parked while the partner's challenge is pending. */
 export interface VetoChallenge {
   checkM: number;
   dealValuationM: number;
   boardSeat: boolean;
+  /** Absent on older saves = coin. */
+  game?: ChallengeGame;
+  /** Higher/lower: the face-up card. */
+  shown?: PlayingCard;
 }
 
 export interface GameState {
@@ -206,6 +222,8 @@ export interface GameState {
   vetoChallenge?: VetoChallenge | null;
   /** The last coin flip, so the UI can show how it landed. */
   lastCoinFlip?: { call: CoinSide; landed: CoinSide; won: boolean } | null;
+  /** The last higher/lower round, so the UI can reveal the hidden card. */
+  lastHighLow?: { call: HighLowCall; shown: PlayingCard; hidden: PlayingCard; won: boolean } | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -279,5 +297,5 @@ export type Action =
   | { type: 'ADVANCE' }
   | { type: 'CLOSE_FUND' }
   | { type: 'TOGGLE_PUSH_EXIT'; companyId: string }
-  | { type: 'RESOLVE_VETO_CHALLENGE'; call: CoinSide }
+  | { type: 'RESOLVE_VETO_CHALLENGE'; call: ChallengeCall }
   | { type: 'HARVEST'; push?: string[] };

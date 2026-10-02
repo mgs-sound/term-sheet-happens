@@ -16,6 +16,7 @@ export function DevPanel({
   onForceDpi,
   onPreviewShare,
   onCoinFlip,
+  onHighLow,
 }: {
   game: GameState;
   onJump: (jump: DevJump) => void;
@@ -23,6 +24,7 @@ export function DevPanel({
   onForceDpi: (dpi: number, enlightenGrade: boolean) => void;
   onPreviewShare: () => void;
   onCoinFlip: () => void;
+  onHighLow: () => void;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const harvested = game.phase === 'harvested';
@@ -66,6 +68,18 @@ export function DevPanel({
             onClick={onCoinFlip}
           >
             coin flip
+          </button>
+          <button
+            type="button"
+            disabled={
+              game.phase !== 'meeting' ||
+              !game.currentCard ||
+              game.resolution !== null ||
+              game.currentCard.askM > game.capitalM
+            }
+            onClick={onHighLow}
+          >
+            high/low
           </button>
           <span className="dev-label">sfx (placeholder soundboard)</span>
           {SFX_IDS.map((id) => (

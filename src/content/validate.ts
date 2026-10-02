@@ -272,7 +272,10 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     !isNonEmptyString(vc.youChose) ||
     !isStringArray(vc.intros) ||
     !isStringArray(vc.won) ||
-    !isStringArray(vc.lost)
+    !isStringArray(vc.lost) ||
+    !isStringArray(vc.highLowIntros) ||
+    !isStringArray(vc.highLowWon) ||
+    !isStringArray(vc.highLowLost)
   ) {
     errors.push('lines.json: "vetoChallenge" needs a title and non-empty intros / won / lost arrays');
   }

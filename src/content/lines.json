@@ -151,6 +151,19 @@
     "lost": [
       "Wrong call. The coin has spoken, and it sides with your partner.",
       "The coin votes no. Your partner pockets it as a keepsake."
+    ],
+    "highLowIntros": [
+      "Your partner deals one card face up. Call the next one: higher or lower.",
+      "Your partner's diligence process turns out to be a deck of cards. Higher or lower?",
+      "Your partner offers a compromise: one card, higher or lower, no further questions."
+    ],
+    "highLowWon": [
+      "Right call. Your partner signs, muttering something about card counting.",
+      "The deck agrees with you. Your partner signs the term sheet face down."
+    ],
+    "highLowLost": [
+      "Wrong call. Your partner reshuffles and leaves for lunch.",
+      "The deck sides with your partner. The term sheet goes back in the drawer."
     ]
   },
   "fundIDifficulty": [

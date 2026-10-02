@@ -18,7 +18,8 @@ import {
   COIN_SPIN_MS,
   VetoChallengeSheet,
 } from '../components/VetoChallengeSheet';
-import type { CoinSide } from '../../game/types';
+import type { ChallengeCall, CoinSide, HighLowCall, PlayingCard } from '../../game/types';
+import { CARD_REVEAL_MS, HighLowChallengeSheet } from '../components/HighLowChallengeSheet';
 import { PortfolioSheet } from '../components/PortfolioSheet';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 import { reduce } from '../../game/engine';
@@ -65,13 +66,18 @@ export function RunScreen({
   const [exiting, setExiting] = useState<SwipeDir | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [portfolioOpen, setPortfolioOpen] = useState(false);
-  // Partner's coin-flip challenge: the flip result + resolved state, held
-  // on screen while the coin spins and lands, before the card flies.
-  const [coin, setCoin] = useState<{
-    flip: { call: CoinSide; landed: CoinSide; won: boolean };
-    next: GameState;
-  } | null>(null);
-  const challengeOpen = game.phase === 'vetoChallenge' || coin !== null;
+  // Partner's challenge (coin or higher/lower): the previewed result, held on
+  // screen while it plays out, before the outcome is committed and the card flies.
+  type ChallengeShow =
+    | { kind: 'coin'; flip: { call: CoinSide; landed: CoinSide; won: boolean } }
+    | {
+        kind: 'highLow';
+        shown: PlayingCard;
+        round: { call: HighLowCall; hidden: PlayingCard; won: boolean };
+      };
+  const [challengeShow, setChallengeShow] = useState<ChallengeShow | null>(null);
+  const challengeOpen = game.phase === 'vetoChallenge' || challengeShow !== null;
+  const pendingChallenge = game.vetoChallenge;
   const advanceTimer = useRef<number | null>(null);
   const screenRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -317,33 +323,67 @@ export function RunScreen({
         ) : (
           <div className="arena-empty">No founders left in the lobby.</div>
         )}
-        {challengeOpen && card && (
-          <VetoChallengeSheet
-            key={`${card.pitchId}-${game.meetingIndex}`}
-            lines={lines}
-            seed={game.seed + game.meetingIndex}
-            result={coin?.flip ?? null}
-            onCall={(call) => {
+        {challengeOpen &&
+          card &&
+          (() => {
+            /**
+             * Preview the round with the pure reducer so the minigame can play
+             * toward the real result, but only COMMIT when it lands: money and
+             * the portfolio badge must not move early. Same state + seeded RNG
+             * means the commit matches the preview exactly.
+             */
+            const play = (call: ChallengeCall, revealMs: number): GameState | null => {
               const action = { type: 'RESOLVE_VETO_CHALLENGE', call } as const;
-              // Preview the flip with the pure reducer so the coin can animate
-              // toward the real result — but don't COMMIT it yet: money and
-              // the portfolio badge must not move until the coin lands.
-              // Same state + seeded RNG = the commit below matches exactly.
               const preview = reduce(game, action);
-              const flip = preview.lastCoinFlip;
-              if (!flip) return;
-              setCoin({ flip, next: preview });
               window.setTimeout(() => {
-                const committed = dispatch(action); // coin lands: now it's real
+                const committed = dispatch(action);
+                const won = committed.lastCoinFlip?.won ?? committed.lastHighLow?.won ?? false;
                 window.setTimeout(() => {
-                  services.audio.play(flip.won ? 'sign' : 'pass');
-                  setCoin(null);
+                  services.audio.play(won ? 'sign' : 'pass');
+                  setChallengeShow(null);
                   finishFromResolution(committed);
                 }, COIN_HOLD_MS);
-              }, COIN_SPIN_MS);
-            }}
-          />
-        )}
+              }, revealMs);
+              return preview;
+            };
+            const key = `${card.pitchId}-${game.meetingIndex}`;
+            const seed = game.seed + game.meetingIndex;
+            const isHighLow =
+              challengeShow?.kind === 'highLow' ||
+              (challengeShow === null && pendingChallenge?.game === 'highLow');
+            if (isHighLow) {
+              const shown =
+                challengeShow?.kind === 'highLow' ? challengeShow.shown : pendingChallenge?.shown;
+              if (!shown) return null;
+              return (
+                <HighLowChallengeSheet
+                  key={key}
+                  lines={lines}
+                  seed={seed}
+                  shown={shown}
+                  result={challengeShow?.kind === 'highLow' ? challengeShow.round : null}
+                  onCall={(call) => {
+                    const preview = play(call, CARD_REVEAL_MS);
+                    const round = preview?.lastHighLow;
+                    if (round) setChallengeShow({ kind: 'highLow', shown, round });
+                  }}
+                />
+              );
+            }
+            return (
+              <VetoChallengeSheet
+                key={key}
+                lines={lines}
+                seed={seed}
+                result={challengeShow?.kind === 'coin' ? challengeShow.flip : null}
+                onCall={(call) => {
+                  const preview = play(call, COIN_SPIN_MS);
+                  const flip = preview?.lastCoinFlip;
+                  if (flip) setChallengeShow({ kind: 'coin', flip });
+                }}
+              />
+            );
+          })()}
         {sheetOpen && card && (
           <SignSheet
             key={card.pitchId}

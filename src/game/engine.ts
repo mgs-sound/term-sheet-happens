@@ -16,10 +16,14 @@ import type {
   GameEventKind,
   GameState,
   HarvestCompanyResult,
+  ChallengeCall,
   CoinSide,
+  HighLowCall,
   InterruptEvent,
+  PlayingCard,
   PortfolioCompany,
 } from './types.ts';
+import { SUITS } from './types.ts';
 import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
@@ -51,6 +55,7 @@ import {
   FUND_I,
   FUND_SIZING,
   MEETINGS_BY_TIER,
+  HIGH_LOW,
   FIRST_FUND_AT_TIER_MEETINGS,
   REPUTATION,
   TRUST,
@@ -253,9 +258,11 @@ function completeSigning(
 
   if (rng.chance(vetoProbability(s, card))) {
     if (rng.chance(VETO.challengeChance)) {
-      // The partner would rather settle it on a coin flip. Park the terms.
+      // The partner would rather settle it on a minigame. Park the terms.
       s.phase = 'vetoChallenge';
-      s.vetoChallenge = { ...terms };
+      s.vetoChallenge = rng.chance(VETO.highLowShare)
+        ? { ...terms, game: 'highLow', shown: drawCard(rng) }
+        : { ...terms, game: 'coin' };
       s.negotiation = null;
       log(s, 'vetoChallenge', { company: card.name });
       return;
@@ -275,13 +282,49 @@ function applyVeto(s: GameState, card: NonNullable<GameState['currentCard']>): v
   log(s, 'vetoed', { company: card.name });
 }
 
-/** Partner's coin-flip challenge: call it right and the parked deal signs. */
-function handleResolveVetoChallenge(s: GameState, rng: RNG, call: CoinSide): void {
+export function drawCard(rng: RNG, rank?: number): PlayingCard {
+  return {
+    rank: rank ?? rng.int(HIGH_LOW.minRank, HIGH_LOW.maxRank),
+    suit: rng.pick(SUITS),
+  };
+}
+
+/** Ranks strictly above / below the shown card (ties are excluded). */
+function ranksAround(shown: number): { higher: number[]; lower: number[] } {
+  const higher: number[] = [];
+  const lower: number[] = [];
+  for (let r = HIGH_LOW.minRank; r <= HIGH_LOW.maxRank; r++) {
+    if (r > shown) higher.push(r);
+    if (r < shown) lower.push(r);
+  }
+  return { higher, lower };
+}
+
+/** Odds a higher/lower call wins against the shown card (no ties). */
+export function highLowWinChance(shownRank: number, call: HighLowCall): number {
+  const { higher, lower } = ranksAround(shownRank);
+  const n = higher.length + lower.length;
+  return (call === 'higher' ? higher.length : lower.length) / n;
+}
+
+/** Partner's challenge (coin or higher/lower): win it and the parked deal signs. */
+function handleResolveVetoChallenge(s: GameState, rng: RNG, call: ChallengeCall): void {
   if (s.phase !== 'vetoChallenge' || !s.vetoChallenge || !s.currentCard) {
     throw new Error('RESOLVE_VETO_CHALLENGE: no challenge pending');
   }
   if (s.vetoChallenge.checkM > s.capitalM) {
     throw new Error('RESOLVE_VETO_CHALLENGE: parked check exceeds capital');
+  }
+  const game = s.vetoChallenge.game ?? 'coin';
+  if (game === 'highLow') {
+    if (call !== 'higher' && call !== 'lower') {
+      throw new Error('RESOLVE_VETO_CHALLENGE: higher/lower needs "higher" or "lower"');
+    }
+    resolveHighLow(s, rng, call);
+    return;
+  }
+  if (call !== 'heads' && call !== 'tails') {
+    throw new Error('RESOLVE_VETO_CHALLENGE: the coin needs "heads" or "tails"');
   }
   // Decide the WIN first, then show the face that matches. Statistically the
   // same fair 50/50 as a free-landing coin, but reload-proof: replaying the
@@ -298,6 +341,33 @@ function handleResolveVetoChallenge(s: GameState, rng: RNG, call: CoinSide): voi
     invest(s, s.currentCard, terms);
   } else {
     applyVeto(s, s.currentCard);
+  }
+}
+
+/**
+ * Higher/lower. Like the coin, the WIN is decided first (at the honest odds
+ * for that call) and the hidden card is then drawn to match — so replaying
+ * the same moment after a reload can't reveal the card to exploit.
+ */
+function resolveHighLow(s: GameState, rng: RNG, call: HighLowCall): void {
+  const challenge = s.vetoChallenge;
+  const card = s.currentCard;
+  if (!challenge?.shown || !card) throw new Error('higher/lower without a shown card');
+  const shown = challenge.shown;
+  const won = rng.chance(highLowWinChance(shown.rank, call));
+  const { higher, lower } = ranksAround(shown.rank);
+  const pool = (call === 'higher') === won ? higher : lower;
+  // Dealt from the same single suit as the shown card: every rank exists
+  // once, which is exactly why a tie can't happen.
+  const hidden: PlayingCard = { rank: rng.pick(pool), suit: shown.suit };
+  s.phase = 'meeting';
+  s.vetoChallenge = null;
+  s.lastHighLow = { call, shown, hidden, won };
+  if (won) {
+    log(s, 'challengeWon', { company: card.name });
+    invest(s, card, challenge);
+  } else {
+    applyVeto(s, card);
   }
 }
 

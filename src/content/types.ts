@@ -131,6 +131,10 @@ export interface FlavorLines {
     intros: string[];
     won: string[];
     lost: string[];
+    /** Higher/lower variant of the challenge. */
+    highLowIntros: string[];
+    highLowWon: string[];
+    highLowLost: string[];
   };
   /** Mid-run portfolio screen: status stamp per company state. */
   portfolioStatusLabels: { active: string; writtenOff: string };

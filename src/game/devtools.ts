@@ -4,7 +4,9 @@
  * Nothing here is reachable from normal play.
  */
 
-import type { CareerState, GameState } from './types.ts';
+import type { CareerState, ChallengeGame, GameState } from './types.ts';
+import { drawCard } from './engine.ts';
+import { createRng } from './rng.ts';
 import { initialCareer } from './career.ts';
 import { METERS } from './tuning.ts';
 import { clamp, roundM } from './util.ts';
@@ -34,7 +36,10 @@ export function forceHarvestResult(
  * the asked terms — for feeling out the interaction without fishing for a
  * natural veto (1 in 3 of a 15–65% roll).
  */
-export function forceVetoChallenge(state: GameState): GameState {
+export function forceVetoChallenge(
+  state: GameState,
+  game: ChallengeGame = 'coin',
+): GameState {
   const card = state.currentCard;
   if (state.phase !== 'meeting' || !card || state.resolution !== null) {
     throw new Error('forceVetoChallenge: needs an open meeting card');
@@ -44,7 +49,12 @@ export function forceVetoChallenge(state: GameState): GameState {
   }
   const s = structuredClone(state) as GameState;
   s.phase = 'vetoChallenge';
-  s.vetoChallenge = { checkM: card.askM, dealValuationM: card.valuationM, boardSeat: false };
+  const terms = { checkM: card.askM, dealValuationM: card.valuationM, boardSeat: false };
+  // Shown card from a side RNG so cheating never shifts the run's main stream.
+  s.vetoChallenge =
+    game === 'highLow'
+      ? { ...terms, game, shown: drawCard(createRng((state.rngState ^ 0xc0ffee) >>> 0)) }
+      : { ...terms, game };
   s.negotiation = null;
   return s;
 }

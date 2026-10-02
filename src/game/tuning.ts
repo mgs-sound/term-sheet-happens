@@ -60,6 +60,15 @@ export const FUND_I_TERMS = {
  * Associate (missed 1x) gets a short fund; earning Partner opens the full
  * calendar. 50 felt like a punishment — 40 is the cap. TUNE
  */
+/**
+ * Higher/lower challenge deck: ONE suit, ranks 2..14 (J=11, Q=12, K=13, A=14).
+ * Both cards come from that suit, so each rank exists once — no ties.
+ */
+export const HIGH_LOW = {
+  minRank: 2,
+  maxRank: 14,
+} as const;
+
 export const MEETINGS_BY_TIER = {
   associate: 25,
   partner: 40,
@@ -169,6 +178,8 @@ export const VETO = {
   challengeChance: 1 / 3,
   /** The coin: chance your call is right. A fair one, despite everything. */
   coinWinChance: 0.5,
+  /** Share of challenges played as higher/lower instead of the coin. TUNE */
+  highLowShare: 0.5,
   associateBase: 0.15,
   offThesisBonus: 0.2,
   /** Traction at or below this counts as "low". */

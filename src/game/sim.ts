@@ -51,8 +51,15 @@ function nextAction(
       }
       return { type: 'RESOLVE_INTERRUPT', accept: false }; // eat the capital call
     }
-    case 'vetoChallenge':
+    case 'vetoChallenge': {
+      const c = s.vetoChallenge;
+      if (c?.game === 'highLow' && c.shown) {
+        // Sensible play: bet on the bigger side of the shown card.
+        const call = c.shown.rank <= 8 ? 'higher' : 'lower';
+        return { type: 'RESOLVE_VETO_CHALLENGE', call };
+      }
       return { type: 'RESOLVE_VETO_CHALLENGE', call: 'heads' };
+    }
     case 'fundClosed':
       return { type: 'HARVEST' };
     default:

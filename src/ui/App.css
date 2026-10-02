@@ -368,6 +368,124 @@
   }
 }
 
+/* ------------------------------------------- higher/lower playing cards */
+
+.card-stage {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 6px 0 12px;
+  perspective: 500px;
+}
+
+/* Hard-edged deal-memo cards (no rounded corners), offset block shadow. */
+.playing-card {
+  position: relative;
+  width: 84px;
+  height: 116px;
+  background: var(--paper-bright);
+  border: 3px solid var(--ink);
+  box-shadow: 7px 7px 0 var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.card-rank {
+  position: absolute;
+  top: 4px;
+  left: 7px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.card-suit {
+  font-size: 46px;
+  line-height: 1;
+}
+
+/* The face-up card is always ink, never a button colour. */
+.card-ink {
+  color: var(--ink);
+}
+
+/* Revealed card wears where it landed: higher green, lower red. */
+.card-higher {
+  color: var(--ledger-green);
+  border-color: var(--ledger-green);
+}
+
+.card-lower {
+  color: var(--stamp-red);
+  border-color: var(--stamp-red);
+}
+
+.card-back {
+  overflow: hidden;
+  color: var(--ink);
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+/* Card back: a tight tile of "?" marks (type, not a gradient). */
+.card-back-pattern {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 2px 3px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.12;
+  letter-spacing: 1px;
+  word-break: break-all;
+  text-align: center;
+}
+
+/* While dealing: the hidden card lifts and wobbles before turning over. */
+.card-dealing .card-back {
+  animation: card-wobble 0.7s ease-in-out;
+}
+
+@keyframes card-wobble {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  30% {
+    transform: translateY(-14px) rotate(-4deg);
+  }
+  60% {
+    transform: translateY(-14px) rotate(3deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0) scaleX(0.05);
+  }
+}
+
+.card-flip-in {
+  animation: card-flip-in 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+
+@keyframes card-flip-in {
+  from {
+    transform: scaleX(0.05);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-dealing .card-back,
+  .card-flip-in {
+    animation: none;
+  }
+}
+
 .challenge-actions {
   display: flex;
   gap: 14px;

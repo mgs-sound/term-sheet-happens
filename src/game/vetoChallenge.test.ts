@@ -13,7 +13,8 @@ function findChallenge(): GameState {
     for (let i = 0; i < 20 && s.currentCard; i++) {
       if (s.currentCard.askM > s.capitalM) break;
       s = reduce(s, { type: 'SIGN_AT_ASK' });
-      if (s.phase === 'vetoChallenge') return s;
+      if (s.phase === 'vetoChallenge' && s.vetoChallenge?.game !== 'highLow') return s;
+      if (s.phase === 'vetoChallenge') break;
       s = reduce(s, { type: 'ADVANCE' });
       if (s.phase !== 'meeting') break;
     }
@@ -55,14 +56,18 @@ describe('partner coin-flip veto challenge', () => {
       while (s.currentCard && s.currentCard.askM <= s.capitalM && s.phase === 'meeting') {
         s = reduce(s, { type: 'SIGN_AT_ASK' });
         if (s.phase === 'vetoChallenge') {
-          s = reduce(s, { type: 'RESOLVE_VETO_CHALLENGE', call: 'tails' });
-          total++;
-          if (s.lastCoinFlip!.won) wins++;
+          if (s.vetoChallenge?.game === 'highLow') {
+            s = reduce(s, { type: 'RESOLVE_VETO_CHALLENGE', call: 'higher' });
+          } else {
+            s = reduce(s, { type: 'RESOLVE_VETO_CHALLENGE', call: 'tails' });
+            total++;
+            if (s.lastCoinFlip!.won) wins++;
+          }
         }
         s = reduce(s, { type: 'ADVANCE' });
       }
     }
-    expect(total).toBeGreaterThan(100);
+    expect(total).toBeGreaterThan(60);
     expect(wins / total).toBeGreaterThan(0.4);
     expect(wins / total).toBeLessThan(0.6);
   });

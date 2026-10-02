@@ -505,7 +505,14 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           onPreviewShare={() => void devPreviewShare()}
           onCoinFlip={() => {
             try {
-              setGameDirect(forceVetoChallenge(gameRef.current));
+              setGameDirect(forceVetoChallenge(gameRef.current, 'coin'));
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+          onHighLow={() => {
+            try {
+              setGameDirect(forceVetoChallenge(gameRef.current, 'highLow'));
             } catch (err) {
               console.error(err);
             }
