@@ -75,7 +75,7 @@ A satirical VC card-swipe roguelite. Reigns/Tinder loop: each run is one fund at
 
 ## Visual identity
 
-Deal-memo paper aesthetic. Paper `#F7F5EE`/`#FDFCF7`, ink `#1C1B17`, ledger green `#1E6B4E`, stamp red `#B3382C`, sign-here yellow `#F5D547`. Serif (Georgia stack) for document text, monospace for numbers. Rubber-stamp PASS/OFFER on swipe. Hard-edged borders with offset block shadows — **no rounded corners, no gradients, no glassmorphism**. The reference JSX is authoritative for feel.
+Deal-memo paper aesthetic. Paper `#F7F5EE`/`#FDFCF7`, ink `#1C1B17`, ledger green `#1E6B4E`, stamp red `#B3382C`, sign-here yellow `#F5D547`. Serif (Georgia stack) for document text, monospace for numbers. Rubber-stamp PASS/OFFER on swipe. Hard-edged borders with offset block shadows — **no rounded corners, no gradients, no glassmorphism**. Sole exception: the partner-challenge minigame graphics (die, playing cards, sticks, ruler, cover) have soft corners; their panel, buttons, tags and the result stamp stay square. The reference JSX is authoritative for feel.
 
 ## Tech rules (Capacitor-readiness)
 

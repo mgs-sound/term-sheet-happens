@@ -31,15 +31,15 @@ export function DevPanel({
   onSticks: () => void;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
-  // Design experiment: rounded corners on the veto minigames (see
-  // [data-rounded] in App.css). Dev-only; the shipped look stays hard-edged.
+  // Minigame graphics are rounded by default; this flips them to hard edges
+  // for comparison (sets [data-square], see App.css).
   const [rounded, setRounded] = useState(
-    () => typeof document !== 'undefined' && 'rounded' in document.documentElement.dataset,
+    () => typeof document === 'undefined' || !('square' in document.documentElement.dataset),
   );
   const toggleRounded = (): void => {
     const next = !rounded;
-    if (next) document.documentElement.dataset.rounded = '';
-    else delete document.documentElement.dataset.rounded;
+    if (next) delete document.documentElement.dataset.square;
+    else document.documentElement.dataset.square = '';
     setRounded(next);
   };
   const harvested = game.phase === 'harvested';

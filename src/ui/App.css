@@ -2194,22 +2194,21 @@ input[type='range']::-moz-range-thumb {
   background: var(--sign-yellow);
 }
 
-/* DEV experiment (DevPanel "rounded" toggle): soft corners on the minigame
-   GRAPHICS only (die, playing cards, ruler, cover, sticks), like the design
-   mockups. Never on the panel, buttons, YOU CHOSE tags or the result stamp.
-   Deliberately breaks the no-rounded-corners rule, so it only exists behind
-   the toggle. */
-:root[data-rounded] .challenge-sheet .die {
+/* The one sanctioned exception to "no rounded corners": the minigame
+   GRAPHICS (die, playing cards, ruler, cover, sticks) are soft, like physical
+   objects. Never the panel, buttons, YOU CHOSE tags or the result stamp.
+   DevPanel "rounded" toggle sets [data-square] to compare with hard edges. */
+:root:not([data-square]) .challenge-sheet .die {
   border-radius: 18px;
 }
-:root[data-rounded] .challenge-sheet .playing-card {
+:root:not([data-square]) .challenge-sheet .playing-card {
   border-radius: 10px;
 }
-:root[data-rounded] .challenge-sheet .ruler,
-:root[data-rounded] .challenge-sheet .sticks-cover {
+:root:not([data-square]) .challenge-sheet .ruler,
+:root:not([data-square]) .challenge-sheet .sticks-cover {
   border-radius: 8px;
 }
-:root[data-rounded] .challenge-sheet .stick {
+:root:not([data-square]) .challenge-sheet .stick {
   border-radius: 999px;
   overflow: hidden;
 }
