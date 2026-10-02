@@ -260,9 +260,25 @@ export function RunScreen({
       const sheet = root.querySelector<HTMLElement>('.sheet');
       const ledger = root.querySelector<HTMLElement>('.ledger-bar');
       if (!wrap || !stats || !sheet || !ledger) return;
+      const room = topWithin(wrap, root) - (topWithin(ledger, root) + ledger.offsetHeight + LIFT_GAP_PX);
+      const figures = wrap.querySelector<HTMLElement>('.pitch-figures');
+      if (sheet.classList.contains('challenge-sheet') && figures) {
+        // Minigames: the panel's top edge lands exactly on the card's
+        // DEAL HEAT / ARR rule, whatever the game. Lift the card toward the
+        // panel's natural top; if the panel is shorter than that, it grows
+        // up to the rule (content stays centred, see .challenge-sheet).
+        sheet.style.minHeight = '';
+        const sheetTop = topWithin(sheet, root);
+        const sheetBottom = sheetTop + sheet.offsetHeight;
+        const ruleTop = topWithin(figures, root);
+        const l = Math.max(0, Math.min(ruleTop - sheetTop, room));
+        setLift(l);
+        const liftedRule = ruleTop - l;
+        if (liftedRule < sheetTop) sheet.style.minHeight = `${sheetBottom - liftedRule}px`;
+        return;
+      }
       const statsBottom = topWithin(stats, root) + stats.offsetHeight;
       const need = statsBottom + LIFT_GAP_PX - topWithin(sheet, root);
-      const room = topWithin(wrap, root) - (topWithin(ledger, root) + ledger.offsetHeight + LIFT_GAP_PX);
       setLift(Math.max(0, Math.min(need, room)));
     };
     measure();

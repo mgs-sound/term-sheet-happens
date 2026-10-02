@@ -300,6 +300,16 @@
   gap: 10px;
 }
 
+/* When the panel is stretched up to the card's DEAL HEAT / ARR rule
+   (RunScreen sets min-height), the spare room splits around the game so it
+   stays centred between the intro line and the buttons. */
+.challenge-sheet > .challenge-line {
+  margin-bottom: auto;
+}
+.challenge-sheet > .challenge-actions {
+  margin-top: auto;
+}
+
 .challenge-title {
   font-family: var(--font-mono);
   font-size: 14px;
@@ -710,6 +720,79 @@
 .sticks-cover-open {
   transform: translateY(-24px);
   opacity: 0;
+}
+
+/* Flat layout (above) uses --len as width. */
+.stick {
+  width: var(--len);
+}
+
+/* Upright layout (default; DevPanel "sticks" toggle sets [data-sticks-flat]
+   to go back to flat): the sticks stand in the partner's fist with the
+   striped handles poking out of the top; the cover hides the rest, then
+   drops away to show how far down each one runs against ruled lines.
+   Proportions copied from the design mockups, in cqw (% of the stage
+   width) so they scale with the panel. Lengths are % of the stage height
+   (STICKS.longMax 96 at most), so even the longest stick stays inside. */
+:root:not([data-sticks-flat]) .sticks-stage {
+  container-type: inline-size;
+  height: auto;
+  aspect-ratio: 100 / 36;
+  margin: 8px 0 18px;
+}
+/* The fist: about half the panel wide, handles poke out above it. */
+:root:not([data-sticks-flat]) .sticks-cover {
+  left: 24.5%;
+  right: 24.5%;
+  top: 23%;
+  bottom: 0;
+  border-width: 0.6cqw;
+  box-shadow: 1.6cqw 1.6cqw 0 var(--ink);
+  font-size: 14cqw;
+}
+/* Upright measure: no box, just evenly ruled lines behind the sticks,
+   narrower than the fist, like ledger paper. */
+:root:not([data-sticks-flat]) .ruler {
+  left: 35%;
+  right: 34%;
+  top: 23%;
+  bottom: 5%;
+  flex-direction: column;
+  align-items: stretch;
+  border: none;
+  padding: 0;
+}
+:root:not([data-sticks-flat]) .ruler-tick,
+:root:not([data-sticks-flat]) .ruler-tick:nth-child(odd) {
+  width: auto;
+  height: 0.35cqw;
+  min-height: 1.5px;
+}
+/* Stick centres at ~41.5% and ~57% of the stage. */
+:root:not([data-sticks-flat]) .sticks-lane {
+  inset: 0 41.4% 0 39.8%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+:root:not([data-sticks-flat]) .stick {
+  flex-direction: column;
+  width: 3.2cqw;
+  height: var(--len);
+  border-width: 0.5cqw;
+  box-shadow: 1.6cqw 1.6cqw 0 var(--ink);
+}
+:root:not([data-sticks-flat]) .stick-band {
+  flex: 0 0 2.8cqw;
+}
+:root:not([data-sticks-flat]) .stick-band-thin {
+  flex-basis: 0.9cqw;
+}
+:root:not([data-sticks-flat]) .stick-gap {
+  flex: 0 0 0.7cqw;
+}
+:root:not([data-sticks-flat]) .sticks-cover-open {
+  transform: translateY(24px);
 }
 
 @media (prefers-reduced-motion: reduce) {

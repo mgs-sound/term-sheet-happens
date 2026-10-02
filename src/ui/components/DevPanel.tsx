@@ -42,6 +42,16 @@ export function DevPanel({
     else document.documentElement.dataset.square = '';
     setRounded(next);
   };
+  // Longest-stick layout: upright by default, flat for comparison ([data-sticks-flat]).
+  const [sticksFlat, setSticksFlat] = useState(
+    () => typeof document !== 'undefined' && 'sticksFlat' in document.documentElement.dataset,
+  );
+  const toggleSticksFlat = (): void => {
+    const next = !sticksFlat;
+    if (next) document.documentElement.dataset.sticksFlat = '';
+    else delete document.documentElement.dataset.sticksFlat;
+    setSticksFlat(next);
+  };
   const harvested = game.phase === 'harvested';
 
   return (
@@ -122,6 +132,9 @@ export function DevPanel({
           </button>
           <button type="button" className={rounded ? 'dev-on' : ''} onClick={toggleRounded}>
             rounded: {rounded ? 'on' : 'off'}
+          </button>
+          <button type="button" onClick={toggleSticksFlat}>
+            sticks: {sticksFlat ? 'flat' : 'upright'}
           </button>
           <span className="dev-label">sfx (placeholder soundboard)</span>
           {SFX_IDS.map((id) => (

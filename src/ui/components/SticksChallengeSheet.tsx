@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import type { FlavorLines } from '../../content/types';
 import type { StickCall } from '../../game/types';
 import { pickLine } from '../format';
@@ -13,11 +13,15 @@ export const STICKS_REVEAL_MS = 900;
  */
 const HIDDEN_PCT = 60;
 /** Ruler tick marks. */
-const TICKS = 8;
+const TICKS = 7;
 
 function Stick({ color, length, winner }: { color: 'red' | 'green'; length: number; winner: boolean }) {
   return (
-    <div className={`stick stick-${color} ${winner ? 'stick-winner' : ''}`} style={{ width: `${length}%` }}>
+    // --len is the length along the stick's axis (width laid flat, height upright).
+    <div
+      className={`stick stick-${color} ${winner ? 'stick-winner' : ''}`}
+      style={{ '--len': `${length}%` } as CSSProperties}
+    >
       {/* Striped handle, then a plain body. */}
       <span className="stick-band" />
       <span className="stick-gap" />
@@ -67,6 +71,7 @@ export function SticksChallengeSheet({
           : pickLine(copy.sticksIntros, seed)
       }
       stage={
+        // Layout (upright vs flat) is CSS-only: see [data-sticks-flat] in App.css.
         <div className="sticks-stage">
           <div className="ruler" aria-hidden="true">
             {Array.from({ length: TICKS }, (_, i) => (
