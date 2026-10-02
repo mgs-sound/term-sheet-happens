@@ -57,6 +57,16 @@
   cursor: default;
 }
 
+/* Looks disabled but still takes taps (so it can buzz "denied"). */
+.btn.btn-blocked {
+  opacity: 0.4;
+  cursor: default;
+}
+.btn.btn-blocked:active {
+  transform: none;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
 .btn-sign {
   background: var(--ledger-green);
   color: var(--paper-bright);

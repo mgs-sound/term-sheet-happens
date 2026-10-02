@@ -403,7 +403,10 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           game={game}
           dispatch={dispatch}
           lines={content.lines}
-          onBlockedSwipe={() => pushToast({ text: 'Check exceeds dry powder.', tone: 'red' })}
+          onBlockedSwipe={() => {
+            services.audio.play('denied');
+            pushToast({ text: 'Check exceeds dry powder.', tone: 'red' });
+          }}
           onSettings={() => setSettingsOpen(true)}
         />
       )}

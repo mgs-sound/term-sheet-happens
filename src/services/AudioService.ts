@@ -20,6 +20,7 @@ export type SfxId =
   | 'sign' // swipe right / sign — the stamp
   | 'dealWon' // signing actually closed
   | 'dealFail' // vetoed / founder walked
+  | 'denied' // can't do that (e.g. check exceeds dry powder) — short buzz
   | 'draft' // terms sheet pulled out — paper
   | 'counter' // counteroffer lands — sword parry
   | 'meetCounter' // accept the counter's numbers
@@ -37,7 +38,7 @@ export type SfxId =
 
 /** Every cue, in the order the dev soundboard lists them. */
 export const SFX_IDS: readonly SfxId[] = [
-  'tap', 'tick', 'open', 'close', 'reroll', 'start', 'pass', 'sign', 'dealWon', 'dealFail',
+  'tap', 'tick', 'open', 'close', 'reroll', 'start', 'pass', 'sign', 'dealWon', 'dealFail', 'denied',
   'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'countTick', 'coinFlip', 'cardFlip', 'diceRoll', 'sticksDraw', 'exitModest', 'unicorn',
   'fanfareGood', 'fanfareBad',
 ];
@@ -156,6 +157,11 @@ const CUES: Record<SfxId, Voice[]> = {
   dealFail: [
     { at: 0, dur: 0.16, wave: 'sawtooth', f: 262, to: 220, vol: 0.5 },
     { at: 0.17, dur: 0.3, wave: 'sawtooth', f: 208, to: 130, vol: 0.5, vib: 6 },
+  ],
+  // Error buzz: two quick low blips, flat and dry ("nope-nope").
+  denied: [
+    { at: 0, dur: 0.07, wave: 'square', f: 155, vol: 0.45 },
+    { at: 0.1, dur: 0.09, wave: 'square', f: 147, vol: 0.45 },
   ],
   // Paper pulled from a folder: band-passed noise sweep.
   draft: [

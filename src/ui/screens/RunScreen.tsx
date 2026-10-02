@@ -106,6 +106,12 @@ export function RunScreen({
   const lastCardRef = useRef(card);
   if (card) lastCardRef.current = card;
   const labelCard = card ?? lastCardRef.current;
+  // Not enough dry powder for even the smallest check on this card.
+  const broke =
+    labelCard !== null &&
+    labelCard !== undefined &&
+    (game.isFundI ? labelCard.askM : Math.min(labelCard.askM, offerBounds(labelCard).checkMinM)) >
+      game.capitalM;
   const actionsActive =
     card !== null && game.phase === 'meeting' && !sheetOpen && !challengeOpen;
 
@@ -506,11 +512,12 @@ export function RunScreen({
             </button>
             <button
               type="button"
-              className="btn btn-sign"
               data-sfx="none"
-              disabled={
-                !actionsActive || busy || (game.isFundI && labelCard.askM > game.capitalM)
-              }
+              // Broke: looks disabled but stays tappable, so a tap buzzes
+              // and explains (canSwipe -> onBlockedSwipe) instead of nothing.
+              disabled={!actionsActive || busy}
+              aria-disabled={broke}
+              className={`btn btn-sign ${broke ? 'btn-blocked' : ''}`}
               onClick={() => canSwipe('right') && commit('right')}
               aria-label={
                 game.isFundI
