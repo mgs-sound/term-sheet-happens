@@ -144,7 +144,9 @@ export function RunScreen({
     // the outcome the engine decided.
     const outcome = res === 'signed' ? 'dealWon' : res === 'vetoed' || res === 'founderWalked' ? 'dealFail' : null;
     if (outcome) window.setTimeout(() => services.audio.play(outcome), RESULT_SFX_DELAY_MS);
-    flyOut(res === 'signed' || res === 'vetoed' ? 'right' : 'left');
+    // Right = the money went in. Anything that doesn't land in the portfolio
+    // (veto, lost challenge, founder walk) leaves left like a pass.
+    flyOut(res === 'signed' ? 'right' : 'left');
   };
 
   const commit = (dir: SwipeDir): void => {
