@@ -143,3 +143,19 @@ describe('serializability', () => {
     expect(reduce(revived, { type: 'PASS' })).toEqual(reduce(s, { type: 'PASS' }));
   });
 });
+
+describe('meetings ladder', () => {
+  it('grows with the career: 25 repeat Associate, 30 first Partner fund, 40 after', async () => {
+    const { meetingsForCareer } = await import('./engine');
+    const assoc = careerForTier('associate');
+    expect(meetingsForCareer(assoc)).toBe(25);
+    const partner = careerForTier('partner');
+    expect(meetingsForCareer(partner)).toBe(30);
+    const seasoned = {
+      ...partner,
+      ledger: [{ fundIndex: 3, firmName: 'X', thesisId: 't', tier: 'partner' as const, fundSizeM: 90, returnedM: 100, dpi: 1.1 }],
+    };
+    expect(meetingsForCareer(seasoned)).toBe(40);
+    expect(meetingsForCareer(careerForTier('gp'))).toBe(40);
+  });
+});

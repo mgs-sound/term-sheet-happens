@@ -51,6 +51,7 @@ import {
   FUND_I,
   FUND_SIZING,
   MEETINGS_BY_TIER,
+  FIRST_FUND_AT_TIER_MEETINGS,
   REPUTATION,
   TRUST,
   VETO,
@@ -60,6 +61,15 @@ import { roundM } from './util.ts';
 // ---------------------------------------------------------------------------
 // Run creation (START_RUN)
 // ---------------------------------------------------------------------------
+
+/** Fund II+ meetings: by tier, shorter on your first fund at a new tier. */
+export function meetingsForCareer(career: CareerState): number {
+  const firstAtTier = !career.ledger.some((entry) => entry.tier === career.tier);
+  const first = (FIRST_FUND_AT_TIER_MEETINGS as Partial<Record<CareerState['tier'], number>>)[
+    career.tier
+  ];
+  return firstAtTier && first !== undefined ? first : MEETINGS_BY_TIER[career.tier];
+}
 
 export function createRun(
   career: CareerState,
@@ -71,7 +81,7 @@ export function createRun(
   // Fund I: size / meetings / starting trust come from one difficulty dial
   // (own salted RNG — see fundTerms.ts). Fund II+: from the career.
   const fundITerms = isFundI ? rollFundITerms(seed) : null;
-  const meetingsTotal = fundITerms ? fundITerms.meetings : MEETINGS_BY_TIER[career.tier];
+  const meetingsTotal = fundITerms ? fundITerms.meetings : meetingsForCareer(career);
 
   const fundSizeM = fundITerms
     ? fundITerms.sizeM

@@ -66,6 +66,15 @@ export const MEETINGS_BY_TIER = {
   gp: 40,
 } as const;
 
+/**
+ * Your FIRST fund at a new tier is shorter, so the calendar grows as you do:
+ * Fund I ~15 → first Partner fund 30 → 40 thereafter. Tiers not listed use
+ * MEETINGS_BY_TIER from their first fund. TUNE
+ */
+export const FIRST_FUND_AT_TIER_MEETINGS = {
+  partner: 30,
+} as const;
+
 // ---------------------------------------------------------------------------
 // Deck building
 // ---------------------------------------------------------------------------
@@ -347,7 +356,7 @@ export const VERDICT_DPI = {
 export const FUND_SIZING = {
   /** Base next-fund size per tier, before DPI and trust multipliers. TUNE */
   associateBaseM: 30,
-  partnerBaseM: 90,
+  partnerBaseM: 70, // scaled down with the 30-meeting first Partner fund so it's deployable
   gpBaseM: 145, // scaled ×40/50 with GP meetings so a GP fund is still deployable
   /** DPI factor = clamp(dpiFactorBase + dpi * dpiFactorSlope). TUNE */
   dpiFactorBase: 0.6,

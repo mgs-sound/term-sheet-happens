@@ -42,7 +42,7 @@ A satirical VC card-swipe roguelite. Reigns/Tinder loop: each run is one fund at
 ## Run structure
 
 - **Fund I (always):** $8–10M, ~15 meetings, simplified rules (sign-at-ask only, no sliders), deck quietly stacked toward mediocrity, aggressive partner vetoes. Most players fail (~0.3–0.8x). Ends with the rehire card: "Somehow, you've been hired again. The industry has no long-term memory."
-- **Fund II+:** ~25 meetings (repeat Associate), ~40 (Partner+), full systems. Growth should feel like growth; 50 felt like a punishment.
+- **Fund II+:** ~25 meetings (repeat Associate), 30 on your first Partner fund, 40 after that and as GP — full systems. Growth should feel like growth (15 → 30 → 40); 50 felt like a punishment.
 
 ## Career ladder (you always change firms — promotion = poaching)
 
