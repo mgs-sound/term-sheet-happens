@@ -517,6 +517,20 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
               console.error(err);
             }
           }}
+          onDice={() => {
+            try {
+              setGameDirect(forceVetoChallenge(gameRef.current, 'dice'));
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+          onSticks={() => {
+            try {
+              setGameDirect(forceVetoChallenge(gameRef.current, 'sticks'));
+            } catch (err) {
+              console.error(err);
+            }
+          }}
         />
       )}
     </main>

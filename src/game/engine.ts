@@ -17,13 +17,17 @@ import type {
   GameState,
   HarvestCompanyResult,
   ChallengeCall,
+  ChallengeGame,
   CoinSide,
+  DiceCall,
   HighLowCall,
+  StickCall,
+  VetoChallenge,
   InterruptEvent,
   PlayingCard,
   PortfolioCompany,
 } from './types.ts';
-import { SUITS } from './types.ts';
+import { CHALLENGE_GAMES, SUITS } from './types.ts';
 import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
@@ -56,6 +60,7 @@ import {
   FUND_SIZING,
   MEETINGS_BY_TIER,
   HIGH_LOW,
+  STICKS,
   FIRST_FUND_AT_TIER_MEETINGS,
   REPUTATION,
   TRUST,
@@ -260,9 +265,9 @@ function completeSigning(
     if (rng.chance(VETO.challengeChance)) {
       // The partner would rather settle it on a minigame. Park the terms.
       s.phase = 'vetoChallenge';
-      s.vetoChallenge = rng.chance(VETO.highLowShare)
-        ? { ...terms, game: 'highLow', shown: drawCard(rng) }
-        : { ...terms, game: 'coin' };
+      const game = pickChallengeGame(rng);
+      s.vetoChallenge =
+        game === 'highLow' ? { ...terms, game, shown: drawCard(rng) } : { ...terms, game };
       s.negotiation = null;
       log(s, 'vetoChallenge', { company: card.name });
       return;
@@ -316,6 +321,20 @@ function handleResolveVetoChallenge(s: GameState, rng: RNG, call: ChallengeCall)
     throw new Error('RESOLVE_VETO_CHALLENGE: parked check exceeds capital');
   }
   const game = s.vetoChallenge.game ?? 'coin';
+  if (game === 'dice') {
+    if (call !== 'even' && call !== 'odd') {
+      throw new Error('RESOLVE_VETO_CHALLENGE: the dice need "even" or "odd"');
+    }
+    resolveDice(s, rng, call);
+    return;
+  }
+  if (game === 'sticks') {
+    if (call !== 'red' && call !== 'green') {
+      throw new Error('RESOLVE_VETO_CHALLENGE: the sticks need "red" or "green"');
+    }
+    resolveSticks(s, rng, call);
+    return;
+  }
   if (game === 'highLow') {
     if (call !== 'higher' && call !== 'lower') {
       throw new Error('RESOLVE_VETO_CHALLENGE: higher/lower needs "higher" or "lower"');
@@ -369,6 +388,61 @@ function resolveHighLow(s: GameState, rng: RNG, call: HighLowCall): void {
   } else {
     applyVeto(s, card);
   }
+}
+
+/** Weighted pick of which minigame the partner proposes. */
+export function pickChallengeGame(rng: RNG): ChallengeGame {
+  const w = VETO.challengeWeights;
+  const total = CHALLENGE_GAMES.reduce((sum, g) => sum + w[g], 0);
+  let roll = rng.next() * total;
+  for (const g of CHALLENGE_GAMES) {
+    roll -= w[g];
+    if (roll < 0) return g;
+  }
+  return 'coin';
+}
+
+/** Close out any challenge: sign the parked deal on a win, veto on a loss. */
+function settleChallenge(s: GameState, won: boolean, terms: VetoChallenge): void {
+  const card = s.currentCard;
+  if (!card) throw new Error('settleChallenge without a card');
+  s.phase = 'meeting';
+  s.vetoChallenge = null;
+  if (won) {
+    log(s, 'challengeWon', { company: card.name });
+    invest(s, card, terms);
+  } else {
+    applyVeto(s, card);
+  }
+}
+
+/**
+ * Even/odd. Win decided first (reload-proof, like the coin), then the die
+ * shows a face of the matching parity.
+ */
+function resolveDice(s: GameState, rng: RNG, call: DiceCall): void {
+  const terms = s.vetoChallenge as VetoChallenge;
+  const won = rng.chance(VETO.diceWinChance);
+  const evenLands = (call === 'even') === won;
+  const roll = rng.pick(evenLands ? [2, 4, 6] : [1, 3, 5]);
+  s.lastDice = { call, roll, won };
+  settleChallenge(s, won, terms);
+}
+
+/**
+ * Longest stick. Win decided first, then lengths drawn so the called stick is
+ * (or isn't) the longer one by a clearly visible margin.
+ */
+function resolveSticks(s: GameState, rng: RNG, call: StickCall): void {
+  const terms = s.vetoChallenge as VetoChallenge;
+  const won = rng.chance(VETO.sticksWinChance);
+  const long = rng.int(STICKS.longMin, STICKS.longMax);
+  const short = rng.int(STICKS.shortMin, long - STICKS.minGap);
+  const redWins = (call === 'red') === won;
+  const red = redWins ? long : short;
+  const green = redWins ? short : long;
+  s.lastSticks = { call, red, green, won };
+  settleChallenge(s, won, terms);
 }
 
 /** The deal closes: money out, company in. */

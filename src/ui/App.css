@@ -486,6 +486,213 @@
   }
 }
 
+/* ------------------------------------------------------- even/odd dice */
+
+/* Flat die (front face only), rolling in-plane and decelerating. */
+.dice-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0 18px;
+}
+
+.die {
+  width: 92px;
+  height: 92px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  padding: 12px;
+  background: var(--paper-bright);
+  border: 3px solid currentcolor;
+}
+
+/* The block shadow lives on the non-rotating wrapper (drop-shadow follows the
+   rotated die's outline), so it always falls down-right, never spins. */
+.die-hop {
+  filter: drop-shadow(8px 8px 0 var(--ink));
+}
+
+.pip {
+  justify-self: center;
+  align-self: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%; /* pips are dots; the die itself stays hard-edged */
+}
+
+.pip-on {
+  background: currentcolor;
+}
+
+.die-ink {
+  color: var(--ink);
+}
+
+/* Settled die wears its parity: even red, odd green — like the buttons. */
+.die-even {
+  color: var(--stamp-red);
+}
+
+.die-odd {
+  color: var(--ledger-green);
+}
+
+.dice-rolling .die-hop {
+  animation: die-throw 1.3s cubic-bezier(0.3, 0.6, 0.4, 1);
+}
+
+@keyframes die-throw {
+  0% {
+    transform: translateY(0);
+  }
+  28% {
+    transform: translateY(-32px);
+  }
+  58% {
+    transform: translateY(0);
+  }
+  72% {
+    transform: translateY(-8px);
+  }
+  86%,
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* The final "click": a tiny squash as it settles. */
+.dice-landed .die-hop {
+  animation: die-settle 0.24s ease-out;
+}
+
+@keyframes die-settle {
+  0% {
+    transform: scale(1.06, 0.94);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ------------------------------------------------------- longest stick */
+
+.sticks-stage {
+  position: relative;
+  height: 132px;
+  margin: 6px 4px 14px;
+}
+
+/* The ruler the sticks are measured against (right ~70% of the stage). */
+.ruler {
+  position: absolute;
+  left: 28%;
+  right: 2%;
+  top: 0;
+  bottom: 0;
+  border: 2px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 6px;
+}
+
+.ruler-tick {
+  width: 2px;
+  height: 14px;
+  background: var(--ink);
+}
+
+.ruler-tick:nth-child(odd) {
+  height: 22px;
+}
+
+.sticks-lane {
+  position: absolute;
+  inset: 34px 0 34px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1;
+}
+
+.stick {
+  display: flex;
+  height: 20px;
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  background: var(--paper-bright);
+}
+
+.stick-band {
+  flex: 0 0 20px;
+}
+
+.stick-band-thin {
+  flex-basis: 8px;
+}
+
+.stick-gap {
+  flex: 0 0 6px;
+}
+
+.stick-body {
+  flex: 1;
+}
+
+.stick-red .stick-band {
+  background: var(--stamp-red);
+}
+
+.stick-green .stick-band {
+  background: var(--ledger-green);
+}
+
+/* The winning (longest) stick gets a sign-here yellow body. */
+.stick-winner .stick-body {
+  background: var(--sign-yellow);
+}
+
+/* The partner's hand: covers exactly the ruler. Both striped handles poke
+   out to the left at the same length; what each stick does under the cover
+   (its real length) is only revealed when it lifts. */
+.sticks-cover {
+  position: absolute;
+  left: 28%;
+  right: 2%;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper-bright);
+  border: 3px solid var(--ink);
+  box-shadow: 7px 7px 0 var(--ink);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 72px;
+  line-height: 1;
+  transition:
+    transform 0.4s ease-in 0.15s,
+    opacity 0.4s ease-in 0.15s;
+}
+
+.sticks-cover-open {
+  transform: translateY(-24px);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dice-rolling .die-hop,
+  .dice-landed .die-hop {
+    animation: none;
+  }
+  .stick,
+  .sticks-cover {
+    transition: none;
+  }
+}
+
 /* Verdict stamp: slams across the middle of the challenge panel. */
 .result-stamp {
   position: absolute;

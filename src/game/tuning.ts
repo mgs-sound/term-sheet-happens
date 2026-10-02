@@ -69,6 +69,17 @@ export const HIGH_LOW = {
   maxRank: 14,
 } as const;
 
+/** Longest-stick challenge: stick lengths as % of the ruler. */
+export const STICKS = {
+  /** Winner's length range. */
+  longMin: 62,
+  longMax: 96,
+  /** The loser is at least this much shorter, so the verdict reads at a glance. */
+  minGap: 14,
+  /** Always past the cover's left edge (28% of the stage) so both handles look identical. */
+  shortMin: 40,
+} as const;
+
 export const MEETINGS_BY_TIER = {
   associate: 25,
   partner: 40,
@@ -178,8 +189,14 @@ export const VETO = {
   challengeChance: 1 / 3,
   /** The coin: chance your call is right. A fair one, despite everything. */
   coinWinChance: 0.5,
-  /** Share of challenges played as higher/lower instead of the coin. TUNE */
-  highLowShare: 0.5,
+  /**
+   * Which minigame settles a challenge: relative weights. Coin, dice and sticks
+   * are pure 50/50; higher/lower rewards a sensible call (~77% played well). TUNE
+   */
+  challengeWeights: { coin: 1, highLow: 1, dice: 1, sticks: 1 },
+  /** Even/odd and longest-stick: chance your call is right. */
+  diceWinChance: 0.5,
+  sticksWinChance: 0.5,
   associateBase: 0.15,
   offThesisBonus: 0.2,
   /** Traction at or below this counts as "low". */

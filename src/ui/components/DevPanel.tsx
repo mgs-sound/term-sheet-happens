@@ -17,6 +17,8 @@ export function DevPanel({
   onPreviewShare,
   onCoinFlip,
   onHighLow,
+  onDice,
+  onSticks,
 }: {
   game: GameState;
   onJump: (jump: DevJump) => void;
@@ -25,6 +27,8 @@ export function DevPanel({
   onPreviewShare: () => void;
   onCoinFlip: () => void;
   onHighLow: () => void;
+  onDice: () => void;
+  onSticks: () => void;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const harvested = game.phase === 'harvested';
@@ -80,6 +84,30 @@ export function DevPanel({
             onClick={onHighLow}
           >
             high/low
+          </button>
+          <button
+            type="button"
+            disabled={
+              game.phase !== 'meeting' ||
+              !game.currentCard ||
+              game.resolution !== null ||
+              game.currentCard.askM > game.capitalM
+            }
+            onClick={onDice}
+          >
+            dice
+          </button>
+          <button
+            type="button"
+            disabled={
+              game.phase !== 'meeting' ||
+              !game.currentCard ||
+              game.resolution !== null ||
+              game.currentCard.askM > game.capitalM
+            }
+            onClick={onSticks}
+          >
+            sticks
           </button>
           <span className="dev-label">sfx (placeholder soundboard)</span>
           {SFX_IDS.map((id) => (

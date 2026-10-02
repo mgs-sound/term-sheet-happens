@@ -160,9 +160,12 @@ export type Phase =
 
 export type CoinSide = 'heads' | 'tails';
 export type HighLowCall = 'higher' | 'lower';
-export type ChallengeCall = CoinSide | HighLowCall;
+export type DiceCall = 'even' | 'odd';
+export type StickCall = 'red' | 'green';
+export type ChallengeCall = CoinSide | HighLowCall | DiceCall | StickCall;
 /** Which partner minigame settles a veto. */
-export type ChallengeGame = 'coin' | 'highLow';
+export type ChallengeGame = 'coin' | 'highLow' | 'dice' | 'sticks';
+export const CHALLENGE_GAMES: readonly ChallengeGame[] = ['coin', 'highLow', 'dice', 'sticks'];
 
 export const SUITS = ['spades', 'hearts', 'diamonds', 'clubs'] as const;
 export type Suit = (typeof SUITS)[number];
@@ -224,6 +227,10 @@ export interface GameState {
   lastCoinFlip?: { call: CoinSide; landed: CoinSide; won: boolean } | null;
   /** The last higher/lower round, so the UI can reveal the hidden card. */
   lastHighLow?: { call: HighLowCall; shown: PlayingCard; hidden: PlayingCard; won: boolean } | null;
+  /** The last even/odd roll (1..6). */
+  lastDice?: { call: DiceCall; roll: number; won: boolean } | null;
+  /** The last longest-stick draw (lengths as % of the ruler). */
+  lastSticks?: { call: StickCall; red: number; green: number; won: boolean } | null;
 }
 
 // ---------------------------------------------------------------------------

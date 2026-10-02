@@ -166,6 +166,32 @@
     "highLowLost": [
       "Wrong call. Your partner reshuffles and leaves for lunch.",
       "The deck sides with your partner. The term sheet goes back in the drawer."
+    ],
+    "diceIntros": [
+      "Your partner produces a single die from a vest pocket. Even or odd?",
+      "Your partner proposes the firm's investment committee: one die, even or odd.",
+      "Your partner rolls for it. Call it: even or odd."
+    ],
+    "diceWon": [
+      "Right call. Your partner signs and pockets the die for the next IC.",
+      "The die agrees with you. Your partner calls it 'data-driven'."
+    ],
+    "diceLost": [
+      "Wrong call. Your partner blows on the die, satisfied.",
+      "The die votes no. Your partner logs it as 'process'."
+    ],
+    "sticksIntros": [
+      "Your partner hides two sticks in a fist. The longer one decides the deal.",
+      "Your partner insists on drawing straws. Pick the longer stick.",
+      "Your partner's conviction is measured in sticks. Choose the long one."
+    ],
+    "sticksWon": [
+      "Longest stick. Your partner signs, measuring twice to be sure.",
+      "You drew long. Your partner concedes and blames the ruler."
+    ],
+    "sticksLost": [
+      "Short stick. Your partner keeps the long one as a pointer for the next meeting.",
+      "You drew short. The term sheet is shorter still."
     ]
   },
   "fundIDifficulty": [

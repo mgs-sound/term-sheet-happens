@@ -277,7 +277,13 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     !isStringArray(vc.lost) ||
     !isStringArray(vc.highLowIntros) ||
     !isStringArray(vc.highLowWon) ||
-    !isStringArray(vc.highLowLost)
+    !isStringArray(vc.highLowLost) ||
+    !isStringArray(vc.diceIntros) ||
+    !isStringArray(vc.diceWon) ||
+    !isStringArray(vc.diceLost) ||
+    !isStringArray(vc.sticksIntros) ||
+    !isStringArray(vc.sticksWon) ||
+    !isStringArray(vc.sticksLost)
   ) {
     errors.push('lines.json: "vetoChallenge" needs a title and non-empty intros / won / lost arrays');
   }

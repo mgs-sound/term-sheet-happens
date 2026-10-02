@@ -58,6 +58,8 @@ function nextAction(
         const call = c.shown.rank <= 8 ? 'higher' : 'lower';
         return { type: 'RESOLVE_VETO_CHALLENGE', call };
       }
+      if (c?.game === 'dice') return { type: 'RESOLVE_VETO_CHALLENGE', call: 'even' };
+      if (c?.game === 'sticks') return { type: 'RESOLVE_VETO_CHALLENGE', call: 'red' };
       return { type: 'RESOLVE_VETO_CHALLENGE', call: 'heads' };
     }
     case 'fundClosed':

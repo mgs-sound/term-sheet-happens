@@ -138,6 +138,14 @@ export interface FlavorLines {
     highLowIntros: string[];
     highLowWon: string[];
     highLowLost: string[];
+    /** Even/odd dice variant. */
+    diceIntros: string[];
+    diceWon: string[];
+    diceLost: string[];
+    /** Longest-stick variant. */
+    sticksIntros: string[];
+    sticksWon: string[];
+    sticksLost: string[];
   };
   /** Mid-run portfolio screen: status stamp per company state. */
   portfolioStatusLabels: { active: string; writtenOff: string };

@@ -18,7 +18,16 @@ import {
   COIN_SPIN_MS,
   VetoChallengeSheet,
 } from '../components/VetoChallengeSheet';
-import type { ChallengeCall, CoinSide, HighLowCall, PlayingCard } from '../../game/types';
+import type {
+  ChallengeCall,
+  CoinSide,
+  DiceCall,
+  HighLowCall,
+  PlayingCard,
+  StickCall,
+} from '../../game/types';
+import { DICE_ROLL_MS, DiceChallengeSheet } from '../components/DiceChallengeSheet';
+import { STICKS_REVEAL_MS, SticksChallengeSheet } from '../components/SticksChallengeSheet';
 import { CARD_REVEAL_MS, HighLowChallengeSheet } from '../components/HighLowChallengeSheet';
 import { PortfolioSheet } from '../components/PortfolioSheet';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
@@ -76,7 +85,9 @@ export function RunScreen({
         kind: 'highLow';
         shown: PlayingCard;
         round: { call: HighLowCall; hidden: PlayingCard; won: boolean };
-      };
+      }
+    | { kind: 'dice'; roll: { call: DiceCall; roll: number; won: boolean } }
+    | { kind: 'sticks'; draw: { call: StickCall; red: number; green: number; won: boolean } };
   const [challengeShow, setChallengeShow] = useState<ChallengeShow | null>(null);
   const challengeOpen = game.phase === 'vetoChallenge' || challengeShow !== null;
   const pendingChallenge = game.vetoChallenge;
@@ -339,7 +350,9 @@ export function RunScreen({
               const preview = reduce(game, action);
               window.setTimeout(() => {
                 const committed = dispatch(action);
-                const won = committed.lastCoinFlip?.won ?? committed.lastHighLow?.won ?? false;
+                // The engine's verdict for THIS round (last* fields can be stale
+                // from an earlier, different minigame in the same run).
+                const won = committed.resolution === 'signed';
                 // The YOU WIN / YOU LOSE stamp lands a beat after the reveal.
                 window.setTimeout(
                   () => services.audio.play(won ? 'sign' : 'pass'),
@@ -354,10 +367,37 @@ export function RunScreen({
             };
             const key = `${card.pitchId}-${game.meetingIndex}`;
             const seed = game.seed + game.meetingIndex;
-            const isHighLow =
-              challengeShow?.kind === 'highLow' ||
-              (challengeShow === null && pendingChallenge?.game === 'highLow');
-            if (isHighLow) {
+            // Which minigame is on screen: the one playing out, else the pending one.
+            const kind = challengeShow?.kind ?? pendingChallenge?.game ?? 'coin';
+            if (kind === 'dice') {
+              return (
+                <DiceChallengeSheet
+                  key={key}
+                  lines={lines}
+                  seed={seed}
+                  result={challengeShow?.kind === 'dice' ? challengeShow.roll : null}
+                  onCall={(call) => {
+                    const roll = play(call, DICE_ROLL_MS)?.lastDice;
+                    if (roll) setChallengeShow({ kind: 'dice', roll });
+                  }}
+                />
+              );
+            }
+            if (kind === 'sticks') {
+              return (
+                <SticksChallengeSheet
+                  key={key}
+                  lines={lines}
+                  seed={seed}
+                  result={challengeShow?.kind === 'sticks' ? challengeShow.draw : null}
+                  onCall={(call) => {
+                    const draw = play(call, STICKS_REVEAL_MS)?.lastSticks;
+                    if (draw) setChallengeShow({ kind: 'sticks', draw });
+                  }}
+                />
+              );
+            }
+            if (kind === 'highLow') {
               const shown =
                 challengeShow?.kind === 'highLow' ? challengeShow.shown : pendingChallenge?.shown;
               if (!shown) return null;

@@ -13,7 +13,7 @@ function findChallenge(): GameState {
     for (let i = 0; i < 20 && s.currentCard; i++) {
       if (s.currentCard.askM > s.capitalM) break;
       s = reduce(s, { type: 'SIGN_AT_ASK' });
-      if (s.phase === 'vetoChallenge' && s.vetoChallenge?.game !== 'highLow') return s;
+      if (s.phase === 'vetoChallenge' && (s.vetoChallenge?.game ?? 'coin') === 'coin') return s;
       if (s.phase === 'vetoChallenge') break;
       s = reduce(s, { type: 'ADVANCE' });
       if (s.phase !== 'meeting') break;
@@ -51,13 +51,15 @@ describe('partner coin-flip veto challenge', () => {
   it('the coin is fair-ish across many challenges', () => {
     let wins = 0;
     let total = 0;
-    for (let seed = 1; seed < 3000 && total < 400; seed++) {
+    for (let seed = 1; seed < 6000 && total < 400; seed++) {
       let s = reduce(null, { type: 'START_RUN', career: initialCareer(), seed, content });
       while (s.currentCard && s.currentCard.askM <= s.capitalM && s.phase === 'meeting') {
         s = reduce(s, { type: 'SIGN_AT_ASK' });
         if (s.phase === 'vetoChallenge') {
-          if (s.vetoChallenge?.game === 'highLow') {
-            s = reduce(s, { type: 'RESOLVE_VETO_CHALLENGE', call: 'higher' });
+          const g = s.vetoChallenge?.game ?? 'coin';
+          if (g !== 'coin') {
+            const call = g === 'highLow' ? 'higher' : g === 'dice' ? 'even' : 'red';
+            s = reduce(s, { type: 'RESOLVE_VETO_CHALLENGE', call });
           } else {
             s = reduce(s, { type: 'RESOLVE_VETO_CHALLENGE', call: 'tails' });
             total++;
@@ -67,7 +69,7 @@ describe('partner coin-flip veto challenge', () => {
         s = reduce(s, { type: 'ADVANCE' });
       }
     }
-    expect(total).toBeGreaterThan(60);
+    expect(total).toBeGreaterThan(30);
     expect(wins / total).toBeGreaterThan(0.4);
     expect(wins / total).toBeLessThan(0.6);
   });

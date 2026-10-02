@@ -28,6 +28,8 @@ export type SfxId =
   | 'countTick' // score-counter tick while a number counts up
   | 'coinFlip' // partner's coin: thumb flick, spin, landing clink
   | 'cardFlip' // higher/lower: card slid off the deck and turned over
+  | 'diceRoll' // even/odd: rattling, slowing tumble, final click
+  | 'sticksDraw' // longest stick: the fist opens, sticks slide out
   | 'exitModest' // harvest reveal: acquihire / modest exit
   | 'unicorn' // harvest reveal: the big one
   | 'fanfareGood' // results, DPI >= 1x
@@ -36,7 +38,7 @@ export type SfxId =
 /** Every cue, in the order the dev soundboard lists them. */
 export const SFX_IDS: readonly SfxId[] = [
   'tap', 'tick', 'open', 'close', 'reroll', 'start', 'pass', 'sign', 'dealWon', 'dealFail',
-  'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'countTick', 'coinFlip', 'cardFlip', 'exitModest', 'unicorn',
+  'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'countTick', 'coinFlip', 'cardFlip', 'diceRoll', 'sticksDraw', 'exitModest', 'unicorn',
   'fanfareGood', 'fanfareBad',
 ];
 
@@ -206,6 +208,24 @@ const CUES: Record<SfxId, Voice[]> = {
     { at: 0, dur: 0.12, wave: 'noise', f: 2500, to: 900, vol: 0.45 },
     { at: 0.62, dur: 0.05, wave: 'noise', f: 4200, vol: 0.6 },
     { at: 0.62, dur: 0.08, wave: 'square', f: 660, to: 990, vol: 0.3 },
+  ],
+  // Die: knocks that space out as it decelerates, then a firm landing click.
+  diceRoll: [
+    ...[0, 0.07, 0.15, 0.24, 0.35, 0.48, 0.64, 0.83, 1.05].map((at, i) => ({
+      at,
+      dur: 0.03,
+      wave: 'noise' as const,
+      f: 1800 + (i % 3) * 400,
+      vol: 0.55,
+    })),
+    { at: 1.3, dur: 0.04, wave: 'noise', f: 2400, vol: 0.75 },
+    { at: 1.3, dur: 0.07, wave: 'triangle', f: 330, to: 220, vol: 0.6 },
+  ],
+  // Sticks: a fist opening (soft swish) then two wooden slides out.
+  sticksDraw: [
+    { at: 0, dur: 0.14, wave: 'noise', f: 900, to: 2200, vol: 0.4 },
+    { at: 0.35, dur: 0.3, wave: 'noise', f: 1400, to: 600, vol: 0.4 },
+    { at: 0.72, dur: 0.05, wave: 'triangle', f: 440, vol: 0.5 },
   ],
   // Arcade score counter: a short, low-mid "pip" (not shrill).
   countTick: [{ at: 0, dur: 0.03, wave: 'square', f: 392, vol: 0.28 }],
