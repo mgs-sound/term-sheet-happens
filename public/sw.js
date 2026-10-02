@@ -7,11 +7,13 @@
  * Bump CACHE on breaking cache-shape changes.
  */
 
-const CACHE = 'tsh-v1';
+const CACHE = 'tsh-v2'; // v2: new app icon (same filenames, so the old cache must go)
 const SHELL = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
+  '/favicon.ico',
+  '/icons/favicon-32.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/icon-maskable-512.png',
