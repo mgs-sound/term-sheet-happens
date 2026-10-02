@@ -3,6 +3,7 @@ import { difficultyBand } from '../../game/fundTerms';
 import type { GameState } from '../../game/types';
 import { fmtM } from '../format';
 import { FitFirmTitle } from '../components/FitFirmTitle';
+import { LpRequestList } from '../components/LpRequestList';
 
 const BAND_CLASS = ['label-green', '', 'label-red'] as const;
 
@@ -65,6 +66,7 @@ export function FirmReveal({
           <p className="terms-blurb">{terms.blurb}</p>
         </div>
       )}
+      <LpRequestList requests={game.lpRequests} lines={lines} note />
       <div className="screen-actions">
         {canReroll && (
           <button type="button" className="btn btn-secondary" data-sfx="reroll" onClick={onReroll}>

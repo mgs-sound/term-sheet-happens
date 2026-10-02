@@ -58,7 +58,13 @@
       "The endowment sends a fruit basket and a much larger check."
     ]
   },
-  "reputationStages": ["DOG WATER", "TOURIST", "CREDIBLE", "HEAT MAGNET", "ENLIGHTENED"],
+  "reputationStages": [
+    "DOG WATER",
+    "TOURIST",
+    "CREDIBLE",
+    "HEAT MAGNET",
+    "ENLIGHTENED"
+  ],
   "founderMoods": [
     "Reaching for the door",
     "Visibly insulted",
@@ -207,5 +213,34 @@
       "label": "BRUTAL",
       "blurb": "Too much money, too few meetings, LPs already drafting the email."
     }
-  ]
+  ],
+  "lpRequests": {
+    "title": "LP requests",
+    "stampMet": "MET",
+    "stampBroken": "BROKEN",
+    "brokenToast": "LP request broken: {request}",
+    "rewardNote": "+{trust} LP trust each, at harvest",
+    "kinds": {
+      "onThesis": [
+        "Invest only in on-thesis companies",
+        "Stay on thesis. They read the deck.",
+        "On-thesis only. It's in the LPA."
+      ],
+      "dryPowder": [
+        "Spend under {deployed}% of the fund",
+        "Keep {pct}% dry powder. Just in case.",
+        "Keep {pct}% for the second yacht"
+      ],
+      "unicorn": [
+        "Catch a unicorn",
+        "Find a unicorn. Any unicorn.",
+        "Bring home one unicorn. A real one."
+      ],
+      "returnFund": [
+        "Return the fund. That's the ask.",
+        "Give the money back. At least 1x.",
+        "Return 1x. The LPs will settle."
+      ]
+    }
+  }
 }

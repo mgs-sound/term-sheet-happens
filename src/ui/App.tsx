@@ -7,7 +7,12 @@ import { loadContentAsync } from '../content/loader';
 import type { Content, FlavorLines } from '../content/types';
 import { reduce } from '../game/engine';
 import { acceptLpOffer, closeCareerFund, initialCareer, withFirmName } from '../game/career';
-import { careerAtEnlightenmentGate, forceHarvestResult, forceVetoChallenge } from '../game/devtools';
+import {
+  careerAtEnlightenmentGate,
+  forceHarvestResult,
+  forceLpRequests,
+  forceVetoChallenge,
+} from '../game/devtools';
 import { generateFirmName } from '../game/firm';
 import { FIRM_OPTION_COUNT, pickFirmOptions } from '../game/firmOptions';
 import { createRng } from '../game/rng';
@@ -29,6 +34,7 @@ import { GpNamingScreen } from './screens/GpNamingScreen';
 import { LedgerScreen } from './screens/LedgerScreen';
 import { EnlightenmentScreen } from './screens/EnlightenmentScreen';
 import { DevPanel, type DevJump } from './components/DevPanel';
+import { lpRequestText } from './components/LpRequestList';
 import { SettingsSheet } from './components/SettingsSheet';
 import { Toasts, type Toast } from './components/Toasts';
 
@@ -52,9 +58,14 @@ function newSeed(): number {
   return (Date.now() + ++seedCounter * 7919) >>> 0;
 }
 
-function toastFor(e: GameEvent, lines: FlavorLines, key: number): Toast | null {
+function toastFor(e: GameEvent, lines: FlavorLines, key: number, game: GameState): Toast | null {
   const make = (text: string, tone: Toast['tone']): Toast => ({ id: 0, text, tone });
   switch (e.kind) {
+    case 'lpRequestBroken': {
+      const request = game.lpRequests?.find((r) => r.kind === e.request);
+      if (!request) return null;
+      return make(lines.lpRequests.brokenToast.replace('{request}', lpRequestText(lines, request)), 'red');
+    }
     case 'vetoed':
       return make(pickLine(lines.vetoLines, key), 'red');
     case 'zombieJab':
@@ -161,9 +172,12 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
   gameRef.current = game;
   const toastId = useRef(1);
 
+  /** Toasts only make sense next to what caused them: keep at most the two
+   *  on screen (no backlog trickling out seconds later). */
   const pushToast = useCallback((toast: Omit<Toast, 'id'>): void => {
-    setToasts((ts) => [...ts.slice(-3), { ...toast, id: toastId.current++ }]);
+    setToasts((ts) => [...ts.slice(-1), { ...toast, id: toastId.current++ }]);
   }, []);
+  const clearToasts = useCallback((): void => setToasts([]), []);
 
   const setGameDirect = useCallback((next: GameState): void => {
     gameRef.current = next;
@@ -184,7 +198,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
         const next = reduce(action.type === 'START_RUN' ? null : prev, action);
         const freshEvents = action.type === 'START_RUN' ? [] : next.events.slice(prev.events.length);
         freshEvents.forEach((e, i) => {
-          const toast = toastFor(e, content.lines, next.seed + next.events.length + i);
+          const toast = toastFor(e, content.lines, next.seed + next.events.length + i, next);
           if (toast) pushToast(toast);
         });
         gameRef.current = next;
@@ -201,6 +215,18 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
   const expireToast = useCallback((id: number): void => {
     setToasts((ts) => ts.filter((t) => t.id !== id));
   }, []);
+
+  // Leaving the meetings (fund closes) or opening Settings drops the run's
+  // pending toasts. Only on LEAVING 'run', so toasts that announce a new
+  // screen (e.g. a fresh career) survive.
+  const prevScreen = useRef(screen);
+  useEffect(() => {
+    if (prevScreen.current === 'run' && screen !== 'run') clearToasts();
+    prevScreen.current = screen;
+  }, [screen, clearToasts]);
+  useEffect(() => {
+    if (settingsOpen) clearToasts();
+  }, [settingsOpen, clearToasts]);
 
   // End-of-meetings watcher: no card left + all meetings held -> close the fund.
   useEffect(() => {
@@ -411,6 +437,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
             pushToast({ text: 'Check exceeds dry powder.', tone: 'red' });
           }}
           onSettings={() => setSettingsOpen(true)}
+          onPortfolioOpen={clearToasts}
         />
       )}
       {screen === 'closing' && (
@@ -511,6 +538,13 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           onAutoplay={devAutoplay}
           onForceDpi={devForceDpi}
           onPreviewShare={() => void devPreviewShare()}
+          onForceLpRequests={(mode) => {
+            try {
+              setGameDirect(forceLpRequests(gameRef.current, mode));
+            } catch (err) {
+              console.error(err);
+            }
+          }}
           onCoinFlip={() => {
             try {
               setGameDirect(forceVetoChallenge(gameRef.current, 'coin'));

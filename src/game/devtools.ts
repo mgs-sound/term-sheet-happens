@@ -8,6 +8,7 @@ import type { CareerState, ChallengeGame, GameState } from './types.ts';
 import { drawCard } from './engine.ts';
 import { createRng } from './rng.ts';
 import { initialCareer } from './career.ts';
+import { requestPool } from './lpRequests.ts';
 import { METERS } from './tuning.ts';
 import { clamp, roundM } from './util.ts';
 
@@ -56,6 +57,25 @@ export function forceVetoChallenge(
       ? { ...terms, game, shown: drawCard(createRng((state.rngState ^ 0xc0ffee) >>> 0)) }
       : { ...terms, game };
   s.negotiation = null;
+  return s;
+}
+
+/**
+ * Preview how a harvested fund's LP requests settle: every one met, or a
+ * met/broken mix. A run without requests (older save) gets the full pool.
+ * Cosmetic only (LP trust is not re-paid).
+ */
+export function forceLpRequests(state: GameState, mode: 'allMet' | 'mixed'): GameState {
+  if (state.phase !== 'harvested') throw new Error('forceLpRequests: run is not harvested');
+  const s = structuredClone(state) as GameState;
+  const requests =
+    s.lpRequests && s.lpRequests.length > 0
+      ? s.lpRequests
+      : requestPool(s.isFundI).map((kind, i) => ({ kind, status: 'open' as const, lineIndex: i }));
+  s.lpRequests = requests.map((r, i) => ({
+    ...r,
+    status: mode === 'allMet' || i % 2 === 0 ? ('met' as const) : ('broken' as const),
+  }));
   return s;
 }
 

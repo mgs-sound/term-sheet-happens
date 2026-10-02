@@ -32,6 +32,7 @@ import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
 import { rollFundITerms } from './fundTerms.ts';
+import { rollLpRequests, settleLpRequests, updateLiveLpRequests } from './lpRequests.ts';
 import {
   acceptanceProbability,
   entryBonus,
@@ -65,6 +66,7 @@ import {
   REPUTATION,
   TRUST,
   VETO,
+  LP_REQUESTS,
 } from './tuning.ts';
 import { roundM } from './util.ts';
 
@@ -143,6 +145,7 @@ export function createRun(
     lastCapitalCallQuarter: 0,
     events: [],
     harvest: null,
+    lpRequests: rollLpRequests(seed, isFundI),
   };
 }
 
@@ -197,6 +200,11 @@ export function reduce(state: GameState | null, action: Action): GameState {
     case 'HARVEST':
       handleHarvest(s, rng, action.push ?? []);
       break;
+  }
+
+  // LP requests: anything this action just violated breaks on the spot.
+  if (s.phase !== 'harvested') {
+    for (const request of updateLiveLpRequests(s)) log(s, 'lpRequestBroken', { request });
   }
 
   s.rngState = rng.getState();
@@ -815,6 +823,8 @@ function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
     vetoedUnicorns,
     visionaries,
   };
+  // LP requests settle with the harvest; each one met buys LP trust.
+  bumpTrust(s, settleLpRequests(s) * LP_REQUESTS.metTrustDelta);
   s.phase = 'harvested';
 }
 

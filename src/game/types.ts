@@ -8,6 +8,7 @@
 import type {
   ExitBucket,
   FirmNameParts,
+  LpRequestKind,
   Pitch,
   Sector,
   Thesis,
@@ -117,7 +118,8 @@ export type GameEventKind =
   | 'visionary'
   | 'vetoHeartbreak'
   | 'vetoChallenge'
-  | 'challengeWon';
+  | 'challengeWon'
+  | 'lpRequestBroken';
 
 /** Structured log entry — the UI maps kinds to flavor lines from content. */
 export interface GameEvent {
@@ -125,6 +127,23 @@ export interface GameEvent {
   kind: GameEventKind;
   company?: string;
   amountM?: number;
+  /** lpRequestBroken: which request. */
+  request?: LpRequestKind;
+}
+
+// ---------------------------------------------------------------------------
+// LP requests (per-fund side objectives)
+// ---------------------------------------------------------------------------
+
+export { LP_REQUEST_KINDS, type LpRequestKind } from '../content/types.ts';
+/** open = still in play; broken can happen mid-run; met only at harvest. */
+export type LpRequestStatus = 'open' | 'met' | 'broken';
+
+export interface LpRequest {
+  kind: LpRequestKind;
+  status: LpRequestStatus;
+  /** Which copy variant to show (UI mods by pool length). */
+  lineIndex: number;
 }
 
 export interface HarvestCompanyResult {
@@ -231,6 +250,8 @@ export interface GameState {
   lastDice?: { call: DiceCall; roll: number; won: boolean } | null;
   /** The last longest-stick draw (lengths as % of the ruler). */
   lastSticks?: { call: StickCall; red: number; green: number; won: boolean } | null;
+  /** This fund's LP requests (absent on older saves = none). */
+  lpRequests?: LpRequest[];
 }
 
 // ---------------------------------------------------------------------------

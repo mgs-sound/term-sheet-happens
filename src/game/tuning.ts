@@ -424,3 +424,21 @@ export const SWIPE = {
   /** Sub-threshold release springs the card back over this many ms. */
   springBackMs: 180,
 } as const;
+
+// ---------------------------------------------------------------------------
+// LP requests (per-fund side objectives)
+// ---------------------------------------------------------------------------
+
+export const LP_REQUESTS = {
+  /** How many requests a fund gets, rolled uniformly. */
+  minCount: 1,
+  maxCount: 3,
+  /** Salt for the requests' own RNG, so rolling them never shifts the deck. */
+  rngSalt: 0x4c50_5251,
+  /** dryPowder: broken once deployed capital exceeds this share of the fund. TUNE */
+  dryPowderMaxDeployed: 0.7,
+  /** returnFund: met at harvest when DPI reaches this. */
+  returnFundDpi: 1,
+  /** LP trust granted per request met, at harvest (feeds next fund size). TUNE */
+  metTrustDelta: 6,
+} as const;

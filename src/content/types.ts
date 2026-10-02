@@ -71,6 +71,10 @@ export type VerdictBucket = (typeof VERDICT_BUCKETS)[number];
 export const EXIT_BUCKETS = ['zero', 'acquihire', 'base', 'win', 'unicorn'] as const;
 export type ExitBucket = (typeof EXIT_BUCKETS)[number];
 
+/** Per-fund LP request kinds (game logic in game/lpRequests.ts). */
+export const LP_REQUEST_KINDS = ['onThesis', 'dryPowder', 'unicorn', 'returnFund'] as const;
+export type LpRequestKind = (typeof LP_REQUEST_KINDS)[number];
+
 /**
  * Every pool of flavor/toast copy the game draws from (via injected RNG).
  * Adding a pool here (plus lines.json content) is how new copy surfaces exist.
@@ -151,6 +155,19 @@ export interface FlavorLines {
   portfolioStatusLabels: { active: string; writtenOff: string };
   /** Mid-run portfolio screen when nothing is signed yet. */
   portfolioEmpty: string[];
+  /** Per-fund LP requests (side objectives). */
+  lpRequests: {
+    title: string;
+    stampMet: string;
+    stampBroken: string;
+    /** Toast when one breaks mid-run; {request} = the request's text. */
+    brokenToast: string;
+    /** Note under the list; {trust} = LP trust per request met. */
+    rewardNote: string;
+    /** Copy variants per request kind. dryPowder may use {pct} (reserve
+     *  share) and {deployed} (max deployed share). */
+    kinds: Record<LpRequestKind, string[]>;
+  };
 }
 
 /** Everything the content layer provides, fully validated. */

@@ -65,6 +65,7 @@ export function RunScreen({
   lines,
   onBlockedSwipe,
   onSettings,
+  onPortfolioOpen,
 }: {
   game: GameState;
   dispatch: (action: Action) => GameState;
@@ -72,6 +73,8 @@ export function RunScreen({
   onBlockedSwipe: () => void;
   /** Opens the app-level Settings sheet (reachable from the portfolio). */
   onSettings: () => void;
+  /** Portfolio opened: the run's toasts lose their context, so drop them. */
+  onPortfolioOpen: () => void;
 }): JSX.Element {
   const reducedMotion = useReducedMotion();
   const [exiting, setExiting] = useState<SwipeDir | null>(null);
@@ -310,7 +313,10 @@ export function RunScreen({
           type="button"
           className="btn btn-secondary btn-portfolio"
           data-sfx="open"
-          onClick={() => setPortfolioOpen(true)}
+          onClick={() => {
+            onPortfolioOpen();
+            setPortfolioOpen(true);
+          }}
           aria-label={`Portfolio, ${game.portfolio.length} companies`}
         >
           <span className="burger" aria-hidden="true" />

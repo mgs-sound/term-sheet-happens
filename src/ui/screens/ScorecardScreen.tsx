@@ -4,6 +4,7 @@ import type { FlavorLines } from '../../content/types';
 import { verdictBucket } from '../../game/verdict';
 import { fmtDpi, fmtM, pickLine } from '../format';
 import { FirmName } from '../components/FirmName';
+import { LpRequestList } from '../components/LpRequestList';
 import { services } from '../../services';
 import { useReducedMotion } from '../useReducedMotion';
 import { useCountUp } from '../useCountUp';
@@ -92,6 +93,7 @@ export function ScorecardScreen({
           Vetoed unicorns you were right about: {harvest.vetoedUnicorns}
         </p>
       )}
+      <LpRequestList requests={game.lpRequests} lines={lines} stamps />
       <div className="screen-actions">
         <button type="button" className="btn btn-secondary" onClick={onShare}>
           Share the memo

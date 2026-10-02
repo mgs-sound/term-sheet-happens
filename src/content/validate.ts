@@ -8,6 +8,7 @@
 
 import {
   EXIT_BUCKETS,
+  LP_REQUEST_KINDS,
   SECTORS,
   VERDICT_BUCKETS,
   type Content,
@@ -22,6 +23,8 @@ import {
  * (Not gameplay tuning — this bounds the writing, not the game.)
  */
 export const MAX_IDEA_WORDS = 20;
+/** LP requests must fit one line on the engagement letter (tokens count as 2). */
+export const MAX_LP_REQUEST_CHARS = 36;
 
 export function countWords(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
@@ -291,6 +294,37 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
   const status = data.portfolioStatusLabels;
   if (!isRecord(status) || !isNonEmptyString(status.active) || !isNonEmptyString(status.writtenOff)) {
     errors.push('lines.json: "portfolioStatusLabels" must have non-empty "active" and "writtenOff"');
+  }
+
+  const lr = data.lpRequests;
+  if (
+    !isRecord(lr) ||
+    !isNonEmptyString(lr.title) ||
+    !isNonEmptyString(lr.stampMet) ||
+    !isNonEmptyString(lr.stampBroken) ||
+    !isNonEmptyString(lr.brokenToast) ||
+    !isNonEmptyString(lr.rewardNote) ||
+    !isRecord(lr.kinds) ||
+    !LP_REQUEST_KINDS.every((k) => isStringArray((lr.kinds as Record<string, unknown>)[k]))
+  ) {
+    errors.push(
+      `lines.json: "lpRequests" needs title / stampMet / stampBroken / brokenToast / rewardNote and non-empty kinds.{${LP_REQUEST_KINDS.join(',')}}`,
+    );
+  }
+
+  if (isRecord(lr) && isRecord(lr.kinds)) {
+    for (const k of LP_REQUEST_KINDS) {
+      const pool = (lr.kinds as Record<string, unknown>)[k];
+      if (!Array.isArray(pool)) continue;
+      for (const t of pool) {
+        const shown = String(t).replace(/\{[a-z]+\}/g, '00');
+        if (shown.length > MAX_LP_REQUEST_CHARS) {
+          errors.push(
+            `lines.json: lpRequests.kinds.${k} "${String(t)}" is ${shown.length} chars (max ${MAX_LP_REQUEST_CHARS}, one line)`,
+          );
+        }
+      }
+    }
   }
 
   return { lines: errors.length > 0 ? null : (data as unknown as FlavorLines), errors };

@@ -15,6 +15,7 @@ export function DevPanel({
   onAutoplay,
   onForceDpi,
   onPreviewShare,
+  onForceLpRequests,
   onCoinFlip,
   onHighLow,
   onDice,
@@ -25,6 +26,7 @@ export function DevPanel({
   onAutoplay: () => void;
   onForceDpi: (dpi: number, enlightenGrade: boolean) => void;
   onPreviewShare: () => void;
+  onForceLpRequests: (mode: 'allMet' | 'mixed') => void;
   onCoinFlip: () => void;
   onHighLow: () => void;
   onDice: () => void;
@@ -80,6 +82,13 @@ export function DevPanel({
           </button>
           <button type="button" disabled={!harvested} onClick={() => onForceDpi(3.4, true)}>
             3.4x+gate
+          </button>
+          <span className="dev-label">lp requests {harvested ? '' : '(harvest first)'}</span>
+          <button type="button" disabled={!harvested} onClick={() => onForceLpRequests('allMet')}>
+            all met
+          </button>
+          <button type="button" disabled={!harvested} onClick={() => onForceLpRequests('mixed')}>
+            mixed
           </button>
           <span className="dev-label">partner veto</span>
           <button
