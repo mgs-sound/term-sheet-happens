@@ -69,7 +69,7 @@ describe('career ladder', () => {
     expect(shrunk.nextFundSizeM!).toBeLessThan(next.nextFundSizeM!);
   });
 
-  it('grants Enlightenment only at 3x+ on $250M+ with maxed reputation', () => {
+  it('grants Enlightenment only at 3x+ on $200M+ with maxed reputation', () => {
     const gp = { ...initialCareer(), tier: 'gp' as const, fundIndex: 5 };
     const win = harvestedRun({ dpi: 3.2, fundSizeM: 300, reputation: 95 });
     const enlightened = closeCareerFund(gp, win, createRng(1), content.theses);

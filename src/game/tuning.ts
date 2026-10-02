@@ -48,17 +48,22 @@ export const FUND_I_TERMS = {
    *  shifts the main stream (firm name / thesis / deck stay seed-stable). */
   rngSalt: 0x7e57,
   sizeM: { easy: 8, hard: 10 },
-  meetings: { easy: 18, hard: 12 }, // TUNE — deck has 80 pitches total
+  meetings: { easy: 20, hard: 10 }, // TUNE — Standard lands ~15, the sweet spot
   /** Added to the career's starting LP trust (METERS.startLpTrust). TUNE */
   lpTrustOffset: { easy: 10, hard: -10 },
   /** Dial cutoffs for the 3 labelled bands: soft < 1/3 <= standard < 2/3 <= brutal. */
   bandCutoffs: [1 / 3, 2 / 3],
 } as const;
 
+/**
+ * Meetings per fund after Fund I. Growth should FEEL like growth: a repeat
+ * Associate (missed 1x) gets a short fund; earning Partner opens the full
+ * calendar. 50 felt like a punishment — 40 is the cap. TUNE
+ */
 export const MEETINGS_BY_TIER = {
-  associate: 40,
-  partner: 50,
-  gp: 50,
+  associate: 25,
+  partner: 40,
+  gp: 40,
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -323,9 +328,9 @@ export const CAREER = {
   /** DPI thresholds (returned / fund size). */
   associatePromotionDpi: 1.0,
   partnerPromotionDpi: 2.0,
-  /** Enlightenment: 3x+ on a $250M+ fund at max reputation stage. */
+  /** Enlightenment: 3x+ on a $200M+ fund at max reputation stage. */
   enlightenmentDpi: 3.0,
-  enlightenmentMinFundM: 250,
+  enlightenmentMinFundM: 200, // scaled with gpBaseM (was 250 at 50 meetings)
   /** "Maxed reputation" = top stage lower bound (REPUTATION.stageThresholds[4]). */
   enlightenmentMinRep: 90,
   gpOfferCount: 3,
@@ -343,7 +348,7 @@ export const FUND_SIZING = {
   /** Base next-fund size per tier, before DPI and trust multipliers. TUNE */
   associateBaseM: 30,
   partnerBaseM: 90,
-  gpBaseM: 180,
+  gpBaseM: 145, // scaled ×40/50 with GP meetings so a GP fund is still deployable
   /** DPI factor = clamp(dpiFactorBase + dpi * dpiFactorSlope). TUNE */
   dpiFactorBase: 0.6,
   dpiFactorSlope: 0.4,

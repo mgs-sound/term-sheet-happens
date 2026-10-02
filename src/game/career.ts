@@ -134,7 +134,7 @@ export function closeCareerFund(
     next.nextFundSizeM = nextFundSizeM(baseM, dpi, run.lpTrust);
   }
 
-  // Enlightenment: 3x+ on a $250M+ fund at maxed reputation.
+  // Enlightenment: 3x+ on a CAREER.enlightenmentMinFundM+ fund at maxed reputation.
   if (
     dpi >= CAREER.enlightenmentDpi &&
     run.fundSizeM >= CAREER.enlightenmentMinFundM &&

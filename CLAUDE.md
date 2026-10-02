@@ -42,14 +42,14 @@ A satirical VC card-swipe roguelite. Reigns/Tinder loop: each run is one fund at
 ## Run structure
 
 - **Fund I (always):** $8–10M, ~15 meetings, simplified rules (sign-at-ask only, no sliders), deck quietly stacked toward mediocrity, aggressive partner vetoes. Most players fail (~0.3–0.8x). Ends with the rehire card: "Somehow, you've been hired again. The industry has no long-term memory."
-- **Fund II+:** ~40 meetings (Associate), ~50 (Partner+), full systems.
+- **Fund II+:** ~25 meetings (repeat Associate), ~40 (Partner+), full systems. Growth should feel like growth; 50 felt like a punishment.
 
 ## Career ladder (you always change firms — promotion = poaching)
 
 - **Associate** → return 1x+ → poached to **Partner** at a new firm (board seats unlock, bigger fund).
 - **Partner** → return 2x+ → **GP**: choose between three LP offer packages (fund size + assigned thesis + a quirk), name your own firm (or reroll generated names).
 - **GP:** DPI sizes the next fund (AUM is the career score). Capital calls become a hazard.
-- **Endgame:** 3x+ on a $250M+ fund with maxed reputation = **Enlightenment**. Final card: a young associate pitches YOU their fund — you swipe on them. Credits. Endless mode unlocks.
+- **Endgame:** 3x+ on a $200M+ fund with maxed reputation = **Enlightenment**. Final card: a young associate pitches YOU their fund — you swipe on them. Credits. Endless mode unlocks.
 
 ## Core systems
 
