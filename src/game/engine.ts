@@ -283,6 +283,10 @@ function handleResolveVetoChallenge(s: GameState, rng: RNG, call: CoinSide): voi
   if (s.vetoChallenge.checkM > s.capitalM) {
     throw new Error('RESOLVE_VETO_CHALLENGE: parked check exceeds capital');
   }
+  // Decide the WIN first, then show the face that matches. Statistically the
+  // same fair 50/50 as a free-landing coin, but reload-proof: replaying the
+  // same moment gives the same verdict whichever side you call, so a reload
+  // can't be used to learn the face and pick it.
   const won = rng.chance(VETO.coinWinChance);
   const landed: CoinSide = won ? call : call === 'heads' ? 'tails' : 'heads';
   const terms = s.vetoChallenge;

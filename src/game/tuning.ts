@@ -167,7 +167,7 @@ export const VETO = {
    * ("leadership challenge"): call it right and the deal goes through. TUNE
    */
   challengeChance: 1 / 3,
-  /** The coin. A fair one, despite everything. */
+  /** The coin: chance your call is right. A fair one, despite everything. */
   coinWinChance: 0.5,
   associateBase: 0.15,
   offThesisBonus: 0.2,
