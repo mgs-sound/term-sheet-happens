@@ -5,6 +5,9 @@ import { EXITS } from '../../game/tuning';
 import { FitFirmTitle } from '../components/FitFirmTitle';
 import { PortfolioSheet } from '../components/PortfolioSheet';
 
+/** Names listed in the push reminder before it collapses to "+N more". */
+const PUSH_NAMES_SHOWN = 3;
+
 export function ClosingScreen({
   game,
   lines,
@@ -41,7 +44,8 @@ export function ClosingScreen({
             {pushed.length > 0 ? (
               <>
                 Pushing {pushed.length} exit{pushed.length === 1 ? '' : 's'}:{' '}
-                <strong>{pushed.map((c) => c.card.name).join(', ')}</strong>
+                <strong>{pushed.slice(0, PUSH_NAMES_SHOWN).map((c) => c.card.name).join(', ')}</strong>
+                {pushed.length > PUSH_NAMES_SHOWN && <> +{pushed.length - PUSH_NAMES_SHOWN} more</>}
               </>
             ) : (
               <>

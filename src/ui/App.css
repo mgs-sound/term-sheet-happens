@@ -1192,9 +1192,17 @@
 }
 
 .push-reminder-line {
+  flex: 1 1 auto;
+  min-width: 0;
   margin: 0;
   font-size: 14px;
   font-style: italic;
+}
+
+/* The button keeps its size however long the list of pushed exits gets. */
+.push-reminder .btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 /* Portfolio overlay: covers the whole run screen (ledger included). */
