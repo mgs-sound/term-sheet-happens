@@ -107,6 +107,13 @@
   margin-bottom: 8px;
 }
 
+/* Rule with a figure on the right (e.g. the quarter). */
+.letterhead-rule.rule-split {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .letterhead-kicker {
   margin: 0;
   font-size: 12px;
@@ -122,10 +129,33 @@
   text-transform: uppercase;
 }
 
+/* Engagement letter: the name always gets exactly two lines of room (any
+   name that would need three shrinks, see FitFirmTitle), so rerolling never
+   moves the figures row. */
+.letterhead-title.title-fixed {
+  height: calc(2 * clamp(28px, 9.4vw, 38px) * 1.08);
+  overflow: hidden;
+}
+
+.title-fit {
+  display: block;
+  line-height: 1.04;
+}
+
+.title-line {
+  display: block;
+}
+
 .letterhead-thesis {
   margin: 6px 0 0;
   font-style: italic;
   font-size: 17px;
+}
+
+/* The thesis line varies per firm too: reserve two lines. */
+.letterhead-thesis.thesis-fixed {
+  line-height: 1.25;
+  min-height: 2.5em;
 }
 
 .letterhead-sectors {
@@ -706,22 +736,17 @@
   text-transform: uppercase;
   white-space: nowrap;
   padding: 6px 18px;
-  border: 5px solid;
-  background: var(--paper-bright);
+  /* Colourless on purpose: red/green already mean "the side that came up"
+     (heads/tails, even/odd, sticks), so the verdict is plain ink on
+     sign-here yellow — the words carry win/lose. */
+  color: var(--ink);
+  border: 5px solid var(--ink);
+  background: var(--sign-yellow);
+  box-shadow: 5px 5px 0 var(--ink);
   pointer-events: none;
   opacity: 0;
   transform: translate(-50%, -50%) rotate(-8deg) scale(2.6);
   animation: result-slam 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.3) 0.25s forwards;
-}
-
-.result-won {
-  color: var(--ledger-green);
-  border-color: var(--ledger-green);
-}
-
-.result-lost {
-  color: var(--stamp-red);
-  border-color: var(--stamp-red);
 }
 
 @keyframes result-slam {
@@ -2163,6 +2188,30 @@ input[type='range']::-moz-range-thumb {
 
 .dev-body button:disabled {
   opacity: 0.35;
+}
+
+.dev-body button.dev-on {
+  background: var(--sign-yellow);
+}
+
+/* DEV experiment (DevPanel "rounded" toggle): soft corners on the minigame
+   GRAPHICS only (die, playing cards, ruler, cover, sticks), like the design
+   mockups. Never on the panel, buttons, YOU CHOSE tags or the result stamp.
+   Deliberately breaks the no-rounded-corners rule, so it only exists behind
+   the toggle. */
+:root[data-rounded] .challenge-sheet .die {
+  border-radius: 18px;
+}
+:root[data-rounded] .challenge-sheet .playing-card {
+  border-radius: 10px;
+}
+:root[data-rounded] .challenge-sheet .ruler,
+:root[data-rounded] .challenge-sheet .sticks-cover {
+  border-radius: 8px;
+}
+:root[data-rounded] .challenge-sheet .stick {
+  border-radius: 999px;
+  overflow: hidden;
 }
 
 /* ---------------------------------------------------------------- toasts */

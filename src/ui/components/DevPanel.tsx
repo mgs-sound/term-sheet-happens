@@ -31,6 +31,17 @@ export function DevPanel({
   onSticks: () => void;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
+  // Design experiment: rounded corners on the veto minigames (see
+  // [data-rounded] in App.css). Dev-only; the shipped look stays hard-edged.
+  const [rounded, setRounded] = useState(
+    () => typeof document !== 'undefined' && 'rounded' in document.documentElement.dataset,
+  );
+  const toggleRounded = (): void => {
+    const next = !rounded;
+    if (next) document.documentElement.dataset.rounded = '';
+    else delete document.documentElement.dataset.rounded;
+    setRounded(next);
+  };
   const harvested = game.phase === 'harvested';
 
   return (
@@ -108,6 +119,9 @@ export function DevPanel({
             onClick={onSticks}
           >
             sticks
+          </button>
+          <button type="button" className={rounded ? 'dev-on' : ''} onClick={toggleRounded}>
+            rounded: {rounded ? 'on' : 'off'}
           </button>
           <span className="dev-label">sfx (placeholder soundboard)</span>
           {SFX_IDS.map((id) => (

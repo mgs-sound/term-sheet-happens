@@ -1,8 +1,8 @@
-import type { FlavorLines } from '../../content/types';
+import type { FirmNameParts, FlavorLines } from '../../content/types';
 import { difficultyBand } from '../../game/fundTerms';
 import type { GameState } from '../../game/types';
 import { fmtM } from '../format';
-import { FirmName } from '../components/FirmName';
+import { FitFirmTitle } from '../components/FitFirmTitle';
 
 const BAND_CLASS = ['label-green', '', 'label-red'] as const;
 
@@ -11,6 +11,7 @@ const TIER_LABELS = { associate: 'ASSOCIATE', partner: 'PARTNER', gp: 'GENERAL P
 export function FirmReveal({
   game,
   lines,
+  firmParts,
   optionIndex,
   optionCount,
   onReroll,
@@ -19,6 +20,7 @@ export function FirmReveal({
 }: {
   game: GameState;
   lines: FlavorLines;
+  firmParts: FirmNameParts;
   /** Which of the fixed firm options is showing (0-based) and how many exist. */
   optionIndex: number;
   optionCount: number;
@@ -35,10 +37,8 @@ export function FirmReveal({
       <p className="letterhead-kicker">
         Fund {game.fundIndex} &middot; {TIER_LABELS[game.tier]}
       </p>
-      <h1 className="letterhead-title">
-        <FirmName name={game.firmName} />
-      </h1>
-      <p className="letterhead-thesis">&ldquo;{game.thesis.line}&rdquo;</p>
+      <FitFirmTitle name={game.firmName} parts={firmParts} />
+      <p className="letterhead-thesis thesis-fixed">&ldquo;{game.thesis.line}&rdquo;</p>
       <p className="letterhead-sectors">
         Mandate: {game.thesis.sectors[0]} &middot; {game.thesis.sectors[1]}
       </p>

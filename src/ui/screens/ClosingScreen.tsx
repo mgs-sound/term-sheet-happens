@@ -1,19 +1,21 @@
 import { useState } from 'react';
-import type { FlavorLines } from '../../content/types';
+import type { FirmNameParts, FlavorLines } from '../../content/types';
 import type { GameState } from '../../game/types';
 import { EXITS } from '../../game/tuning';
-import { FirmName } from '../components/FirmName';
+import { FitFirmTitle } from '../components/FitFirmTitle';
 import { PortfolioSheet } from '../components/PortfolioSheet';
 
 export function ClosingScreen({
   game,
   lines,
+  firmParts,
   onHarvest,
   onTogglePush,
   onSettings,
 }: {
   game: GameState;
   lines: FlavorLines;
+  firmParts: FirmNameParts;
   onHarvest: () => void;
   onTogglePush: (companyId: string) => void;
   onSettings: () => void;
@@ -26,9 +28,7 @@ export function ClosingScreen({
   return (
     <section className="screen letterhead closing-screen">
       <div className="letterhead-rule">Notice of fund close</div>
-      <h1 className="letterhead-title">
-        <FirmName name={game.firmName} />
-      </h1>
+      <FitFirmTitle name={game.firmName} parts={firmParts} />
       <p className="letterhead-thesis">
         The checkbook is closed. {game.portfolio.length} companies, {EXITS.harvestYears} years,
         one envelope.

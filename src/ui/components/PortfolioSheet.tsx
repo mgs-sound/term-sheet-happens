@@ -39,9 +39,14 @@ export function PortfolioSheet({
       role="dialog"
       aria-label="Portfolio"
     >
-      <div className="letterhead-rule">Portfolio &mdash; interim</div>
+      {/* Quarter is a figure, so it sits in mono on the rule; the kicker
+          line is the firm alone, in its own face. */}
+      <div className="letterhead-rule rule-split">
+        <span>Portfolio &mdash; interim</span>
+        <span>Q{game.quarter}</span>
+      </div>
       <p className="letterhead-kicker">
-        <FirmName name={game.firmName} /> &middot; Q{game.quarter}
+        <FirmName name={game.firmName} />
       </p>
 
       <dl className="figures-row">

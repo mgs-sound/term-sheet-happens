@@ -380,6 +380,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
         <FirmReveal
           game={game}
           lines={content.lines}
+          firmParts={content.firmNames}
           optionIndex={firmOptions ? Math.max(0, firmOptions.indexOf(game.seed)) : 0}
           optionCount={FIRM_OPTION_COUNT}
           onReroll={() => {
@@ -410,6 +411,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
         <ClosingScreen
           game={game}
           lines={content.lines}
+          firmParts={content.firmNames}
           onTogglePush={(companyId) => dispatch({ type: 'TOGGLE_PUSH_EXIT', companyId })}
           onSettings={() => setSettingsOpen(true)}
           onHarvest={() => {
