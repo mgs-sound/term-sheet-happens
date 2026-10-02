@@ -298,6 +298,10 @@
 .sheet.challenge-sheet {
   box-shadow: 6px 6px 0 var(--stamp-red);
   gap: 10px;
+  /* One stroke and one block shadow for every minigame graphic (coin, cards,
+     die, sticks, ruler/lines, cover) so they read as one drawn set. */
+  --mg-stroke: 2px; /* = the pitch card outline */
+  --mg-shadow: 6px;
 }
 
 /* When the panel is stretched up to the card's DEAL HEAT / ARR rule
@@ -341,8 +345,8 @@
   align-items: center;
   justify-content: center;
   color: var(--paper-bright);
-  border: 3px solid var(--ink);
-  box-shadow: 8px 8px 0 var(--ink);
+  border: var(--mg-stroke) solid var(--ink);
+  box-shadow: var(--mg-shadow) var(--mg-shadow) 0 var(--ink);
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 700;
@@ -424,8 +428,8 @@
   width: 84px;
   height: 116px;
   background: var(--paper-bright);
-  border: 3px solid var(--ink);
-  box-shadow: 7px 7px 0 var(--ink);
+  border: var(--mg-stroke) solid var(--ink);
+  box-shadow: var(--mg-shadow) var(--mg-shadow) 0 var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -544,13 +548,13 @@
   grid-template-rows: repeat(3, 1fr);
   padding: 12px;
   background: var(--paper-bright);
-  border: 3px solid currentcolor;
+  border: var(--mg-stroke) solid currentcolor;
 }
 
 /* The block shadow lives on the non-rotating wrapper (drop-shadow follows the
    rotated die's outline), so it always falls down-right, never spins. */
 .die-hop {
-  filter: drop-shadow(8px 8px 0 var(--ink));
+  filter: drop-shadow(var(--mg-shadow) var(--mg-shadow) 0 var(--ink));
 }
 
 .pip {
@@ -630,14 +634,14 @@
   right: 2%;
   top: 0;
   bottom: 0;
-  border: 2px solid var(--ink);
+  border: var(--mg-stroke) solid var(--ink);
   display: flex;
   justify-content: space-between;
   padding: 0 6px;
 }
 
 .ruler-tick {
-  width: 2px;
+  width: var(--mg-stroke);
   height: 14px;
   background: var(--ink);
 }
@@ -658,8 +662,8 @@
 .stick {
   display: flex;
   height: 20px;
-  border: 2px solid var(--ink);
-  box-shadow: 4px 4px 0 var(--ink);
+  border: var(--mg-stroke) solid var(--ink);
+  box-shadow: var(--mg-shadow) var(--mg-shadow) 0 var(--ink);
   background: var(--paper-bright);
 }
 
@@ -706,8 +710,8 @@
   align-items: center;
   justify-content: center;
   background: var(--paper-bright);
-  border: 3px solid var(--ink);
-  box-shadow: 7px 7px 0 var(--ink);
+  border: var(--mg-stroke) solid var(--ink);
+  box-shadow: var(--mg-shadow) var(--mg-shadow) 0 var(--ink);
   font-family: var(--font-serif);
   font-weight: 700;
   font-size: 72px;
@@ -737,8 +741,8 @@
 :root:not([data-sticks-flat]) .sticks-stage {
   container-type: inline-size;
   height: auto;
-  aspect-ratio: 100 / 36;
-  margin: 8px 0 18px;
+  aspect-ratio: 100 / 40;
+  margin: 3px 0 18px;
 }
 /* The fist: about half the panel wide, handles poke out above it. */
 :root:not([data-sticks-flat]) .sticks-cover {
@@ -746,8 +750,6 @@
   right: 24.5%;
   top: 23%;
   bottom: 0;
-  border-width: 0.6cqw;
-  box-shadow: 1.6cqw 1.6cqw 0 var(--ink);
   font-size: 14cqw;
 }
 /* Upright measure: no box, just evenly ruled lines behind the sticks,
@@ -765,8 +767,7 @@
 :root:not([data-sticks-flat]) .ruler-tick,
 :root:not([data-sticks-flat]) .ruler-tick:nth-child(odd) {
   width: auto;
-  height: 0.35cqw;
-  min-height: 1.5px;
+  height: var(--mg-stroke);
 }
 /* Stick centres at ~41.5% and ~57% of the stage. */
 :root:not([data-sticks-flat]) .sticks-lane {
@@ -777,10 +778,9 @@
 }
 :root:not([data-sticks-flat]) .stick {
   flex-direction: column;
-  width: 3.2cqw;
+  /* Wide enough that the shared stroke leaves the stripes readable. */
+  width: 14px;
   height: var(--len);
-  border-width: 0.5cqw;
-  box-shadow: 1.6cqw 1.6cqw 0 var(--ink);
 }
 :root:not([data-sticks-flat]) .stick-band {
   flex: 0 0 2.8cqw;
@@ -823,7 +823,7 @@
      (heads/tails, even/odd, sticks), so the verdict is plain ink on
      sign-here yellow — the words carry win/lose. */
   color: var(--ink);
-  border: 5px solid var(--ink);
+  border: 4px solid var(--ink); /* same weight as the PASS / OFFER stamps */
   background: var(--sign-yellow);
   box-shadow: 5px 5px 0 var(--ink);
   pointer-events: none;
