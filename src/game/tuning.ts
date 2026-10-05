@@ -430,7 +430,10 @@ export const SWIPE = {
 // ---------------------------------------------------------------------------
 
 export const LP_REQUESTS = {
-  /** How many requests a fund gets, rolled uniformly. */
+  /** Fund I (the tutorial) always gets exactly this many, and only from the
+   *  requests the player fully controls (see requestPool). */
+  fundICount: 1,
+  /** Fund II+: how many requests a fund gets, rolled uniformly. */
   minCount: 1,
   maxCount: 3,
   /** Salt for the requests' own RNG, so rolling them never shifts the deck. */

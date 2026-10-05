@@ -9,18 +9,23 @@ import { createRng } from './rng.ts';
 import type { GameState, LpRequest, LpRequestKind } from './types.ts';
 import { LP_REQUESTS } from './tuning.ts';
 
-/** Which requests a fund can roll. Fund I's deck is capped low
- *  (FUND_I.qualityCap) so unicorns are near-impossible there; it asks to
- *  return the fund instead. */
+/**
+ * Which requests a fund can roll. Fund I is the tutorial: only requests the
+ * player fully controls (no luck at harvest), so the first one is always
+ * doable. Its deck can't make unicorns anyway, and returning the fund there
+ * is a ~1-in-3 shot. ('returnFund' stays in the catalogue for later tiers.)
+ */
 export function requestPool(isFundI: boolean): LpRequestKind[] {
-  return isFundI ? ['onThesis', 'dryPowder', 'returnFund'] : ['onThesis', 'dryPowder', 'unicorn'];
+  return isFundI ? ['onThesis', 'dryPowder'] : ['onThesis', 'dryPowder', 'unicorn'];
 }
 
 /** The fund's requests for a run seed: distinct kinds, count in min..max. */
 export function rollLpRequests(seed: number, isFundI: boolean): LpRequest[] {
   const rng = createRng((seed ^ LP_REQUESTS.rngSalt) >>> 0);
   const pool = requestPool(isFundI);
-  const count = Math.min(pool.length, rng.int(LP_REQUESTS.minCount, LP_REQUESTS.maxCount));
+  const count = isFundI
+    ? LP_REQUESTS.fundICount
+    : Math.min(pool.length, rng.int(LP_REQUESTS.minCount, LP_REQUESTS.maxCount));
   return rng
     .shuffle(pool)
     .slice(0, count)

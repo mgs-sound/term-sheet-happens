@@ -48,10 +48,14 @@ describe('rollLpRequests', () => {
     expect([...counts].sort()).toEqual([1, 2, 3]);
   });
 
-  it('never asks Fund I for a unicorn', () => {
+  it('Fund I always gets exactly one request, and one the player controls', () => {
+    const kinds = new Set<string>();
     for (let seed = 1; seed < 300; seed++) {
-      expect(rollLpRequests(seed, true).some((r) => r.kind === 'unicorn')).toBe(false);
+      const reqs = rollLpRequests(seed, true);
+      expect(reqs).toHaveLength(LP_REQUESTS.fundICount);
+      for (const r of reqs) kinds.add(r.kind);
     }
+    expect([...kinds].sort()).toEqual(['dryPowder', 'onThesis']);
   });
 
   it('does not change the run itself (salted stream)', () => {
