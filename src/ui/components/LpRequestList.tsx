@@ -7,7 +7,12 @@ export function lpRequestText(lines: FlavorLines, r: LpRequest): string {
   const pool = lines.lpRequests.kinds[r.kind];
   const text = pool[r.lineIndex % pool.length] ?? '';
   const deployed = Math.round(LP_REQUESTS.dryPowderMaxDeployed * 100);
-  return text.replace('{pct}', String(100 - deployed)).replace('{deployed}', String(deployed));
+  return text
+    .replace('{pct}', String(100 - deployed))
+    .replace('{deployed}', String(deployed))
+    .replace('{n}', String(LP_REQUESTS.diversifyMinOffThesis))
+    .replace('{heat}', String(LP_REQUESTS.coolDealsMaxHeat))
+    .replace('{team}', String(LP_REQUESTS.reliableTeamsMinTeam));
 }
 
 /**

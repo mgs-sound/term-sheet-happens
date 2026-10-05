@@ -240,6 +240,21 @@
         "Return the fund. That's the ask.",
         "Give the money back. At least 1x.",
         "Return 1x. The LPs will settle."
+      ],
+      "diversify": [
+        "Diversify: {n}+ off-thesis deals",
+        "Sneak in {n} off-thesis deals",
+        "Make {n} off-thesis bets. Hedge us."
+      ],
+      "coolDeals": [
+        "No deals hotter than {heat}/5",
+        "Skip the hype: heat {heat} or lower",
+        "Nothing above heat {heat}. No FOMO."
+      ],
+      "reliableTeams": [
+        "Only teams rated {team}/5 or better",
+        "Back proven teams ({team}+ only)",
+        "No first-time founders. Team {team}+"
       ]
     }
   }

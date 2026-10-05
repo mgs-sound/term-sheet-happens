@@ -16,7 +16,13 @@ import { LP_REQUESTS } from './tuning.ts';
  * is a ~1-in-3 shot. ('returnFund' stays in the catalogue for later tiers.)
  */
 export function requestPool(isFundI: boolean): LpRequestKind[] {
-  return isFundI ? ['onThesis', 'dryPowder'] : ['onThesis', 'dryPowder', 'unicorn'];
+  return isFundI
+    ? ['onThesis', 'dryPowder', 'coolDeals', 'reliableTeams']
+    : ['onThesis', 'dryPowder', 'unicorn', 'diversify', 'coolDeals', 'reliableTeams'];
+}
+
+function clashes(a: LpRequestKind, b: LpRequestKind): boolean {
+  return LP_REQUESTS.exclusive.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
 }
 
 /** The fund's requests for a run seed: distinct kinds, count in min..max. */
@@ -25,11 +31,15 @@ export function rollLpRequests(seed: number, isFundI: boolean): LpRequest[] {
   const pool = requestPool(isFundI);
   const count = isFundI
     ? LP_REQUESTS.fundICount
-    : Math.min(pool.length, rng.int(LP_REQUESTS.minCount, LP_REQUESTS.maxCount));
-  return rng
-    .shuffle(pool)
-    .slice(0, count)
-    .map((kind) => ({ kind, status: 'open' as const, lineIndex: rng.int(0, 999) }));
+    : rng.int(LP_REQUESTS.minCount, LP_REQUESTS.maxCount);
+  // Walk a shuffled pool, skipping anything that contradicts a pick.
+  const picked: LpRequestKind[] = [];
+  for (const kind of rng.shuffle(pool)) {
+    if (picked.length >= count) break;
+    if (picked.some((p) => clashes(p, kind))) continue;
+    picked.push(kind);
+  }
+  return picked.map((kind) => ({ kind, status: 'open' as const, lineIndex: rng.int(0, 999) }));
 }
 
 /** Capital actually put to work: initial checks + follow-ons + bridges. */
@@ -44,6 +54,10 @@ function brokenNow(s: GameState, kind: LpRequestKind): boolean {
       return s.portfolio.some((c) => !c.card.onThesis);
     case 'dryPowder':
       return deployedM(s) > s.fundSizeM * LP_REQUESTS.dryPowderMaxDeployed + 1e-9;
+    case 'coolDeals':
+      return s.portfolio.some((c) => c.card.heat > LP_REQUESTS.coolDealsMaxHeat);
+    case 'reliableTeams':
+      return s.portfolio.some((c) => c.card.team < LP_REQUESTS.reliableTeamsMinTeam);
     default:
       return false; // decided at harvest
   }
@@ -79,7 +93,13 @@ export function settleLpRequests(s: GameState): number {
     switch (r.kind) {
       case 'onThesis':
       case 'dryPowder':
+      case 'coolDeals':
+      case 'reliableTeams':
         ok = s.portfolio.length > 0;
+        break;
+      case 'diversify':
+        ok =
+          s.portfolio.filter((c) => !c.card.onThesis).length >= LP_REQUESTS.diversifyMinOffThesis;
         break;
       case 'unicorn':
         ok = (harvest?.unicorns ?? 0) > 0;

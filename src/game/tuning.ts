@@ -440,6 +440,14 @@ export const LP_REQUESTS = {
   rngSalt: 0x4c50_5251,
   /** dryPowder: broken once deployed capital exceeds this share of the fund. TUNE */
   dryPowderMaxDeployed: 0.7,
+  /** diversify: met at harvest with at least this many off-thesis checks. TUNE */
+  diversifyMinOffThesis: 2,
+  /** coolDeals: broken by signing anything hotter than this (heat 1..5). TUNE */
+  coolDealsMaxHeat: 3,
+  /** reliableTeams: broken by signing a team rated below this (1..5). TUNE */
+  reliableTeamsMinTeam: 3,
+  /** Pairs that can't be asked together (they contradict each other). */
+  exclusive: [['onThesis', 'diversify']] as readonly (readonly [string, string])[],
   /** returnFund: met at harvest when DPI reaches this. */
   returnFundDpi: 1,
   /** LP trust granted per request met, at harvest (feeds next fund size). TUNE */

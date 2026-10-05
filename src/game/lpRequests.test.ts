@@ -55,7 +55,7 @@ describe('rollLpRequests', () => {
       expect(reqs).toHaveLength(LP_REQUESTS.fundICount);
       for (const r of reqs) kinds.add(r.kind);
     }
-    expect([...kinds].sort()).toEqual(['dryPowder', 'onThesis']);
+    expect([...kinds].sort()).toEqual(['coolDeals', 'dryPowder', 'onThesis', 'reliableTeams']);
   });
 
   it('does not change the run itself (salted stream)', () => {
@@ -68,7 +68,45 @@ describe('rollLpRequests', () => {
   });
 });
 
+describe('request mix', () => {
+  it('never asks to stay on thesis AND to diversify off it', () => {
+    for (let seed = 1; seed < 500; seed++) {
+      const kinds = rollLpRequests(seed, false).map((r) => r.kind);
+      expect(kinds.includes('onThesis') && kinds.includes('diversify')).toBe(false);
+      expect(kinds.length).toBeGreaterThanOrEqual(LP_REQUESTS.minCount);
+    }
+  });
+});
+
 describe('live + harvest settling', () => {
+  it('breaks "cool deals" on a hot sign and "reliable teams" on a weak team', () => {
+    const s = runWith([
+      { kind: 'coolDeals', status: 'open', lineIndex: 0 },
+      { kind: 'reliableTeams', status: 'open', lineIndex: 0 },
+    ]);
+    const ok = company(true, 1);
+    ok.card = { ...ok.card, heat: LP_REQUESTS.coolDealsMaxHeat, team: LP_REQUESTS.reliableTeamsMinTeam };
+    s.portfolio.push(ok);
+    expect(updateLiveLpRequests(s)).toEqual([]);
+    const hot = company(true, 1);
+    hot.card = { ...hot.card, heat: LP_REQUESTS.coolDealsMaxHeat + 1, team: 5 };
+    s.portfolio.push(hot);
+    expect(updateLiveLpRequests(s)).toEqual(['coolDeals']);
+    const weak = company(true, 1);
+    weak.card = { ...weak.card, heat: 1, team: LP_REQUESTS.reliableTeamsMinTeam - 1 };
+    s.portfolio.push(weak);
+    expect(updateLiveLpRequests(s)).toEqual(['reliableTeams']);
+  });
+
+  it('settles "diversify" at harvest on the off-thesis count', () => {
+    const s = runWith([{ kind: 'diversify', status: 'open', lineIndex: 0 }]);
+    for (let i = 0; i < LP_REQUESTS.diversifyMinOffThesis - 1; i++) s.portfolio.push(company(false, 1));
+    s.harvest = { companies: [], returnedM: 0, dpi: 0, unicorns: 0, vetoedUnicorns: 0, visionaries: 0 };
+    expect(settleLpRequests(structuredClone(s))).toBe(0);
+    s.portfolio.push(company(false, 1));
+    expect(settleLpRequests(s)).toBe(1);
+  });
+
   it('breaks "stay on thesis" the moment an off-thesis check lands', () => {
     const s = runWith([{ kind: 'onThesis', status: 'open', lineIndex: 0 }]);
     s.portfolio.push(company(true, 1));

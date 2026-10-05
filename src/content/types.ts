@@ -72,7 +72,15 @@ export const EXIT_BUCKETS = ['zero', 'acquihire', 'base', 'win', 'unicorn'] as c
 export type ExitBucket = (typeof EXIT_BUCKETS)[number];
 
 /** Per-fund LP request kinds (game logic in game/lpRequests.ts). */
-export const LP_REQUEST_KINDS = ['onThesis', 'dryPowder', 'unicorn', 'returnFund'] as const;
+export const LP_REQUEST_KINDS = [
+  'onThesis',
+  'dryPowder',
+  'unicorn',
+  'returnFund',
+  'diversify',
+  'coolDeals',
+  'reliableTeams',
+] as const;
 export type LpRequestKind = (typeof LP_REQUEST_KINDS)[number];
 
 /**
@@ -164,8 +172,9 @@ export interface FlavorLines {
     brokenToast: string;
     /** Note under the list; {trust} = LP trust per request met. */
     rewardNote: string;
-    /** Copy variants per request kind. dryPowder may use {pct} (reserve
-     *  share) and {deployed} (max deployed share). */
+    /** Copy variants per request kind. Tokens (filled from tuning):
+     *  {pct} reserve share, {deployed} max deployed share, {n} off-thesis
+     *  deals to diversify, {heat} max deal heat, {team} min team rating. */
     kinds: Record<LpRequestKind, string[]>;
   };
 }
