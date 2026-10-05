@@ -49,4 +49,26 @@ describe('board-seat exit push (TOGGLE_PUSH_EXIT)', () => {
       expect(['improved', 'zeroed']).toContain(result.boardPush);
     }
   });
+
+  it('a push that zeroes an exit scores as a bust: never counted as a unicorn', () => {
+    let zeroedBigExits = 0;
+    for (let k = 0; k < 400; k++) {
+      const s = structuredClone(signedWithSeat());
+      const company = s.portfolio[0]!;
+      company.card.quality = 1; // best odds of a big exit to blow up
+      company.pushExit = true;
+      const closed = { ...s, phase: 'fundClosed' as const, rngState: (s.rngState + k * 7919) >>> 0 };
+      const h = reduce(closed, { type: 'HARVEST' });
+      const r = h.harvest!.companies[0]!;
+      const counted = h.harvest!.companies.filter(
+        (c) => c.bucket === 'unicorn' && c.boardPush !== 'zeroed',
+      ).length;
+      expect(h.harvest!.unicorns).toBe(counted);
+      if (r.boardPush === 'zeroed') {
+        expect(r.proceedsM).toBe(0);
+        if (r.bucket === 'win' || r.bucket === 'unicorn') zeroedBigExits += 1;
+      }
+    }
+    expect(zeroedBigExits).toBeGreaterThan(0); // the case actually happened
+  });
 });

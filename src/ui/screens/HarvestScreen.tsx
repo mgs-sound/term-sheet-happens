@@ -159,21 +159,26 @@ export function HarvestScreen({
                   <span className="harvest-name" data-font={fontForCompany(deckFonts, c.companyId)}>
                     {c.name}
                   </span>
-                  <span
-                    className={`harvest-label ${
-                      c.bucket === 'zero'
-                        ? 'label-red'
-                        : c.bucket === 'acquihire'
-                          ? ''
-                          : c.bucket === 'unicorn'
-                            ? 'label-green label-unicorn'
-                            : 'label-green'
-                    }`}
-                  >
-                    {lines.harvestOutcomeLabels[c.bucket]}
-                    {c.boardPush === 'improved' && ' ↑'}
-                    {c.boardPush === 'zeroed' && ' ✗'}
-                  </span>
+                  {c.boardPush === 'zeroed' ? (
+                    // The exit was real, then the board push zeroed it: red, not
+                    // a green "strong exit" next to "out $0K".
+                    <span className="harvest-label label-red">{lines.harvestPushZeroedLabel}</span>
+                  ) : (
+                    <span
+                      className={`harvest-label ${
+                        c.bucket === 'zero'
+                          ? 'label-red'
+                          : c.bucket === 'acquihire'
+                            ? ''
+                            : c.bucket === 'unicorn'
+                              ? 'label-green label-unicorn'
+                              : 'label-green'
+                      }`}
+                    >
+                      {lines.harvestOutcomeLabels[c.bucket]}
+                      {c.boardPush === 'improved' && ' ↑'}
+                    </span>
+                  )}
                 </div>
                 <div className="harvest-row-nums">
                   in {fmtM(c.investedM)} &rarr; out {fmtM(c.proceedsM)}

@@ -284,5 +284,6 @@
       "enlightened": "Enlightenment"
     },
     "empty": "No experience yet. Every legend starts as a junior associate."
-  }
+  },
+  "harvestPushZeroedLabel": "PUSHED TO ZERO"
 }

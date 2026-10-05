@@ -257,6 +257,10 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     }
   }
 
+  if (!isNonEmptyString(data.harvestPushZeroedLabel)) {
+    errors.push('lines.json: "harvestPushZeroedLabel" must be a non-empty string');
+  }
+
   const bands = data.fundIDifficulty;
   if (
     !Array.isArray(bands) ||

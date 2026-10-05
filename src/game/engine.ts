@@ -794,15 +794,18 @@ function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
     const result = resolveCompany(rng, company, pushSet.has(company.companyId));
     companies.push(result);
     returnedM += result.proceedsM;
-    if (result.bucket === 'unicorn') unicorns += 1;
-    if (!result.onThesis && (result.bucket === 'win' || result.bucket === 'unicorn')) {
+    // A board push that zeroed the exit returned nothing: it scores as a
+    // bust (no unicorn, no visionary, no win rep), whatever it would have been.
+    const outcome = result.boardPush === 'zeroed' ? 'zero' : result.bucket;
+    if (outcome === 'unicorn') unicorns += 1;
+    if (!result.onThesis && (outcome === 'win' || outcome === 'unicorn')) {
       visionaries += 1;
       bumpRep(s, REPUTATION.visionaryDelta);
       log(s, 'visionary', { company: result.name });
     }
-    if (result.bucket === 'win') bumpRep(s, REPUTATION.harvestWinDelta);
-    if (result.bucket === 'unicorn') bumpRep(s, REPUTATION.harvestUnicornDelta);
-    if (result.bucket === 'zero') bumpRep(s, REPUTATION.harvestBustDelta);
+    if (outcome === 'win') bumpRep(s, REPUTATION.harvestWinDelta);
+    if (outcome === 'unicorn') bumpRep(s, REPUTATION.harvestUnicornDelta);
+    if (outcome === 'zero') bumpRep(s, REPUTATION.harvestBustDelta);
   }
 
   // The heartbreak check: would any vetoed company have gone unicorn?
