@@ -163,6 +163,28 @@ export interface FlavorLines {
   portfolioStatusLabels: { active: string; writtenOff: string };
   /** Mid-run portfolio screen when nothing is signed yet. */
   portfolioEmpty: string[];
+  /** Career profile page (the Career Ledger dressed as a networking profile). */
+  profile: {
+    title: string;
+    name: string;
+    /** "About" line, index-aligned with reputationStages. */
+    aboutByStage: string[];
+    /** Badge shown while the last fund returned under 1x. */
+    openToWork: string;
+    experienceTitle: string;
+    skillsTitle: string;
+    /** {n} = funds that returned 1x or better. */
+    endorsed: string;
+    skills: {
+      base: string[];
+      unicorns: string;
+      vetoedRight: string;
+      returned: string;
+      neverReturned: string;
+      enlightened: string;
+    };
+    empty: string;
+  };
   /** Per-fund LP requests (side objectives). */
   lpRequests: {
     title: string;

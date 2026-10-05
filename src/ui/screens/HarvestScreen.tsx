@@ -161,7 +161,13 @@ export function HarvestScreen({
                   </span>
                   <span
                     className={`harvest-label ${
-                      c.bucket === 'zero' ? 'label-red' : c.bucket === 'acquihire' ? '' : 'label-green'
+                      c.bucket === 'zero'
+                        ? 'label-red'
+                        : c.bucket === 'acquihire'
+                          ? ''
+                          : c.bucket === 'unicorn'
+                            ? 'label-green label-unicorn'
+                            : 'label-green'
                     }`}
                   >
                     {lines.harvestOutcomeLabels[c.bucket]}

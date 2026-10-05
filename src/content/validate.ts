@@ -296,6 +296,31 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     errors.push('lines.json: "portfolioStatusLabels" must have non-empty "active" and "writtenOff"');
   }
 
+  const pr = data.profile;
+  const sk = isRecord(pr) ? pr.skills : null;
+  if (
+    !isRecord(pr) ||
+    !isNonEmptyString(pr.title) ||
+    !isNonEmptyString(pr.name) ||
+    !Array.isArray(pr.aboutByStage) ||
+    pr.aboutByStage.length !== 5 ||
+    !pr.aboutByStage.every(isNonEmptyString) ||
+    !isNonEmptyString(pr.openToWork) ||
+    !isNonEmptyString(pr.experienceTitle) ||
+    !isNonEmptyString(pr.skillsTitle) ||
+    !isNonEmptyString(pr.endorsed) ||
+    !isNonEmptyString(pr.empty) ||
+    !isRecord(sk) ||
+    !isStringArray(sk.base) ||
+    !['unicorns', 'vetoedRight', 'returned', 'neverReturned', 'enlightened'].every((k) =>
+      isNonEmptyString(sk[k]),
+    )
+  ) {
+    errors.push(
+      'lines.json: "profile" needs title / name / 5 aboutByStage lines / openToWork / experienceTitle / skillsTitle / endorsed / empty and skills.{base[],unicorns,vetoedRight,returned,neverReturned,enlightened}',
+    );
+  }
+
   const lr = data.lpRequests;
   if (
     !isRecord(lr) ||

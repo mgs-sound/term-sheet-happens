@@ -257,5 +257,32 @@
         "No first-time founders. Team {team}+"
       ]
     }
+  },
+  "profile": {
+    "title": "Professional profile",
+    "name": "You",
+    "aboutByStage": [
+      "Between opportunities. Several, in fact.",
+      "Passionate about disruption. Mostly my own.",
+      "Investor. Board member. Has opinions about seed.",
+      "Thesis-driven. Heat-seeking. Podcast pending.",
+      "Has transcended the J-curve."
+    ],
+    "openToWork": "#OPENTOWORK",
+    "experienceTitle": "Experience",
+    "skillsTitle": "Skills",
+    "endorsed": "Endorsed by {n} LPs",
+    "skills": {
+      "base": [
+        "Pattern matching",
+        "Being founder-friendly (publicly)"
+      ],
+      "unicorns": "Unicorn hunting",
+      "vetoedRight": "Being right in hindsight",
+      "returned": "Returning capital",
+      "neverReturned": "Fee generation",
+      "enlightened": "Enlightenment"
+    },
+    "empty": "No experience yet. Every legend starts as a junior associate."
   }
 }

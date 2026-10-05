@@ -1579,6 +1579,13 @@
   border-color: var(--ledger-green);
 }
 
+/* Unicorn: the green stamp sits on a sign-here yellow block that runs past
+   its border (a highlighter swipe), so it pops out of the list. */
+.label-unicorn {
+  background: var(--sign-yellow);
+  box-shadow: 0 0 0 5px var(--sign-yellow);
+}
+
 .harvest-row-nums {
   margin-top: 3px;
   font-family: var(--font-mono);
@@ -2197,6 +2204,105 @@ input[type='range']::-moz-range-thumb {
 
 .ledger-screen {
   overflow-y: auto;
+}
+
+/* ------------------------------------------------------ career profile */
+
+.profile-head {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 6px;
+}
+
+/* Square "photo": a hard-edged ID block, like a stapled headshot. */
+.profile-avatar {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sign-yellow);
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+}
+
+.profile-id {
+  min-width: 0;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.05;
+}
+
+.profile-headline {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.profile-about {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.profile-badge {
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.profile-section {
+  margin: 18px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 6px;
+}
+
+.profile-section + .ledger-list {
+  margin-top: 0;
+}
+
+.profile-role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.profile-skills {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.profile-skill {
+  border: 2px solid var(--ink);
+  padding: 3px 8px;
+  font-size: 12px;
+  background: var(--paper-bright);
+}
+
+.profile-endorsed {
+  margin: 8px 0 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  opacity: 0.7;
 }
 
 .enlightened-tab {

@@ -1,12 +1,21 @@
 import type { Content } from '../../content/types';
-import type { CareerState } from '../../game/types';
+import { reputationStage } from '../../game/meters';
+import type { CareerState, Tier } from '../../game/types';
 import { verdictBucket } from '../../game/verdict';
 import { fmtDpi, fmtM } from '../format';
 import { FirmName } from '../components/FirmName';
 
-const TIER_SHORT = { associate: 'ASSOC', partner: 'PTNR', gp: 'GP' };
+const TIER_TITLE: Record<Tier, string> = {
+  associate: 'Associate',
+  partner: 'Partner',
+  gp: 'General Partner',
+};
 
-/** The Career Ledger: one ruled line per fund ever run, plus profile stats. */
+/**
+ * The Career Ledger, dressed as a networking profile: who you are now,
+ * one "Experience" entry per fund ever run (newest first), and skills that
+ * your record has, regrettably, earned. Read-only; all copy in lines.json.
+ */
 export function LedgerScreen({
   career,
   content,
@@ -18,9 +27,46 @@ export function LedgerScreen({
   onShare: () => void;
   onBack: () => void;
 }): JSX.Element {
+  const copy = content.lines.profile;
+  const ledger = career.ledger;
+  const latest = ledger[ledger.length - 1];
+  const openToWork = career.lastFundDpi !== null && career.lastFundDpi < 1;
+  const stage = reputationStage(career.reputation);
+  const fundsReturned = ledger.filter((e) => e.dpi >= 1).length;
+
+  // Skills the record has earned (base ones always; the rest by stat).
+  const skills = [
+    ...copy.skills.base,
+    career.unicornsFound > 0 ? copy.skills.unicorns : null,
+    career.vetoedUnicorns > 0 ? copy.skills.vetoedRight : null,
+    ledger.length > 0 ? (fundsReturned > 0 ? copy.skills.returned : copy.skills.neverReturned) : null,
+    career.enlightened ? copy.skills.enlightened : null,
+  ].filter((s): s is string => s !== null);
+
   return (
-    <section className="screen letterhead ledger-screen">
-      <div className="letterhead-rule">Career ledger</div>
+    <section className="screen letterhead ledger-screen profile-screen">
+      <div className="letterhead-rule">{copy.title}</div>
+
+      <header className="profile-head">
+        <div className="profile-avatar" aria-hidden="true">
+          VC
+        </div>
+        <div className="profile-id">
+          <h1 className="profile-name">{copy.name}</h1>
+          <p className="profile-headline">
+            {TIER_TITLE[career.tier]}
+            {latest && (
+              <>
+                {' '}
+                &middot; ex-<FirmName name={latest.firmName} />
+              </>
+            )}
+          </p>
+          <p className="profile-about">{copy.aboutByStage[stage] ?? copy.aboutByStage[0]}</p>
+        </div>
+      </header>
+      {openToWork && <span className="harvest-label label-red profile-badge">{copy.openToWork}</span>}
+      {career.enlightened && <div className="enlightened-tab">ENLIGHTENED</div>}
 
       <dl className="figures-row figures-wrap">
         <div>
@@ -40,34 +86,33 @@ export function LedgerScreen({
           <dd>{career.vetoedUnicorns}</dd>
         </div>
       </dl>
-      {career.enlightened && <div className="enlightened-tab">ENLIGHTENED</div>}
 
-      {career.ledger.length === 0 ? (
-        <p className="letterhead-thesis">No funds on record. The ledger waits.</p>
+      <h2 className="profile-section">{copy.experienceTitle}</h2>
+      {ledger.length === 0 ? (
+        <p className="letterhead-thesis">{copy.empty}</p>
       ) : (
         <ul className="ledger-list">
-          {[...career.ledger].reverse().map((entry) => {
+          {[...ledger].reverse().map((entry) => {
             const thesis = content.theses.find((t) => t.id === entry.thesisId);
             const stamp = content.lines.verdictStamps[verdictBucket(entry.dpi)];
             const good = entry.dpi >= 1;
             return (
               <li key={entry.fundIndex} className="ledger-row">
                 <div className="ledger-row-top">
-                  <span className="ledger-row-firm">
-                    <span className="mono">F{entry.fundIndex}</span> <FirmName name={entry.firmName} />
-                  </span>
+                  <span className="profile-role">{TIER_TITLE[entry.tier]}</span>
                   <span className={`harvest-label ${good ? 'label-green' : 'label-red'}`}>
                     {stamp}
                   </span>
                 </div>
+                <div className="ledger-row-firm">
+                  <FirmName name={entry.firmName} />
+                </div>
                 <div className="ledger-row-sub">
-                  <span>{TIER_SHORT[entry.tier]}</span>
-                  <span className="ledger-row-thesis">
-                    {thesis ? `“${thesis.line}”` : '—'}
-                  </span>
+                  <span>F{entry.fundIndex}</span>
+                  <span className="ledger-row-thesis">{thesis ? `“${thesis.line}”` : '—'}</span>
                 </div>
                 <div className="ledger-row-nums mono">
-                  {fmtM(entry.fundSizeM)} &rarr; {fmtM(entry.returnedM)} &middot;{' '}
+                  {fmtM(entry.fundSizeM)} fund &rarr; returned {fmtM(entry.returnedM)} &middot;{' '}
                   {fmtDpi(entry.dpi)}
                 </div>
               </li>
@@ -75,6 +120,16 @@ export function LedgerScreen({
           })}
         </ul>
       )}
+
+      <h2 className="profile-section">{copy.skillsTitle}</h2>
+      <ul className="profile-skills">
+        {skills.map((s) => (
+          <li key={s} className="profile-skill">
+            {s}
+          </li>
+        ))}
+      </ul>
+      <p className="profile-endorsed">{copy.endorsed.replace('{n}', String(fundsReturned))}</p>
 
       <div className="screen-actions">
         <button type="button" className="btn btn-sign" onClick={onShare}>
