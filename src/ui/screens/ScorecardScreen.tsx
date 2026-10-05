@@ -90,7 +90,14 @@ export function ScorecardScreen({
       </dl>
       {harvest.vetoedUnicorns > 0 && (
         <p className="heartbreak">
-          Vetoed unicorns you were right about: {harvest.vetoedUnicorns}
+          Vetoed unicorn{harvest.vetoedUnicorns === 1 ? '' : 's'} you were right about:{' '}
+          {/* Names come from the harvest's heartbreak log (one per vetoed unicorn). */}
+          <strong>
+            {game.events
+              .filter((e) => e.kind === 'vetoHeartbreak' && e.company)
+              .map((e) => e.company)
+              .join(', ') || harvest.vetoedUnicorns}
+          </strong>
         </p>
       )}
       <LpRequestList requests={game.lpRequests} lines={lines} stamps />
