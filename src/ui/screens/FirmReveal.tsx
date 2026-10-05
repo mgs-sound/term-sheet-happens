@@ -70,7 +70,11 @@ export function FirmReveal({
       <div className="screen-actions">
         {canReroll && (
           <button type="button" className="btn btn-secondary" data-sfx="reroll" onClick={onReroll}>
-            Reroll the firm &middot; {optionIndex + 1}/{optionCount}
+            {game.isFundI
+              ? lines.jobs.nextOffer
+                  .replace('{i}', String(optionIndex + 1))
+                  .replace('{n}', String(optionCount))
+              : <>Reroll the firm &middot; {optionIndex + 1}/{optionCount}</>}
           </button>
         )}
         <button type="button" className="btn btn-sign" data-sfx="start" onClick={onOpen}>

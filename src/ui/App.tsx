@@ -6,7 +6,13 @@ import { preloadSectorFonts } from './fonts/preloadSectorFonts';
 import { loadContentAsync } from '../content/loader';
 import type { Content, FlavorLines } from '../content/types';
 import { reduce } from '../game/engine';
-import { acceptLpOffer, closeCareerFund, initialCareer, withFirmName } from '../game/career';
+import {
+  acceptLpOffer,
+  closeCareerFund,
+  initialCareer,
+  withFirmName,
+  withPlayerName,
+} from '../game/career';
 import {
   careerAtEnlightenmentGate,
   forceHarvestResult,
@@ -24,6 +30,7 @@ import { services, type SfxId } from '../services';
 import { fillLine, fmtDpi, fmtM, pickLine } from './format';
 import { renderCareerPng, renderScorecardPng } from './share/renderShareCard';
 import { FirmReveal } from './screens/FirmReveal';
+import { OnboardingScreen } from './screens/OnboardingScreen';
 import { RunScreen } from './screens/RunScreen';
 import { ClosingScreen } from './screens/ClosingScreen';
 import { HarvestScreen } from './screens/HarvestScreen';
@@ -39,6 +46,7 @@ import { SettingsSheet } from './components/SettingsSheet';
 import { Toasts, type Toast } from './components/Toasts';
 
 type Screen =
+  | 'onboarding'
   | 'reveal'
   | 'run'
   | 'closing'
@@ -103,6 +111,14 @@ function screenForResume(save: SaveData): Screen {
     return allowed.includes(save.screen as Screen) ? (save.screen as Screen) : 'scorecard';
   }
   if (game.phase === 'fundClosed') return 'closing';
+  // New career, nothing played yet: back to the blank profile.
+  if (
+    save.screen === 'onboarding' &&
+    game.phase === 'meeting' &&
+    game.meetingIndex === 0
+  ) {
+    return 'onboarding';
+  }
   return save.screen === 'reveal' ? 'reveal' : 'run';
 }
 
@@ -159,7 +175,9 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
         content: engineContent,
       }),
   );
-  const [screen, setScreen] = useState<Screen>(() => (save ? screenForResume(save) : 'reveal'));
+  const [screen, setScreen] = useState<Screen>(() =>
+    save ? screenForResume(save) : 'onboarding',
+  );
   // The fixed set of run seeds "Reroll the firm" cycles through (see firmOptions.ts).
   const [firmOptions, setFirmOptions] = useState<number[] | null>(null);
   const [pendingCareer, setPendingCareer] = useState<CareerState | null>(
@@ -355,12 +373,19 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
     [content.lines, pushToast, toastForShareOutcome],
   );
 
+  /** A new career starts on the blank profile, not straight in a fund. */
+  const beginCareer = useCallback((fresh: CareerState): void => {
+    setCareer(fresh);
+    setPendingCareer(null);
+    setScreen('onboarding');
+  }, []);
+
   const resetCareer = useCallback((): void => {
     void services.storage.remove(SAVE_KEY);
     setSettingsOpen(false);
-    startRun(initialCareer());
+    beginCareer(initialCareer());
     pushToast({ text: 'The industry has already forgotten you.', tone: 'green' });
-  }, [pushToast, startRun]);
+  }, [pushToast, beginCareer]);
 
   const devJump = (jump: DevJump): void => {
     const presets = {
@@ -370,7 +395,8 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
       gp: () => careerForTier('gp'),
       gate: careerAtEnlightenmentGate,
     } as const;
-    startRun(presets[jump]());
+    if (jump === 'fundI') beginCareer(initialCareer());
+    else startRun(presets[jump]());
   };
 
   const devAutoplay = (): void => {
@@ -402,6 +428,19 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
 
   return (
     <main className="game-surface app-shell" onClickCapture={playButtonSfx}>
+      {screen === 'onboarding' && (
+        <OnboardingScreen
+          key={career.playerName ?? ''}
+          career={career}
+          lines={content.lines}
+          onSearch={(name) => {
+            // The three firm options ARE the job offers: the engagement letter
+            // shows the first, "Next offer" steps through them.
+            startRun(withPlayerName(career, name));
+          }}
+          onSettings={() => setSettingsOpen(true)}
+        />
+      )}
       {screen === 'reveal' && (
         <FirmReveal
           game={game}
@@ -409,6 +448,8 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           firmParts={content.firmNames}
           optionIndex={firmOptions ? Math.max(0, firmOptions.indexOf(game.seed)) : 0}
           optionCount={FIRM_OPTION_COUNT}
+          // GP with a chosen name AND an LP-pinned thesis: rerolling would only
+          // reshuffle the hidden deck (nothing visible changes), so no button.
           // GP with a chosen name AND an LP-pinned thesis: rerolling would only
           // reshuffle the hidden deck (nothing visible changes), so no button.
           canReroll={career.pendingFirmName === null || !career.pendingFund}
@@ -479,7 +520,8 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
               startRun(nextCareer);
             }
           }}
-          onNewCareer={() => startRun(initialCareer())}
+          // Walking away keeps your name; everything else starts over.
+          onNewCareer={() => beginCareer(withPlayerName(initialCareer(), career.playerName ?? ''))}
           onLedger={() => setScreen('ledger')}
         />
       )}

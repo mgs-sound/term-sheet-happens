@@ -283,7 +283,22 @@
       "neverReturned": "Fee generation",
       "enlightened": "Enlightenment"
     },
-    "empty": "No experience yet. Every legend starts as a junior associate."
+    "empty": "No experience yet. Every legend starts as a junior associate.",
+    "onboarding": {
+      "defaultName": "John Doe",
+      "about": "Ready to start a journey in the VC world. Experience in disruptive, fast-growing businesses such as local refreshing-beverage pop-up stores.",
+      "skills": [
+        "Job Searcher",
+        "Bed Maker",
+        "Best in Kindergarten"
+      ],
+      "endorsedNamed": "Endorsed by {name}'s mother",
+      "endorsedAnon": "Endorsed by your mother",
+      "cta": "Search for a job"
+    }
   },
-  "harvestPushZeroedLabel": "PUSHED TO ZERO"
+  "harvestPushZeroedLabel": "PUSHED TO ZERO",
+  "jobs": {
+    "nextOffer": "Next offer · {i}/{n}"
+  }
 }

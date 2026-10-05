@@ -325,6 +325,24 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     );
   }
 
+  const ob = isRecord(pr) ? pr.onboarding : null;
+  if (
+    !isRecord(ob) ||
+    !['defaultName', 'about', 'endorsedNamed', 'endorsedAnon', 'cta'].every((k) =>
+      isNonEmptyString(ob[k]),
+    ) ||
+    !isStringArray(ob.skills)
+  ) {
+    errors.push(
+      'lines.json: "profile.onboarding" needs namePlaceholder / about / endorsedNamed / endorsedAnon / cta and skills[]',
+    );
+  }
+
+  const jb = data.jobs;
+  if (!isRecord(jb) || !isNonEmptyString(jb.nextOffer)) {
+    errors.push('lines.json: "jobs" needs a nextOffer label');
+  }
+
   const lr = data.lpRequests;
   if (
     !isRecord(lr) ||

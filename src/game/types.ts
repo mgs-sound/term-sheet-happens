@@ -308,6 +308,8 @@ export interface CareerState {
   pendingFirmName: string | null;
   /** One entry per harvested fund, oldest first. */
   ledger: LedgerEntry[];
+  /** Name on the professional profile; absent = the "Your Name Here" default. */
+  playerName?: string;
 }
 
 // ---------------------------------------------------------------------------

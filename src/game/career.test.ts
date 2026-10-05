@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { loadContent } from '../content';
 import { createRng } from './rng';
-import { acceptLpOffer, closeCareerFund, initialCareer } from './career';
+import {
+  acceptLpOffer,
+  closeCareerFund,
+  initialCareer,
+  PLAYER_NAME_MAX,
+  withPlayerName,
+} from './career';
 import { simulateRun } from './sim';
 import type { GameState } from './types';
 import { CAREER } from './tuning';
@@ -96,5 +102,14 @@ describe('career ladder', () => {
     const next = closeCareerFund(initialCareer(), harvestedRun({ dpi: 1.1 }), createRng(1), content.theses);
     expect(next.tier).toBe('partner');
     expect(next.fundIndex).toBe(2);
+  });
+});
+
+describe('withPlayerName', () => {
+  it('trims, collapses spaces, caps length, and clears on blank', () => {
+    const c = initialCareer();
+    expect(withPlayerName(c, '  Jaco   Sound  ').playerName).toBe('Jaco Sound');
+    expect(withPlayerName(c, 'x'.repeat(99)).playerName).toHaveLength(PLAYER_NAME_MAX);
+    expect('playerName' in withPlayerName(withPlayerName(c, 'Jaco'), '   ')).toBe(false);
   });
 });

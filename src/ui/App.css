@@ -2208,6 +2208,67 @@ input[type='range']::-moz-range-thumb {
 
 /* ------------------------------------------------------ career profile */
 
+/* Onboarding: the name reads as a title; a tap makes it editable. */
+.profile-name-edit {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  max-width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 2px dashed transparent;
+}
+
+.profile-name-edit:active {
+  border-bottom-color: var(--ink);
+}
+
+
+.profile-name-input {
+  width: 100%;
+  min-width: 0;
+  padding: 0 0 2px;
+  border: none;
+  border-bottom: 2px dashed var(--ink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  outline: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.profile-name-input::placeholder {
+  color: var(--ink);
+  opacity: 0.35;
+}
+
+.profile-name-input:focus {
+  border-bottom-style: solid;
+  background: var(--paper-bright);
+}
+
+.profile-summary {
+  margin: 16px 0 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* Pushes Skills + the CTA to the bottom, like the mockup. */
+.onboarding-spacer {
+  flex: 1;
+  min-height: 16px;
+}
+
+
 .profile-head {
   display: flex;
   gap: 14px;

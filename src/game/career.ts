@@ -165,3 +165,15 @@ export function acceptLpOffer(career: CareerState, offerIndex: number): CareerSt
     nextFundSizeM: offer.fundSizeM,
   };
 }
+
+/** Max length of the profile name (UI input + sanitizer agree on it). */
+export const PLAYER_NAME_MAX = 32;
+
+/** Set (or clear, with blank) the profile name. Trims and caps the length. */
+export function withPlayerName(career: CareerState, name: string): CareerState {
+  const clean = name.replace(/\s+/g, ' ').trim().slice(0, PLAYER_NAME_MAX);
+  const next: CareerState = { ...career };
+  if (clean) next.playerName = clean;
+  else delete next.playerName;
+  return next;
+}

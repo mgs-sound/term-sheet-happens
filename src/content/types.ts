@@ -186,6 +186,21 @@ export interface FlavorLines {
       enlightened: string;
     };
     empty: string;
+    /** The blank profile a new career starts on. {name} = player's name. */
+    onboarding: {
+      /** Everyone starts as this until they tap the name to change it. */
+      defaultName: string;
+      about: string;
+      skills: string[];
+      endorsedNamed: string;
+      endorsedAnon: string;
+      cta: string;
+    };
+  };
+  /** Fund I: the firm options read as job offers on the engagement letter. */
+  jobs: {
+    /** Button that steps to the next offer; {i}/{n} = position. */
+    nextOffer: string;
   };
   /** Per-fund LP requests (side objectives). */
   lpRequests: {

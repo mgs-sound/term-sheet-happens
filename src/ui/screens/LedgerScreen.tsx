@@ -4,6 +4,7 @@ import type { CareerState, Tier } from '../../game/types';
 import { verdictBucket } from '../../game/verdict';
 import { fmtDpi, fmtM } from '../format';
 import { FirmName } from '../components/FirmName';
+import { ProfileHead } from '../components/ProfileHead';
 
 const TIER_TITLE: Record<Tier, string> = {
   associate: 'Associate',
@@ -47,13 +48,11 @@ export function LedgerScreen({
     <section className="screen letterhead ledger-screen profile-screen">
       <div className="letterhead-rule">{copy.title}</div>
 
-      <header className="profile-head">
-        <div className="profile-avatar" aria-hidden="true">
-          VC
-        </div>
-        <div className="profile-id">
-          <h1 className="profile-name">{copy.name}</h1>
-          <p className="profile-headline">
+      <ProfileHead
+        name={career.playerName}
+        placeholder={copy.onboarding.defaultName}
+        headline={
+          <>
             {TIER_TITLE[career.tier]}
             {latest && (
               <>
@@ -61,10 +60,10 @@ export function LedgerScreen({
                 &middot; ex-<FirmName name={latest.firmName} />
               </>
             )}
-          </p>
-          <p className="profile-about">{copy.aboutByStage[stage] ?? copy.aboutByStage[0]}</p>
-        </div>
-      </header>
+          </>
+        }
+        about={copy.aboutByStage[stage] ?? copy.aboutByStage[0]}
+      />
       {openToWork && <span className="harvest-label label-red profile-badge">{copy.openToWork}</span>}
       {career.enlightened && <div className="enlightened-tab">ENLIGHTENED</div>}
 
