@@ -84,7 +84,6 @@ export function RehireScreen({
   lines,
   onStay,
   offers,
-  onPickOffer,
   onNextFund,
   onNewCareer,
   onLedger,
@@ -96,8 +95,6 @@ export function RehireScreen({
   onStay: () => void;
   /** Preview runs of the new-firm offers (null: GP promotion's LP packages). */
   offers: GameState[] | null;
-  /** Open that offer's engagement letter. */
-  onPickOffer: (seed: number) => void;
   onNextFund: () => void;
   onNewCareer: () => void;
   onLedger: () => void;
@@ -130,8 +127,8 @@ export function RehireScreen({
         {!stay.allowed && <p className="rehire-locked">{copy.stayLocked}</p>}
       </section>
 
-      {/* New firm: one row per offer (no profile tags here: those live on the
-          engagement letters); tap a row to open its letter. */}
+      {/* New firm: one read-only row per offer (no profile tags here: those
+          live on the engagement letters). "Take new job" opens them. */}
       <section className="rehire-block rehire-outside">
         <h3 className="rehire-block-title">
           {copy.outsideTitle.replace('{n}', String(offers?.length ?? out.lpOffers ?? '')).trim()}
@@ -147,14 +144,7 @@ export function RehireScreen({
             </thead>
             <tbody>
               {offers.map((o) => (
-                <tr
-                  key={o.seed}
-                  className="offer-row"
-                  role="button"
-                  tabIndex={0}
-                  data-sfx="open"
-                  onClick={() => onPickOffer(o.seed)}
-                >
+                <tr key={o.seed}>
                   <td>
                     {TIER_LABELS[o.tier]} <Arrow t={tierTrend(game.tier, o.tier)} />
                   </td>
@@ -197,12 +187,9 @@ export function RehireScreen({
           >
             {copy.stayCta}
           </button>
-          {/* With offer rows, tapping a row IS taking a new job. */}
-          {!offers && (
-            <button type="button" className="btn btn-sign" onClick={onNextFund}>
-              {copy.leaveCta}
-            </button>
-          )}
+          <button type="button" className="btn btn-sign" onClick={onNextFund}>
+            {copy.leaveCta}
+          </button>
         </div>
         <button type="button" className="btn btn-secondary" onClick={onLedger}>
           Career ledger

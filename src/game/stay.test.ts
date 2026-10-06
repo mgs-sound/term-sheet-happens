@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { loadContent } from '../content';
 import { acceptStay, closeCareerFund, stayOption } from './career';
 import { createRun } from './engine';
-import { offerProfileFor } from './fundTerms';
+import { eligibleOfferProfiles, offerProfileFor } from './fundTerms';
 import { createRng } from './rng';
 import { careerForTier, simulateRun } from './sim';
 import { OFFER_PROFILES, STAY } from './tuning';
@@ -63,6 +63,7 @@ describe('mega fund', () => {
     const next = closeCareerFund(career, done, createRng(1), content.theses);
     expect(next.tier).toBe('partner'); // associate at 1x+ → partner again
     expect(next.ledger.at(-1)!.tier).toBe('associate');
+    expect(eligibleOfferProfiles(career)).toEqual(['dealFlow', 'lpDarling', 'megaFund']);
     const noMega = { ...careerForTier('partner'), lastFundDpi: 0.7 };
     expect([...Array(200).keys()].some((s) => offerProfileFor(noMega, s) === 'megaFund')).toBe(false);
   });

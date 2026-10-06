@@ -535,18 +535,14 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           lines={content.lines}
           onStay={() => startRun(acceptStay(nextCareer, stayOption(nextCareer, game)))}
           offers={rehireOffers}
-          onPickOffer={(seed) =>
-            rehireOffers &&
-            startOffer(
-              nextCareer,
-              rehireOffers.map((r) => r.seed),
-              seed,
-            )
-          }
           onNextFund={() => {
             if (nextCareer.pendingOffers) {
               setPendingCareer(nextCareer);
               setScreen('gpOffers');
+            } else if (rehireOffers && rehireOffers[0]) {
+              // The same offers the inbox table showed, first one up.
+              const seeds = rehireOffers.map((r) => r.seed);
+              startOffer(nextCareer, seeds, rehireOffers[0].seed);
             } else {
               startRun(nextCareer);
             }

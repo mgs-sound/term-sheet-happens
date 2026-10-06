@@ -38,14 +38,17 @@ export function rollFundITerms(seed: number): FundITerms {
   };
 }
 
-/** Profiles a Fund II+ offer can roll; mega fund only after a 1x+ fund, and
- *  only for someone with a rung to drop (not an associate). */
+/**
+ * Profiles a Fund II+ offer can roll — always three. The mega fund (only
+ * after a 1x+ fund, for someone with a rung to drop) takes Big checks' slot:
+ * it is the "much bigger fund" option.
+ */
 export function eligibleOfferProfiles(career: CareerState): OfferProfile[] {
   if (career.fundIndex === 1 || career.pendingFund) return [];
   const mega =
     career.tier !== 'associate' &&
     (career.lastFundDpi ?? 0) >= OFFER_PROFILES.megaMinLastDpi;
-  return OFFER_PROFILES_ORDER.filter((p) => p !== 'megaFund' || mega);
+  return OFFER_PROFILES_ORDER.filter((p) => (mega ? p !== 'bigChecks' : p !== 'megaFund'));
 }
 
 /**

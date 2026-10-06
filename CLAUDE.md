@@ -46,7 +46,7 @@ A satirical VC card-swipe roguelite. Reigns/Tinder loop: each run is one fund at
 
 ## Career ladder (promotion = poaching, unless you earned the right to stay)
 
-- **Stay or leave (rehire inbox):** meet every LP request and you may stay at your firm (same firm + thesis; below 1x the fund isn't shrunk, at 1x+ you're promoted in-house with a bigger fund). Otherwise you take one of the new-firm offers (Big checks / Deal flow / LP darling, plus a Mega fund one rung down after a 1x+ fund).
+- **Stay or leave (rehire inbox):** meet every LP request and you may stay at your firm (same firm + thesis; below 1x the fund isn't shrunk, at 1x+ you're promoted in-house with a bigger fund). Otherwise you take one of the new-firm offers (three: Big checks / Deal flow / LP darling; after a 1x+ fund a Mega fund — one rung down — takes Big checks' slot).
 
 - **Associate** → return 1x+ → poached to **Partner** at a new firm (board seats unlock, bigger fund).
 - **Partner** → return 2x+ → **GP**: choose between three LP offer packages (fund size + assigned thesis + a quirk), name your own firm (or reroll generated names).

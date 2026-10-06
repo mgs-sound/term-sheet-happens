@@ -6,8 +6,8 @@ import type { CareerState, EngineContent, GameState } from './types.ts';
 /** How many firms the engagement letter lets you flip between (default). */
 export const FIRM_OPTION_COUNT = 3;
 
-/** Offers for this career: one per eligible profile in Fund II+ (3, or 4
- *  with the mega fund), else FIRM_OPTION_COUNT. */
+/** Offers for this career: one per eligible profile in Fund II+ (always 3),
+ *  else FIRM_OPTION_COUNT. */
 export function firmOptionCount(career: CareerState): number {
   return eligibleOfferProfiles(career).length || FIRM_OPTION_COUNT;
 }

@@ -1991,43 +1991,48 @@
   opacity: 0.35;
 }
 
-/* New-firm offers: one tappable row each. */
+/* New-firm offers: one tappable row each, styled like the figures rows
+   (rule on top, ruled column dividers, serif small-caps labels, mono values). */
 .offer-table {
   width: 100%;
   margin-top: 8px;
   border-collapse: collapse;
-  font-size: 12px;
+  border-top: 1px solid var(--ink);
+  /* Equal thirds, so the columns line up with the stay block above. */
+  table-layout: fixed;
+}
+
+.offer-table th {
+  width: 33.33%;
 }
 
 .offer-table th {
   font-weight: 400;
-  font-size: 9px;
-  letter-spacing: 0.12em;
+  font-size: 10px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   text-align: left;
-  padding: 0 4px 4px;
-  border-bottom: 1px solid var(--ink);
+  padding: 10px 4px 2px;
 }
 
 .offer-table td {
   font-family: var(--font-mono);
+  font-size: 15px;
   font-weight: 700;
-  padding: 8px 4px;
-  border-bottom: 1px solid var(--ink);
+  font-variant-numeric: tabular-nums;
+  padding: 4px 4px 6px;
   white-space: nowrap;
+}
+
+.offer-table th + th,
+.offer-table td + td {
+  border-left: 1px solid var(--ink);
+  padding-left: 12px;
 }
 
 .offer-table th:first-child,
 .offer-table td:first-child {
-  padding-left: 0;
-}
-
-.offer-row {
-  cursor: pointer;
-}
-
-.offer-row:active {
-  background: var(--sign-yellow);
+  padding-left: 4px;
 }
 
 .rehire-choice {
