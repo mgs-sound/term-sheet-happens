@@ -5,8 +5,9 @@ import { ProfileHead } from '../components/ProfileHead';
 
 /**
  * A new career starts here: a blank, faintly tragic professional profile.
- * The name is optional (tap it to type one); "Search for a job" opens the
- * job board. Same layout as the career profile it will grow into.
+ * The name is optional (tap it to change it); "Start using Term Sheet
+ * Happens" goes straight to the job offers (the engagement letters).
+ * Same layout as the career profile it will grow into.
  */
 export function OnboardingScreen({
   career,
@@ -16,7 +17,7 @@ export function OnboardingScreen({
 }: {
   career: CareerState;
   lines: FlavorLines;
-  /** Commit the (possibly blank) name and open the job board. */
+  /** Commit the name and open the job offers. */
   onSearch: (name: string) => void;
   onSettings: () => void;
 }): JSX.Element {
@@ -34,8 +35,6 @@ export function OnboardingScreen({
 
       <p className="profile-summary">{ob.about}</p>
 
-      <div className="onboarding-spacer" />
-
       <h2 className="profile-section">{copy.skillsTitle}</h2>
       <ul className="profile-skills">
         {ob.skills.map((s) => (
@@ -48,15 +47,19 @@ export function OnboardingScreen({
         {shownName ? ob.endorsedNamed.replace('{name}', shownName) : ob.endorsedAnon}
       </p>
 
+      {/* Sits a little above the bottom: more room above it than below. */}
+      <div className="onboarding-spacer onboarding-spacer-top" />
+      <button
+        type="button"
+        className="btn btn-sign onboarding-cta onboarding-start"
+        data-sfx="start"
+        onClick={() => onSearch(shownName || ob.defaultName)}
+      >
+        {ob.startCta}
+      </button>
+      <div className="onboarding-spacer" />
+
       <div className="screen-actions">
-        <button
-          type="button"
-          className="btn btn-sign"
-          data-sfx="start"
-          onClick={() => onSearch(shownName || ob.defaultName)}
-        >
-          {ob.cta}
-        </button>
         <button type="button" className="btn btn-text" data-sfx="open" onClick={onSettings}>
           Settings
         </button>

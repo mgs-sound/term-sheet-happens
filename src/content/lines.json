@@ -286,7 +286,7 @@
     "empty": "No experience yet. Every legend starts as a junior associate.",
     "onboarding": {
       "defaultName": "John Doe",
-      "about": "Ready to start a journey in the VC world. Experience in disruptive, fast-growing businesses such as local refreshing-beverage pop-up stores.",
+      "about": "Ready to start a journey in the VC world. Experience in disruptive, fast-growing businesses such as local organic refreshing-beverage pop-up stores.",
       "skills": [
         "Job Searcher",
         "Bed Maker",
@@ -294,7 +294,7 @@
       ],
       "endorsedNamed": "Endorsed by {name}'s mother",
       "endorsedAnon": "Endorsed by your mother",
-      "cta": "Search for a job"
+      "startCta": "Start using Term Sheet Happens"
     }
   },
   "harvestPushZeroedLabel": "PUSHED TO ZERO",

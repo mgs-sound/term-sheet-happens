@@ -192,9 +192,10 @@ export interface FlavorLines {
       defaultName: string;
       about: string;
       skills: string[];
+      /** The one button: starts the career (on to the job offers). */
+      startCta: string;
       endorsedNamed: string;
       endorsedAnon: string;
-      cta: string;
     };
   };
   /** Fund I: the firm options read as job offers on the engagement letter. */

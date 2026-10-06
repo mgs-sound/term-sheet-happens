@@ -66,6 +66,34 @@ function EditableName({
   );
 }
 
+/** Default profile photo: the faceless placeholder silhouette. */
+function Silhouette(): JSX.Element {
+  return (
+    // Body: a half circle whose base spans the whole bottom edge (corner to
+    // corner). Head: a circle sitting on top of it, overlapping (no neck).
+    <svg className="profile-silhouette" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M0 64A32 24 0 0 1 64 64z" />
+      <circle cx="32" cy="26" r="16" />
+    </svg>
+  );
+}
+
+/** Square ID photo; a tap flips between the silhouette and the initials. */
+function Avatar({ name }: { name: string | undefined }): JSX.Element {
+  const [showInitials, setShowInitials] = useState(false);
+  return (
+    <button
+      type="button"
+      className="profile-avatar"
+      data-sfx="tick"
+      aria-label={showInitials ? 'Show placeholder photo' : 'Show initials'}
+      onClick={() => setShowInitials((v) => !v)}
+    >
+      {showInitials ? initials(name) : <Silhouette />}
+    </button>
+  );
+}
+
 /**
  * Profile header: square ID "photo" + name (+ headline / about). With
  * `onNameChange` the name is tap-to-edit (new-career onboarding).
@@ -85,9 +113,7 @@ export function ProfileHead({
 }): JSX.Element {
   return (
     <header className="profile-head">
-      <div className="profile-avatar" aria-hidden="true">
-        {initials(name)}
-      </div>
+      <Avatar name={name} />
       <div className="profile-id">
         {onNameChange ? (
           <EditableName name={name ?? ''} fallback={placeholder} onChange={onNameChange} />
