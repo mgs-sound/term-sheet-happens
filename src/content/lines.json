@@ -300,5 +300,19 @@
   "harvestPushZeroedLabel": "PUSHED TO ZERO",
   "jobs": {
     "nextOffer": "Next offer · {i}/{n}"
+  },
+  "offerProfiles": {
+    "bigChecks": {
+      "label": "BIG CHECKS",
+      "blurb": "Bigger fund, same calendar. More money to deploy, more to explain."
+    },
+    "dealFlow": {
+      "label": "DEAL FLOW",
+      "blurb": "More founders than you can count, a smaller fund to count them with."
+    },
+    "lpDarling": {
+      "label": "LP DARLING",
+      "blurb": "Same fund, but the LPs adore you. Spend it before they read the memo."
+    }
   }
 }

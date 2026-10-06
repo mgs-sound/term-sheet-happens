@@ -198,6 +198,8 @@ export interface FlavorLines {
       endorsedAnon: string;
     };
   };
+  /** Fund II+ offer flavors on the engagement letter (keys = OfferProfile). */
+  offerProfiles: Record<'bigChecks' | 'dealFlow' | 'lpDarling', { label: string; blurb: string }>;
   /** Fund I: the firm options read as job offers on the engagement letter. */
   jobs: {
     /** Button that steps to the next offer; {i}/{n} = position. */

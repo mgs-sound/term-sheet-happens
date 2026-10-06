@@ -31,7 +31,7 @@ import { CHALLENGE_GAMES, SUITS } from './types.ts';
 import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
-import { rollFundITerms } from './fundTerms.ts';
+import { offerProfileFor, rollFundITerms } from './fundTerms.ts';
 import { rollLpRequests, settleLpRequests, updateLiveLpRequests } from './lpRequests.ts';
 import {
   acceptanceProbability,
@@ -67,6 +67,7 @@ import {
   TRUST,
   VETO,
   LP_REQUESTS,
+  OFFER_PROFILES,
 } from './tuning.ts';
 import { roundM } from './util.ts';
 
@@ -93,14 +94,19 @@ export function createRun(
   // Fund I: size / meetings / starting trust come from one difficulty dial
   // (own salted RNG — see fundTerms.ts). Fund II+: from the career.
   const fundITerms = isFundI ? rollFundITerms(seed) : null;
-  const meetingsTotal = fundITerms ? fundITerms.meetings : meetingsForCareer(career);
+  // Fund II+: the career sets the base; the offer profile bends it.
+  const offerProfile = offerProfileFor(career, seed);
+  const bend = offerProfile ? OFFER_PROFILES[offerProfile] : null;
+  const meetingsTotal = fundITerms
+    ? fundITerms.meetings
+    : Math.round(meetingsForCareer(career) * (bend?.meetingsMult ?? 1));
 
   const fundSizeM = fundITerms
     ? fundITerms.sizeM
     : roundM(
-        career.pendingFund?.sizeM ??
+        (career.pendingFund?.sizeM ??
           career.nextFundSizeM ??
-          FUND_SIZING[`${career.tier}BaseM`],
+          FUND_SIZING[`${career.tier}BaseM`]) * (bend?.sizeMult ?? 1),
       );
 
   // Always draw the generated name so the rng stream is identical whether or
@@ -128,8 +134,11 @@ export function createRun(
     fundSizeM,
     capitalM: fundSizeM,
     reputation: clampMeter(career.reputation),
-    lpTrust: clampMeter(career.lpTrust + (fundITerms?.lpTrustOffset ?? 0)),
+    lpTrust: clampMeter(
+      career.lpTrust + (fundITerms?.lpTrustOffset ?? 0) + (bend?.trustDelta ?? 0),
+    ),
     ...(fundITerms ? { fundIDifficulty: fundITerms.difficulty } : {}),
+    ...(offerProfile ? { offerProfile } : {}),
     meetingsTotal,
     meetingIndex: 0,
     quarter: 1,

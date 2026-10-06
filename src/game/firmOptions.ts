@@ -1,5 +1,6 @@
 import { createRun } from './engine.ts';
-import { difficultyBand } from './fundTerms.ts';
+import { difficultyBand, offerProfileFor } from './fundTerms.ts';
+import { OFFER_PROFILES_ORDER } from './types.ts';
 import type { CareerState, EngineContent, GameState } from './types.ts';
 
 /** How many firms the engagement letter lets you flip between. */
@@ -35,6 +36,9 @@ export function pickFirmOptions(
   include?: number,
 ): number[] {
   const isFundI = career.fundIndex === 1;
+  // Fund II+ (non-GP-package): one offer per profile (big checks / deal flow /
+  // LP darling), like Fund I's one per difficulty band.
+  const byProfile = offerProfileFor(career, baseSeed) !== null;
   const checkNames = career.pendingFirmName === null;
   const checkThesis = !career.pendingFund;
 
@@ -44,6 +48,7 @@ export function pickFirmOptions(
       const band = difficultyBand(run.fundIDifficulty ?? 0);
       if (chosen.some((c) => difficultyBand(c.run.fundIDifficulty ?? 0) === band)) return false;
     }
+    if (byProfile && chosen.some((c) => c.run.offerProfile === run.offerProfile)) return false;
     if (checkThesis && chosen.some((c) => c.run.thesis.id === run.thesis.id)) return false;
     if (checkNames) {
       const a = nameParts(run.firmName, content);
@@ -71,6 +76,11 @@ export function pickFirmOptions(
     }
   }
 
+  if (byProfile) {
+    const rank = (r: GameState): number =>
+      r.offerProfile ? OFFER_PROFILES_ORDER.indexOf(r.offerProfile) : 0;
+    chosen.sort((a, b) => rank(a.run) - rank(b.run));
+  }
   if (isFundI) {
     chosen.sort(
       (a, b) =>

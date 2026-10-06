@@ -338,6 +338,17 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     );
   }
 
+  const op = data.offerProfiles;
+  if (
+    !isRecord(op) ||
+    !['bigChecks', 'dealFlow', 'lpDarling'].every((k) => {
+      const v = op[k];
+      return isRecord(v) && isNonEmptyString(v.label) && isNonEmptyString(v.blurb);
+    })
+  ) {
+    errors.push('lines.json: "offerProfiles" needs { label, blurb } for bigChecks / dealFlow / lpDarling');
+  }
+
   const jb = data.jobs;
   if (!isRecord(jb) || !isNonEmptyString(jb.nextOffer)) {
     errors.push('lines.json: "jobs" needs a nextOffer label');

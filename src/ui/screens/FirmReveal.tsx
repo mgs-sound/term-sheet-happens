@@ -6,6 +6,8 @@ import { FitFirmTitle } from '../components/FitFirmTitle';
 import { LpRequestList } from '../components/LpRequestList';
 
 const BAND_CLASS = ['label-green', '', 'label-red'] as const;
+/** Same colour language as Fund I's bands: easiest DPI green, riskiest red. */
+const PROFILE_CLASS = { dealFlow: 'label-green', lpDarling: '', bigChecks: 'label-red' } as const;
 
 const TIER_LABELS = { associate: 'ASSOCIATE', partner: 'PARTNER', gp: 'GENERAL PARTNER' };
 
@@ -66,11 +68,20 @@ export function FirmReveal({
           <p className="terms-blurb">{terms.blurb}</p>
         </div>
       )}
+      {/* Fund II+: what this offer trades (same slot as Fund I's difficulty). */}
+      {game.offerProfile && (
+        <div className="terms-difficulty">
+          <span className={`harvest-label ${PROFILE_CLASS[game.offerProfile]}`}>
+            {lines.offerProfiles[game.offerProfile].label}
+          </span>
+          <p className="terms-blurb">{lines.offerProfiles[game.offerProfile].blurb}</p>
+        </div>
+      )}
       <LpRequestList requests={game.lpRequests} lines={lines} note />
       <div className="screen-actions">
         {canReroll && (
           <button type="button" className="btn btn-secondary" data-sfx="reroll" onClick={onReroll}>
-            {game.isFundI
+            {game.isFundI || game.offerProfile
               ? lines.jobs.nextOffer
                   .replace('{i}', String(optionIndex + 1))
                   .replace('{n}', String(optionCount))

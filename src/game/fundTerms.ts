@@ -1,5 +1,6 @@
 import { createRng } from './rng.ts';
-import { FUND_I_TERMS } from './tuning.ts';
+import { FUND_I_TERMS, OFFER_PROFILES } from './tuning.ts';
+import { OFFER_PROFILES_ORDER, type CareerState, type OfferProfile } from './types.ts';
 import { roundM } from './util.ts';
 
 export type DifficultyBand = 0 | 1 | 2; // soft / standard / brutal (labels in content)
@@ -36,3 +37,15 @@ export function rollFundITerms(seed: number): FundITerms {
     lpTrustOffset: Math.round(lerp(FUND_I_TERMS.lpTrustOffset, t)),
   };
 }
+
+/**
+ * Fund II+ offer flavor for a run seed (own salted RNG, like the Fund I
+ * dial). Null where it doesn't apply: Fund I has its difficulty dial, and a
+ * GP's accepted LP package already fixed the fund.
+ */
+export function offerProfileFor(career: CareerState, seed: number): OfferProfile | null {
+  if (career.fundIndex === 1 || career.pendingFund) return null;
+  const i = Math.floor(createRng((seed ^ OFFER_PROFILES.rngSalt) >>> 0).next() * 3);
+  return OFFER_PROFILES_ORDER[i] ?? 'lpDarling';
+}
+

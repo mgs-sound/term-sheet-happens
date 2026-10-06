@@ -205,6 +205,10 @@ export interface VetoChallenge {
   shown?: PlayingCard;
 }
 
+/** Fund II+ offer flavor (see OFFER_PROFILES); display order. */
+export const OFFER_PROFILES_ORDER = ['bigChecks', 'dealFlow', 'lpDarling'] as const;
+export type OfferProfile = (typeof OFFER_PROFILES_ORDER)[number];
+
 export interface GameState {
   phase: Phase;
   seed: number;
@@ -250,6 +254,8 @@ export interface GameState {
   lastDice?: { call: DiceCall; roll: number; won: boolean } | null;
   /** The last longest-stick draw (lengths as % of the ruler). */
   lastSticks?: { call: StickCall; red: number; green: number; won: boolean } | null;
+  /** Fund II+ offer flavor that bent this fund's terms (absent = none). */
+  offerProfile?: OfferProfile;
   /** This fund's LP requests (absent on older saves = none). */
   lpRequests?: LpRequest[];
 }

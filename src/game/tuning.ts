@@ -453,3 +453,25 @@ export const LP_REQUESTS = {
   /** LP trust granted per request met, at harvest (feeds next fund size). TUNE */
   metTrustDelta: 6,
 } as const;
+
+// ---------------------------------------------------------------------------
+// Offer profiles (Fund II+ engagement letters)
+// ---------------------------------------------------------------------------
+
+/**
+ * The three firm offers after Fund I are the same career-earned base fund,
+ * each bent a different way so picking one is a real choice. Not applied
+ * when an LP package already fixed the fund (GP promotion).
+ */
+export const OFFER_PROFILES = {
+  /** Salt for the profile's own RNG, so it never shifts the run stream. */
+  rngSalt: 0x4f_46_46_52,
+  /** More money, same calendar: more AUM, harder to deploy well (DPI). TUNE
+   *  (Fewer meetings on top made it a trap in sims: GP 1x+ fell to 17%.) */
+  bigChecks: { sizeMult: 1.2, meetingsMult: 1, trustDelta: 0 },
+  /** More at-bats, smaller fund: easiest DPI, least AUM. TUNE */
+  dealFlow: { sizeMult: 0.9, meetingsMult: 1.15, trustDelta: 0 },
+  /** Same fund, LPs already like you: room to go off-thesis. TUNE */
+  lpDarling: { sizeMult: 1, meetingsMult: 1, trustDelta: 15 },
+} as const;
+
