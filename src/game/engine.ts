@@ -31,7 +31,7 @@ import { CHALLENGE_GAMES, SUITS } from './types.ts';
 import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
-import { offerProfileFor, rollFundITerms } from './fundTerms.ts';
+import { offerProfileFor, rollFundITerms, tierBelow } from './fundTerms.ts';
 import { rollLpRequests, settleLpRequests, updateLiveLpRequests } from './lpRequests.ts';
 import {
   acceptanceProbability,
@@ -97,6 +97,8 @@ export function createRun(
   // Fund II+: the career sets the base; the offer profile bends it.
   const offerProfile = offerProfileFor(career, seed);
   const bend = offerProfile ? OFFER_PROFILES[offerProfile] : null;
+  // Mega fund: you join a rung down the ladder.
+  const tier = offerProfile === 'megaFund' ? tierBelow(career.tier) : career.tier;
   const meetingsTotal = fundITerms
     ? fundITerms.meetings
     : Math.round(meetingsForCareer(career) * (bend?.meetingsMult ?? 1));
@@ -126,7 +128,7 @@ export function createRun(
     phase: 'meeting',
     seed,
     rngState: rng.getState(),
-    tier: career.tier,
+    tier,
     isFundI,
     fundIndex: career.fundIndex,
     firmName,

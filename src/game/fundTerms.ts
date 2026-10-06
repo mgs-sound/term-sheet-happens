@@ -38,14 +38,29 @@ export function rollFundITerms(seed: number): FundITerms {
   };
 }
 
+/** Profiles a Fund II+ offer can roll; mega fund only after a 1x+ fund, and
+ *  only for someone with a rung to drop (not an associate). */
+export function eligibleOfferProfiles(career: CareerState): OfferProfile[] {
+  if (career.fundIndex === 1 || career.pendingFund) return [];
+  const mega =
+    career.tier !== 'associate' &&
+    (career.lastFundDpi ?? 0) >= OFFER_PROFILES.megaMinLastDpi;
+  return OFFER_PROFILES_ORDER.filter((p) => p !== 'megaFund' || mega);
+}
+
 /**
  * Fund II+ offer flavor for a run seed (own salted RNG, like the Fund I
  * dial). Null where it doesn't apply: Fund I has its difficulty dial, and a
- * GP's accepted LP package already fixed the fund.
+ * fixed fund (GP's LP package, or staying at your firm) is already set.
  */
 export function offerProfileFor(career: CareerState, seed: number): OfferProfile | null {
-  if (career.fundIndex === 1 || career.pendingFund) return null;
-  const i = Math.floor(createRng((seed ^ OFFER_PROFILES.rngSalt) >>> 0).next() * 3);
-  return OFFER_PROFILES_ORDER[i] ?? 'lpDarling';
+  const pool = eligibleOfferProfiles(career);
+  if (pool.length === 0) return null;
+  const i = Math.floor(createRng((seed ^ OFFER_PROFILES.rngSalt) >>> 0).next() * pool.length);
+  return pool[i] ?? pool[0] ?? null;
 }
 
+/** One rung down the ladder (mega fund), never below associate. */
+export function tierBelow(tier: CareerState['tier']): CareerState['tier'] {
+  return tier === 'gp' ? 'partner' : 'associate';
+}

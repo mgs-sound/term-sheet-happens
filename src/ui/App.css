@@ -283,6 +283,18 @@
   border-color: var(--ledger-green);
 }
 
+.lp-requests-verdict {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-style: italic;
+}
+.lp-requests-verdict.is-met {
+  color: var(--ledger-green);
+}
+.lp-requests-verdict.is-missed {
+  color: var(--stamp-red);
+}
+
 .lp-requests-note {
   margin: 6px 0 0;
   font-family: var(--font-mono);
@@ -1892,6 +1904,144 @@
 
 .rehire-tier {
   font-size: 12px;
+}
+
+/* Inbox: the stay-or-leave choice between funds. */
+.rehire-inbox {
+  margin: 14px 0 0;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rehire-intro {
+  margin: 6px 0 0;
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.rehire-block {
+  margin-top: 16px;
+  padding: 8px 10px 10px;
+}
+
+.rehire-block-title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rehire-block .figures-row {
+  margin-top: 8px;
+}
+
+/* Stay: only the title wears the sign-here yellow (a highlighter swipe,
+   like the LP requests), so the block never reads as "already selected". */
+.rehire-stay .rehire-block-title {
+  display: inline-block;
+  background: var(--sign-yellow);
+  padding: 3px 6px;
+  margin-left: -6px;
+}
+
+.rehire-stay.is-locked {
+  opacity: 0.55;
+}
+
+.rehire-stay.is-locked .rehire-block-title {
+  background: transparent;
+  text-decoration: line-through;
+}
+
+.rehire-locked {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--stamp-red);
+}
+
+/* New firm: ledger green heading, like its button. */
+.rehire-outside .rehire-block-title {
+  color: var(--ledger-green);
+}
+
+.rehire-figures dd {
+  font-size: 15px;
+}
+
+/* RPG arrows vs. the fund just run. */
+.trend {
+  margin-left: 3px;
+  font-size: 0.85em;
+}
+.trend-up,
+.trend-up2 {
+  color: var(--ledger-green);
+}
+.trend-down {
+  color: var(--stamp-red);
+}
+.trend-same {
+  opacity: 0.35;
+}
+
+/* New-firm offers: one tappable row each. */
+.offer-table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.offer-table th {
+  font-weight: 400;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0 4px 4px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.offer-table td {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--ink);
+  white-space: nowrap;
+}
+
+.offer-table th:first-child,
+.offer-table td:first-child {
+  padding-left: 0;
+}
+
+.offer-row {
+  cursor: pointer;
+}
+
+.offer-row:active {
+  background: var(--sign-yellow);
+}
+
+.rehire-choice {
+  display: flex;
+  gap: 10px;
+}
+
+.rehire-choice .btn {
+  flex: 1;
+}
+
+.btn-stay {
+  background: var(--sign-yellow);
+  color: var(--ink);
 }
 
 /* ------------------------------------------------------------ sign sheet */

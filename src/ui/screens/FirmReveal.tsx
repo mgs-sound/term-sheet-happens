@@ -7,7 +7,12 @@ import { LpRequestList } from '../components/LpRequestList';
 
 const BAND_CLASS = ['label-green', '', 'label-red'] as const;
 /** Same colour language as Fund I's bands: easiest DPI green, riskiest red. */
-const PROFILE_CLASS = { dealFlow: 'label-green', lpDarling: '', bigChecks: 'label-red' } as const;
+const PROFILE_CLASS = {
+  dealFlow: 'label-green',
+  lpDarling: '',
+  bigChecks: 'label-red',
+  megaFund: 'label-red',
+} as const;
 
 const TIER_LABELS = { associate: 'ASSOCIATE', partner: 'PARTNER', gp: 'GENERAL PARTNER' };
 

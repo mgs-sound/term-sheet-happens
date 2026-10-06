@@ -5,13 +5,15 @@ import './fonts/firmFonts.css';
 import { preloadSectorFonts } from './fonts/preloadSectorFonts';
 import { loadContentAsync } from '../content/loader';
 import type { Content, FlavorLines } from '../content/types';
-import { reduce } from '../game/engine';
+import { createRun, reduce } from '../game/engine';
 import {
   acceptLpOffer,
   closeCareerFund,
   initialCareer,
   withFirmName,
   withPlayerName,
+  acceptStay,
+  stayOption,
 } from '../game/career';
 import {
   careerAtEnlightenmentGate,
@@ -266,6 +268,24 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
     return closeCareerFund(career, game, rng, content.theses);
   }, [game, career, content.theses]);
 
+  // The new-firm offers shown in the rehire inbox, one row each: the same
+  // fixed set the engagement letters then flip through (seeded from the run,
+  // so they don't reshuffle on re-render). GP promotion has LP packages instead.
+  const rehireOffers = useMemo(() => {
+    if (!nextCareer || nextCareer.pendingOffers) return null;
+    const seeds = pickFirmOptions(nextCareer, engineContent, (game.seed ^ 0x9e3779b9) >>> 0);
+    return seeds.map((seed) => createRun(nextCareer, seed, engineContent));
+  }, [nextCareer, engineContent, game.seed]);
+
+  /** Start a fund at one of a fixed set of offers (the rehire inbox rows). */
+  const startOffer = (fresh: CareerState, seeds: number[], seed: number): void => {
+    setCareer(fresh);
+    setPendingCareer(null);
+    setFirmOptions(seeds);
+    dispatch({ type: 'START_RUN', career: fresh, seed, content: engineContent });
+    setScreen('reveal');
+  };
+
   const startRun = useCallback(
     (nextCareerState: CareerState): void => {
       const resolved = nextCareerState.pendingOffers
@@ -447,7 +467,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           lines={content.lines}
           firmParts={content.firmNames}
           optionIndex={firmOptions ? Math.max(0, firmOptions.indexOf(game.seed)) : 0}
-          optionCount={FIRM_OPTION_COUNT}
+          optionCount={firmOptions?.length ?? FIRM_OPTION_COUNT}
           // GP with a chosen name AND an LP-pinned thesis: rerolling would only
           // reshuffle the hidden deck (nothing visible changes), so no button.
           // GP with a chosen name AND an LP-pinned thesis: rerolling would only
@@ -511,7 +531,18 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
         <RehireScreen
           game={game}
           nextCareer={nextCareer}
+          stay={stayOption(nextCareer, game)}
           lines={content.lines}
+          onStay={() => startRun(acceptStay(nextCareer, stayOption(nextCareer, game)))}
+          offers={rehireOffers}
+          onPickOffer={(seed) =>
+            rehireOffers &&
+            startOffer(
+              nextCareer,
+              rehireOffers.map((r) => r.seed),
+              seed,
+            )
+          }
           onNextFund={() => {
             if (nextCareer.pendingOffers) {
               setPendingCareer(nextCareer);

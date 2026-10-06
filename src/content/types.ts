@@ -199,7 +199,30 @@ export interface FlavorLines {
     };
   };
   /** Fund II+ offer flavors on the engagement letter (keys = OfferProfile). */
-  offerProfiles: Record<'bigChecks' | 'dealFlow' | 'lpDarling', { label: string; blurb: string }>;
+  offerProfiles: Record<
+    'bigChecks' | 'dealFlow' | 'lpDarling' | 'megaFund',
+    { label: string; blurb: string }
+  >;
+  /** Rehire "inbox": stay at your firm vs. new firm opportunities. */
+  rehire: {
+    inbox: string;
+    /** The choice, spelled out under the inbox heading. */
+    intro: string;
+    /** {firm} = the firm you just ran. */
+    stayTitle: string;
+    /** {n} = number of offers (falls back to the plain title when unknown). */
+    outsideTitle: string;
+    role: string;
+    /** {n} = the next fund's number. */
+    fund: string;
+    trust: string;
+    /** GP promotion: {n} = how many LP packages wait outside. */
+    lpOffers: string;
+    stayCta: string;
+    leaveCta: string;
+    /** Why "stay" is greyed out (an LP request was broken). */
+    stayLocked: string;
+  };
   /** Fund I: the firm options read as job offers on the engagement letter. */
   jobs: {
     /** Button that steps to the next offer; {i}/{n} = position. */
@@ -214,6 +237,10 @@ export interface FlavorLines {
     brokenToast: string;
     /** Note under the list; {trust} = LP trust per request met. */
     rewardNote: string;
+    /** Scorecard line under the list: all met = you may stay at the firm. */
+    verdictAllMet: string;
+    /** Scorecard line under the list: any missed = you'll have to leave. */
+    verdictMissed: string;
     /** Copy variants per request kind. Tokens (filled from tuning):
      *  {pct} reserve share, {deployed} max deployed share, {n} off-thesis
      *  deals to diversify, {heat} max deal heat, {team} min team rating. */

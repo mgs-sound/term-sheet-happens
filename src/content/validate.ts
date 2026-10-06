@@ -341,12 +341,34 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
   const op = data.offerProfiles;
   if (
     !isRecord(op) ||
-    !['bigChecks', 'dealFlow', 'lpDarling'].every((k) => {
+    !['bigChecks', 'dealFlow', 'lpDarling', 'megaFund'].every((k) => {
       const v = op[k];
       return isRecord(v) && isNonEmptyString(v.label) && isNonEmptyString(v.blurb);
     })
   ) {
-    errors.push('lines.json: "offerProfiles" needs { label, blurb } for bigChecks / dealFlow / lpDarling');
+    errors.push(
+      'lines.json: "offerProfiles" needs { label, blurb } for bigChecks / dealFlow / lpDarling / megaFund',
+    );
+  }
+
+  const rh = data.rehire;
+  if (
+    !isRecord(rh) ||
+    ![
+      'inbox',
+      'intro',
+      'stayTitle',
+      'outsideTitle',
+      'role',
+      'fund',
+      'trust',
+      'lpOffers',
+      'stayCta',
+      'leaveCta',
+      'stayLocked',
+    ].every((k) => isNonEmptyString(rh[k]))
+  ) {
+    errors.push('lines.json: "rehire" is missing one of its labels');
   }
 
   const jb = data.jobs;
@@ -362,6 +384,8 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     !isNonEmptyString(lr.stampBroken) ||
     !isNonEmptyString(lr.brokenToast) ||
     !isNonEmptyString(lr.rewardNote) ||
+    !isNonEmptyString(lr.verdictAllMet) ||
+    !isNonEmptyString(lr.verdictMissed) ||
     !isRecord(lr.kinds) ||
     !LP_REQUEST_KINDS.every((k) => isStringArray((lr.kinds as Record<string, unknown>)[k]))
   ) {

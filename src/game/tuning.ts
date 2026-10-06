@@ -473,5 +473,29 @@ export const OFFER_PROFILES = {
   dealFlow: { sizeMult: 0.9, meetingsMult: 1.15, trustDelta: 0 },
   /** Same fund, LPs already like you: room to go off-thesis. TUNE */
   lpDarling: { sizeMult: 1, meetingsMult: 1, trustDelta: 15 },
+  /**
+   * Colossal fund where you're a nobody: one rung down the ladder (partner
+   * vetoes again, no board seats), huge AUM. Only offered after a 1x+ fund,
+   * to someone with a rung to lose. TUNE
+   */
+  megaFund: { sizeMult: 2.5, meetingsMult: 1, trustDelta: -10 },
+  /** Mega fund needs the last fund to have returned at least this. */
+  megaMinLastDpi: 1,
+} as const;
+
+// ---------------------------------------------------------------------------
+// Staying at your firm (rehire screen)
+// ---------------------------------------------------------------------------
+
+/**
+ * Meeting every LP request earns the option to stay. Staying keeps the firm
+ * and thesis; it never shrinks the fund for a bad DPI, and after a 1x+ fund
+ * it promotes in-house and beats the outside base.
+ */
+export const STAY = {
+  /** 1x+: stay fund = outside base fund × this. TUNE */
+  winSizeMult: 1.2,
+  /** 1x+: LP trust bonus for staying. TUNE */
+  winTrustDelta: 5,
 } as const;
 

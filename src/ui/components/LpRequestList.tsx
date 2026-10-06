@@ -52,6 +52,16 @@ export function LpRequestList({
           </li>
         ))}
       </ul>
+      {/* Scorecard: what the requests mean for your job (stay vs. leave). */}
+      {stamps && requests.every((r) => r.status !== 'open') && (
+        <p
+          className={`lp-requests-verdict ${
+            requests.every((r) => r.status === 'met') ? 'is-met' : 'is-missed'
+          }`}
+        >
+          {requests.every((r) => r.status === 'met') ? copy.verdictAllMet : copy.verdictMissed}
+        </p>
+      )}
       {note && (
         <p className="lp-requests-note">
           {copy.rewardNote.replace('{trust}', String(LP_REQUESTS.metTrustDelta))}

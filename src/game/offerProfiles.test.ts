@@ -16,7 +16,8 @@ describe('Fund II+ offer profiles', () => {
       const career = careerForTier(tier);
       const seeds = pickFirmOptions(career, ec, 12345);
       const runs = seeds.map((s) => createRun(career, s, ec));
-      expect(runs.map((r) => r.offerProfile)).toEqual([...OFFER_PROFILES_ORDER]);
+      // careerForTier has no last fund on record, so no mega fund here.
+      expect(runs.map((r) => r.offerProfile)).toEqual(OFFER_PROFILES_ORDER.filter((p) => p !== 'megaFund'));
       const baseM = career.nextFundSizeM!;
       for (const r of runs) {
         const p = OFFER_PROFILES[r.offerProfile!];

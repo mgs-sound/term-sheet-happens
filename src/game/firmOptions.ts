@@ -1,10 +1,16 @@
 import { createRun } from './engine.ts';
-import { difficultyBand, offerProfileFor } from './fundTerms.ts';
+import { difficultyBand, eligibleOfferProfiles } from './fundTerms.ts';
 import { OFFER_PROFILES_ORDER } from './types.ts';
 import type { CareerState, EngineContent, GameState } from './types.ts';
 
-/** How many firms the engagement letter lets you flip between. */
+/** How many firms the engagement letter lets you flip between (default). */
 export const FIRM_OPTION_COUNT = 3;
+
+/** Offers for this career: one per eligible profile in Fund II+ (3, or 4
+ *  with the mega fund), else FIRM_OPTION_COUNT. */
+export function firmOptionCount(career: CareerState): number {
+  return eligibleOfferProfiles(career).length || FIRM_OPTION_COUNT;
+}
 /** Stride between candidate seeds (any odd prime spreads them well). */
 const SEED_STRIDE = 7919;
 /** Give up searching for a perfect set after this many candidates. */
@@ -38,7 +44,8 @@ export function pickFirmOptions(
   const isFundI = career.fundIndex === 1;
   // Fund II+ (non-GP-package): one offer per profile (big checks / deal flow /
   // LP darling), like Fund I's one per difficulty band.
-  const byProfile = offerProfileFor(career, baseSeed) !== null;
+  const byProfile = eligibleOfferProfiles(career).length > 0;
+  const target = firmOptionCount(career);
   const checkNames = career.pendingFirmName === null;
   const checkThesis = !career.pendingFund;
 
@@ -62,14 +69,14 @@ export function pickFirmOptions(
 
   if (include !== undefined) chosen.push({ seed: include, run: createRun(career, include, content) });
 
-  for (let k = 0; k < MAX_CANDIDATES && chosen.length < FIRM_OPTION_COUNT; k++) {
+  for (let k = 0; k < MAX_CANDIDATES && chosen.length < target; k++) {
     const seed = (baseSeed + k * SEED_STRIDE) >>> 0;
     if (chosen.some((c) => c.seed === seed)) continue;
     const run = createRun(career, seed, content);
     if (fits(run)) chosen.push({ seed, run });
   }
   // Content too shallow for a perfect set: pad with anything new.
-  for (let k = MAX_CANDIDATES; chosen.length < FIRM_OPTION_COUNT; k++) {
+  for (let k = MAX_CANDIDATES; chosen.length < target; k++) {
     const seed = (baseSeed + k * SEED_STRIDE) >>> 0;
     if (!chosen.some((c) => c.seed === seed)) {
       chosen.push({ seed, run: createRun(career, seed, content) });

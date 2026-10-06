@@ -206,7 +206,7 @@ export interface VetoChallenge {
 }
 
 /** Fund II+ offer flavor (see OFFER_PROFILES); display order. */
-export const OFFER_PROFILES_ORDER = ['bigChecks', 'dealFlow', 'lpDarling'] as const;
+export const OFFER_PROFILES_ORDER = ['bigChecks', 'dealFlow', 'lpDarling', 'megaFund'] as const;
 export type OfferProfile = (typeof OFFER_PROFILES_ORDER)[number];
 
 export interface GameState {
