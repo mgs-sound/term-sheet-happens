@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { loadContent } from '../content';
 import { acceptStay, closeCareerFund, initialCareer, meetingsForCareer, stayOption } from './career';
 import { createRun } from './engine';
-import { eligibleOfferProfiles, offerProfileFor } from './fundTerms';
+import { eligibleOfferProfiles, offerProfileFor, offerSwingFor } from './fundTerms';
+import { outsideSummary } from './rehire';
 import { createRng } from './rng';
 import { careerForTier, simulateRun } from './sim';
 import { OFFER_PROFILES, STAY } from './tuning';
@@ -54,7 +55,10 @@ describe('staying at your firm', () => {
     // Same money per meeting over the next calendar.
     const meetings = meetingsForCareer({ ...next, tier: 'associate' });
     expect(stay.fundSizeM).toBeCloseTo((run.fundSizeM / run.meetingsTotal) * meetings, 0);
-    expect(stay.fundSizeM).toBeGreaterThan(next.nextFundSizeM!); // outside shrank
+    // Leaving is a gamble: the outside range straddles the stay fund.
+    const out = outsideSummary(next);
+    expect(out.fundLowM).toBeLessThan(stay.fundSizeM);
+    expect(out.fundHighM).toBeGreaterThan(stay.fundSizeM);
   });
 
   it('after Fund I, staying grows the fund with the longer calendar', () => {
@@ -89,7 +93,10 @@ describe('mega fund', () => {
     const seed = [...Array(200).keys()].find((s) => offerProfileFor(career, s) === 'megaFund')!;
     const run = createRun(career, seed, ec);
     expect(run.tier).toBe('associate');
-    expect(run.fundSizeM).toBeCloseTo(career.nextFundSizeM! * OFFER_PROFILES.megaFund.sizeMult, 0);
+    expect(run.fundSizeM).toBeCloseTo(
+      career.nextFundSizeM! * OFFER_PROFILES.megaFund.sizeMult * offerSwingFor(career, seed).sizeMult,
+      0,
+    );
     const done = simulateRun(career, seed, ec);
     done.harvest = { ...done.harvest!, dpi: 1.1 };
     const next = closeCareerFund(career, done, createRng(1), content.theses);

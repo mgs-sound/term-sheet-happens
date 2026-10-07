@@ -514,6 +514,16 @@ export const OFFER_PROFILES = {
   megaFund: { sizeMult: 2.5, meetingsMult: 1, trustDelta: -10 },
   /** Mega fund needs the last fund to have returned at least this. */
   megaMinLastDpi: 1,
+  /**
+   * The new-firm market is a surprise box: each offer's fund and LP trust
+   * swing around its profile, and the inbox only shows the possible range.
+   * The low end sits under what staying pays, so leaving is a gamble, not a
+   * free upgrade. Own salt (the profile pick stays seed-stable). TUNE
+   */
+  swingSalt: 0x5357_4e47,
+  sizeSwing: { min: 0.4, max: 1.0 },
+  /** ± LP trust points around the profile's trust. TUNE */
+  trustSwing: 10,
 } as const;
 
 // ---------------------------------------------------------------------------

@@ -218,6 +218,16 @@ export interface FlavorLines {
     trust: string;
     /** GP promotion: {n} = how many LP packages wait outside. */
     lpOffers: string;
+    /** The outside market as a sealed envelope (a sentence, not a table).
+     *  {n} = offers; {lo}/{hi} = fund range; {tlo}/{thi} = trust range;
+     *  {role} = the role (or "X or Y"). */
+    sealedIntro: string;
+    sealedRange: string;
+    sealedRoleSame: string;
+    sealedRole: string;
+    /** GP promotion: {n} LP packages, {lo}/{hi} fund range. */
+    sealedLp: string;
+    sealedNote: string;
     stayCta: string;
     leaveCta: string;
     /** Why "stay" is greyed out (an LP request was broken). */

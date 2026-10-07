@@ -63,6 +63,24 @@ export function offerProfileFor(career: CareerState, seed: number): OfferProfile
   return pool[i] ?? pool[0] ?? null;
 }
 
+/**
+ * The surprise-box swing on a new-firm offer (see OFFER_PROFILES.sizeSwing):
+ * a fund-size multiplier and an LP trust offset. Neutral when no offer
+ * profile applies (Fund I, a fixed fund).
+ */
+export function offerSwingFor(
+  career: CareerState,
+  seed: number,
+): { sizeMult: number; trustDelta: number } {
+  if (!offerProfileFor(career, seed)) return { sizeMult: 1, trustDelta: 0 };
+  const rng = createRng((seed ^ OFFER_PROFILES.swingSalt) >>> 0);
+  const { min, max } = OFFER_PROFILES.sizeSwing;
+  return {
+    sizeMult: min + (max - min) * rng.next(),
+    trustDelta: rng.int(-OFFER_PROFILES.trustSwing, OFFER_PROFILES.trustSwing),
+  };
+}
+
 /** One rung down the ladder (mega fund), never below associate. */
 export function tierBelow(tier: CareerState['tier']): CareerState['tier'] {
   return tier === 'gp' ? 'partner' : 'associate';

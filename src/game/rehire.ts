@@ -40,8 +40,18 @@ export function outsideSummary(next: CareerState): OutsideSummary {
   const profiles = eligibleOfferProfiles(next);
   const bends = profiles.map((p) => OFFER_PROFILES[p]);
   const tiers = profiles.map((p) => (p === 'megaFund' ? tierBelow(next.tier) : next.tier));
-  const sizes = bends.length ? bends.map((b) => baseM * b.sizeMult) : [baseM];
-  const trusts = bends.length ? bends.map((b) => next.lpTrust + b.trustDelta) : [next.lpTrust];
+  // The whole possible range (profile × surprise swing), not the rolled
+  // offers: what you'd actually get stays a surprise until you leave.
+  const { sizeSwing, trustSwing } = OFFER_PROFILES;
+  const sizes = bends.length
+    ? bends.flatMap((b) => [baseM * b.sizeMult * sizeSwing.min, baseM * b.sizeMult * sizeSwing.max])
+    : [baseM];
+  const trusts = bends.length
+    ? bends.flatMap((b) => [
+        next.lpTrust + b.trustDelta - trustSwing,
+        next.lpTrust + b.trustDelta + trustSwing,
+      ])
+    : [next.lpTrust];
   const ranked = (tiers.length ? tiers : [next.tier]).sort((a, b) => TIER_RANK[a] - TIER_RANK[b]);
   return {
     tierLow: ranked[0] ?? next.tier,

@@ -6,6 +6,8 @@ import { careerForTier } from './sim';
 import { OFFER_PROFILES } from './tuning';
 import { OFFER_PROFILES_ORDER } from './types';
 import { initialCareer } from './career';
+import { offerSwingFor } from './fundTerms';
+import { outsideSummary } from './rehire';
 
 const content = loadContent();
 const ec = { pitches: content.pitches, theses: content.theses, firmNames: content.firmNames };
@@ -21,9 +23,24 @@ describe('Fund II+ offer profiles', () => {
       const baseM = career.nextFundSizeM!;
       for (const r of runs) {
         const p = OFFER_PROFILES[r.offerProfile!];
-        expect(Math.abs(r.fundSizeM - baseM * p.sizeMult)).toBeLessThanOrEqual(0.05 + 1e-9); // roundM: 0.1M steps
+        const swing = offerSwingFor(career, r.seed);
+        expect(Math.abs(r.fundSizeM - baseM * p.sizeMult * swing.sizeMult)).toBeLessThanOrEqual(0.05 + 1e-9); // roundM: 0.1M steps
         expect(r.meetingsTotal).toBe(Math.round(meetingsForCareer(career) * p.meetingsMult));
-        expect(r.lpTrust).toBe(Math.min(100, career.lpTrust + p.trustDelta));
+        expect(r.lpTrust).toBe(Math.min(100, Math.max(0, career.lpTrust + p.trustDelta + swing.trustDelta)));
+      }
+    }
+  });
+
+  it('the swing stays inside the range the inbox shows', () => {
+    for (const tier of ['associate', 'partner', 'gp'] as const) {
+      const career = careerForTier(tier);
+      const out = outsideSummary(career);
+      for (let seed = 1; seed < 200; seed++) {
+        const r = createRun(career, seed, ec);
+        expect(r.fundSizeM).toBeGreaterThanOrEqual(out.fundLowM - 0.05);
+        expect(r.fundSizeM).toBeLessThanOrEqual(out.fundHighM + 0.05);
+        expect(r.lpTrust).toBeGreaterThanOrEqual(out.trustLow);
+        expect(r.lpTrust).toBeLessThanOrEqual(out.trustHigh);
       }
     }
   });

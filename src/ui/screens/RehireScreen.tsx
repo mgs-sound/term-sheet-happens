@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { CareerState, GameState, Tier } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import type { StayOption } from '../../game/career';
@@ -19,6 +20,19 @@ const TIER_LABELS: Record<Tier, string> = {
 
 const ARROW: Record<Trend, string> = { up2: '↑↑', up: '↑', same: '=', down: '↓' };
 
+/** Fill a {key} template, setting each value as a bold mono figure. */
+function fill(template: string, vars: Record<string, string>): ReactNode[] {
+  return template.split(/(\{\w+\})/).map((part, i) => {
+    const key = /^\{(\w+)\}$/.exec(part)?.[1];
+    return key !== undefined && key in vars ? (
+      <b key={i} className="rehire-sealed-figure">
+        {vars[key]}
+      </b>
+    ) : (
+      part
+    );
+  });
+}
 
 /** RPG arrow next to a figure: green up, red down, faint "=" when unchanged. */
 function Arrow({ t }: { t: Trend }): JSX.Element {
@@ -103,7 +117,6 @@ export function RehireScreen({
   const promoted = nextCareer.tier !== game.tier;
   const out = outsideSummary(nextCareer);
   const nowTrust = runEndTrust(game);
-  const range = (lo: string, hi: string): string => (lo === hi ? lo : `${lo}–${hi}`);
 
   return (
     <section className="screen letterhead rehire ledger-screen">
@@ -132,53 +145,43 @@ export function RehireScreen({
         {stay.forgiven && <p className="rehire-forgiven">{copy.stayForgiven}</p>}
       </section>
 
-      {/* New firm: one read-only row per offer (no profile tags here: those
-          live on the engagement letters). "Take new job" opens them. */}
+      {/* New firm: a sealed envelope. Only the possible range, in a
+          sentence (no per-offer fields); "Take new job" opens the letters. */}
       <section className="rehire-block rehire-outside">
         <h3 className="rehire-block-title">
           {copy.outsideTitle.replace('{n}', String(offers?.length ?? out.lpOffers ?? '')).trim()}
         </h3>
-        {offers ? (
-          <table className="offer-table">
-            <thead>
-              <tr>
-                <th>{copy.role}</th>
-                <th>{copy.fund.replace('{n}', String(nextCareer.fundIndex))}</th>
-                <th>{copy.trust}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {offers.map((o) => (
-                <tr key={o.seed}>
-                  <td>
-                    {TIER_LABELS[o.tier]} <Arrow t={tierTrend(game.tier, o.tier)} />
-                  </td>
-                  <td>
-                    {fmtM(o.fundSizeM)} <Arrow t={trend(game.fundSizeM, o.fundSizeM)} />
-                  </td>
-                  <td>
-                    {Math.round(o.lpTrust)} <Arrow t={trustTrend(nowTrust, o.lpTrust)} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {out.lpOffers ? (
+          <p className="rehire-sealed">
+            {fill(copy.sealedLp, {
+              n: String(out.lpOffers),
+              lo: fmtM(out.fundLowM),
+              hi: fmtM(out.fundHighM),
+            })}
+          </p>
         ) : (
-        <Figures
-          copy={copy}
-          fundIndex={nextCareer.fundIndex}
-          role={range(TIER_LABELS[out.tierLow], TIER_LABELS[out.tierHigh])}
-          roleTrend={tierTrend(game.tier, out.tierHigh)}
-          fund={
-            out.lpOffers
-              ? copy.lpOffers.replace('{n}', String(out.lpOffers))
-              : `~${range(fmtM(out.fundLowM), fmtM(out.fundHighM))}`
-          }
-          fundTrend={trend(game.fundSizeM, out.fundHighM)}
-          trust={range(String(Math.round(out.trustLow)), String(Math.round(out.trustHigh)))}
-          trustTrendValue={trustTrend(nowTrust, out.trustHigh)}
-        />
+          <p className="rehire-sealed">
+            {fill(copy.sealedIntro, { n: String(offers?.length ?? 3) })}{' '}
+            {fill(copy.sealedRange, {
+              lo: fmtM(out.fundLowM),
+              hi: fmtM(out.fundHighM),
+              tlo: String(Math.round(out.trustLow)),
+              thi: String(Math.round(out.trustHigh)),
+            })}{' '}
+            {fill(
+              out.tierLow === game.tier && out.tierHigh === game.tier
+                ? copy.sealedRoleSame
+                : copy.sealedRole,
+              {
+                role:
+                  out.tierLow === out.tierHigh
+                    ? TIER_LABELS[out.tierHigh]
+                    : `${TIER_LABELS[out.tierLow]} or ${TIER_LABELS[out.tierHigh]}`,
+              },
+            )}
+          </p>
         )}
+        <p className="rehire-sealed-note">{copy.sealedNote}</p>
       </section>
 
       <div className="screen-actions">

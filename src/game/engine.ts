@@ -31,7 +31,7 @@ import { CHALLENGE_GAMES, SUITS } from './types.ts';
 import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
-import { offerProfileFor, rollFundITerms, tierBelow } from './fundTerms.ts';
+import { offerProfileFor, offerSwingFor, rollFundITerms, tierBelow } from './fundTerms.ts';
 import { rollLpRequests, settleLpRequests, updateLiveLpRequests } from './lpRequests.ts';
 import {
   acceptanceProbability,
@@ -90,6 +90,8 @@ export function createRun(
   // Fund II+: the career sets the base; the offer profile bends it.
   const offerProfile = offerProfileFor(career, seed);
   const bend = offerProfile ? OFFER_PROFILES[offerProfile] : null;
+  // ...and the surprise-box swing on top (neutral without a profile).
+  const swing = offerSwingFor(career, seed);
   // Mega fund: you join a rung down the ladder.
   const tier = offerProfile === 'megaFund' ? tierBelow(career.tier) : career.tier;
   const meetingsTotal = fundITerms
@@ -101,7 +103,9 @@ export function createRun(
     : roundM(
         (career.pendingFund?.sizeM ??
           career.nextFundSizeM ??
-          FUND_SIZING[`${career.tier}BaseM`]) * (bend?.sizeMult ?? 1),
+          FUND_SIZING[`${career.tier}BaseM`]) *
+          (bend?.sizeMult ?? 1) *
+          swing.sizeMult,
       );
 
   // Always draw the generated name so the rng stream is identical whether or
@@ -130,7 +134,10 @@ export function createRun(
     capitalM: fundSizeM,
     reputation: clampMeter(career.reputation),
     lpTrust: clampMeter(
-      career.lpTrust + (fundITerms?.lpTrustOffset ?? 0) + (bend?.trustDelta ?? 0),
+      career.lpTrust +
+        (fundITerms?.lpTrustOffset ?? 0) +
+        (bend?.trustDelta ?? 0) +
+        swing.trustDelta,
     ),
     ...(fundITerms ? { fundIDifficulty: fundITerms.difficulty } : {}),
     ...(offerProfile ? { offerProfile } : {}),
