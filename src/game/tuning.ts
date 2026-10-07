@@ -191,7 +191,7 @@ export const VETO = {
    * When a veto fires, chance the partner instead settles it on a coin flip
    * ("leadership challenge"): call it right and the deal goes through. TUNE
    */
-  challengeChance: 1 / 3,
+  challengeChance: 2 / 3,
   /** The coin: chance your call is right. A fair one, despite everything. */
   coinWinChance: 0.5,
   /**
