@@ -237,9 +237,9 @@
         "Bring home one unicorn. A real one."
       ],
       "returnFund": [
-        "Return the fund. That's the ask.",
-        "Give the money back. At least 1x.",
-        "Return 1x. The LPs will settle."
+        "Hit {x}x DPI after 5 years",
+        "Return {x}x. The LPs did the math.",
+        "Deliver {x}x, or a great excuse"
       ],
       "diversify": [
         "Diversify: {n}+ off-thesis deals",
@@ -261,7 +261,8 @@
     "verdictMissed": "LP requests missed: start polishing the résumé.",
     "stampNoDeals": "NO DEALS",
     "noDealsNote": "No investments, no credit: staying home doesn't count.",
-    "verdictForgiven": "LP requests missed, but the returns did the talking: the firm will look the other way."
+    "verdictForgiven": "LP requests missed, but the returns did the talking: the firm will look the other way.",
+    "verdictFolded": "Requests or not, at this DPI the firm is folding."
   },
   "profile": {
     "title": "Professional profile",
@@ -336,6 +337,7 @@
     "stayCta": "Stay on firm",
     "leaveCta": "Take new job",
     "stayLocked": "Unmet LP requests. The LPs have asked for a word.",
-    "stayForgiven": "LP requests missed, but nobody argues with these returns."
+    "stayForgiven": "LP requests missed, but nobody argues with these returns.",
+    "stayFolded": "{firm} has shut down. The LPs pulled the plug; the plants are already for sale."
   }
 }

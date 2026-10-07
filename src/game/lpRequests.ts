@@ -6,7 +6,7 @@
  */
 
 import { createRng } from './rng.ts';
-import type { GameState, LpRequest, LpRequestKind } from './types.ts';
+import type { GameState, LpRequest, LpRequestKind, Tier } from './types.ts';
 import { LP_REQUESTS } from './tuning.ts';
 
 /**
@@ -18,7 +18,14 @@ import { LP_REQUESTS } from './tuning.ts';
 export function requestPool(isFundI: boolean): LpRequestKind[] {
   return isFundI
     ? ['onThesis', 'dryPowder', 'coolDeals', 'reliableTeams']
-    : ['onThesis', 'dryPowder', 'unicorn', 'diversify', 'coolDeals', 'reliableTeams'];
+    : ['onThesis', 'dryPowder', 'unicorn', 'diversify', 'coolDeals', 'reliableTeams', 'returnFund'];
+}
+
+/** A DPI target from the tier's band, on the step grid (e.g. 0.5, 0.75, 1). */
+function rollDpiTarget(rng: ReturnType<typeof createRng>, tier: Tier): number {
+  const band = LP_REQUESTS.dpiTargetByTier[tier];
+  const steps = Math.round((band.max - band.min) / LP_REQUESTS.dpiTargetStep);
+  return band.min + rng.int(0, steps) * LP_REQUESTS.dpiTargetStep;
 }
 
 function clashes(a: LpRequestKind, b: LpRequestKind): boolean {
@@ -26,7 +33,7 @@ function clashes(a: LpRequestKind, b: LpRequestKind): boolean {
 }
 
 /** The fund's requests for a run seed: distinct kinds, count in min..max. */
-export function rollLpRequests(seed: number, isFundI: boolean): LpRequest[] {
+export function rollLpRequests(seed: number, isFundI: boolean, tier: Tier = 'associate'): LpRequest[] {
   const rng = createRng((seed ^ LP_REQUESTS.rngSalt) >>> 0);
   const pool = requestPool(isFundI);
   const count = isFundI
@@ -39,7 +46,12 @@ export function rollLpRequests(seed: number, isFundI: boolean): LpRequest[] {
     if (picked.some((p) => clashes(p, kind))) continue;
     picked.push(kind);
   }
-  return picked.map((kind) => ({ kind, status: 'open' as const, lineIndex: rng.int(0, 999) }));
+  return picked.map((kind) => ({
+    kind,
+    status: 'open' as const,
+    lineIndex: rng.int(0, 999),
+    ...(kind === 'returnFund' ? { target: rollDpiTarget(rng, tier) } : {}),
+  }));
 }
 
 /** Capital actually put to work: initial checks + follow-ons + bridges. */
@@ -105,7 +117,7 @@ export function settleLpRequests(s: GameState): number {
         ok = (harvest?.unicorns ?? 0) > 0;
         break;
       case 'returnFund':
-        ok = (harvest?.dpi ?? 0) >= LP_REQUESTS.returnFundDpi;
+        ok = (harvest?.dpi ?? 0) >= (r.target ?? LP_REQUESTS.returnFundDpi) - 1e-9;
         break;
     }
     r.status = ok ? 'met' : 'broken';

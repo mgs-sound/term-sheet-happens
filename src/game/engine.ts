@@ -156,7 +156,7 @@ export function createRun(
     lastCapitalCallQuarter: 0,
     events: [],
     harvest: null,
-    lpRequests: rollLpRequests(seed, isFundI),
+    lpRequests: rollLpRequests(seed, isFundI, tier),
   };
 }
 

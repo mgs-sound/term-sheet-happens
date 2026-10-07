@@ -367,6 +367,7 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
       'leaveCta',
       'stayLocked',
       'stayForgiven',
+      'stayFolded',
     ].every((k) => isNonEmptyString(rh[k]))
   ) {
     errors.push('lines.json: "rehire" is missing one of its labels');
@@ -390,6 +391,7 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     !isNonEmptyString(lr.verdictAllMet) ||
     !isNonEmptyString(lr.verdictMissed) ||
     !isNonEmptyString(lr.verdictForgiven) ||
+    !isNonEmptyString(lr.verdictFolded) ||
     !isRecord(lr.kinds) ||
     !LP_REQUEST_KINDS.every((k) => isStringArray((lr.kinds as Record<string, unknown>)[k]))
   ) {

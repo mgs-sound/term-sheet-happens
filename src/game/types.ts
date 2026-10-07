@@ -144,6 +144,8 @@ export interface LpRequest {
   status: LpRequestStatus;
   /** Which copy variant to show (UI mods by pool length). */
   lineIndex: number;
+  /** returnFund: the DPI the LPs asked for (absent on older saves = 1x). */
+  target?: number;
   /** Why it broke, when it isn't the obvious rule: the fund ended with no
    *  investments at all (e.g. the only deal was vetoed). */
   reason?: 'noDeals';

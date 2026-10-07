@@ -124,7 +124,11 @@ export function RehireScreen({
           trust={String(Math.round(stay.lpTrust))}
           trustTrendValue={trustTrend(nowTrust, stay.lpTrust)}
         />
-        {!stay.allowed && <p className="rehire-locked">{copy.stayLocked}</p>}
+        {!stay.allowed && (
+          <p className="rehire-locked">
+            {stay.folded ? copy.stayFolded.replace('{firm}', stay.firmName) : copy.stayLocked}
+          </p>
+        )}
         {stay.forgiven && <p className="rehire-forgiven">{copy.stayForgiven}</p>}
       </section>
 

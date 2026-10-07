@@ -78,6 +78,33 @@ describe('request mix', () => {
   });
 });
 
+describe('DPI target request', () => {
+  it('rolls a tier-banded target on the step grid, only in Fund II+', () => {
+    for (const tier of ['associate', 'partner', 'gp'] as const) {
+      const band = LP_REQUESTS.dpiTargetByTier[tier];
+      for (let seed = 1; seed < 400; seed++) {
+        for (const r of rollLpRequests(seed, false, tier)) {
+          if (r.kind !== 'returnFund') continue;
+          expect(r.target).toBeGreaterThanOrEqual(band.min);
+          expect(r.target).toBeLessThanOrEqual(band.max);
+          expect(((r.target! - band.min) / LP_REQUESTS.dpiTargetStep) % 1).toBeCloseTo(0);
+        }
+      }
+    }
+    for (let seed = 1; seed < 300; seed++) {
+      expect(rollLpRequests(seed, true).some((r) => r.kind === 'returnFund')).toBe(false);
+    }
+  });
+
+  it('settles against its own target', () => {
+    const s = runWith([{ kind: 'returnFund', status: 'open', lineIndex: 0, target: 1.5 }]);
+    s.harvest = { companies: [], returnedM: 0, dpi: 1.4, unicorns: 0, vetoedUnicorns: 0, visionaries: 0 };
+    expect(settleLpRequests(structuredClone(s))).toBe(0);
+    s.harvest = { ...s.harvest, dpi: 1.5 };
+    expect(settleLpRequests(s)).toBe(1);
+  });
+});
+
 describe('live + harvest settling', () => {
   it('breaks "cool deals" on a hot sign and "reliable teams" on a weak team', () => {
     const s = runWith([

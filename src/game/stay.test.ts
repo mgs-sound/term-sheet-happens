@@ -27,6 +27,14 @@ describe('staying at your firm', () => {
     expect(() => acceptStay(next, stayOption(next, run))).toThrow();
   });
 
+  it('the firm folds at a terrible DPI: no staying, even with every request met', () => {
+    const { run, career } = harvested(STAY.firmFoldDpi, true);
+    const next = closeCareerFund(career, run, createRng(1), content.theses);
+    const stay = stayOption(next, run);
+    expect(stay.folded).toBe(true);
+    expect(stay.allowed).toBe(false);
+  });
+
   it('a strong DPI forgives missed LP requests', () => {
     const { run, career } = harvested(STAY.forgiveDpi, false);
     const next = closeCareerFund(career, run, createRng(1), content.theses);

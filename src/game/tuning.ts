@@ -461,8 +461,18 @@ export const LP_REQUESTS = {
   reliableTeamsMinTeam: 3,
   /** Pairs that can't be asked together (they contradict each other). */
   exclusive: [['onThesis', 'diversify']] as readonly (readonly [string, string])[],
-  /** returnFund: met at harvest when DPI reaches this. */
+  /** returnFund: met at harvest when DPI reaches this (legacy default). */
   returnFundDpi: 1,
+  /**
+   * returnFund ("hit Xx DPI after 5 years"): the target is rolled per fund
+   * from this tier band, in steps. Starts gentle, ends demanding. TUNE
+   */
+  dpiTargetByTier: {
+    associate: { min: 0.5, max: 1 },
+    partner: { min: 0.75, max: 1.5 },
+    gp: { min: 1, max: 2 },
+  },
+  dpiTargetStep: 0.25,
   /** LP trust granted per request met, at harvest (feeds next fund size). TUNE */
   metTrustDelta: 6,
 } as const;
@@ -513,5 +523,8 @@ export const STAY = {
   /** Returns this good buy forgiveness: you may stay even with LP requests
    *  missed ("nobody argues with the returns"). TUNE */
   forgiveDpi: 1.25,
+  /** At or below this DPI the firm folds: nobody stays, met requests or
+   *  not (you can't comply your way out of losing 80% of the money). TUNE */
+  firmFoldDpi: 0.2,
 } as const;
 

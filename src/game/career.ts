@@ -191,6 +191,9 @@ export interface StayOption {
   /** Allowed only because the DPI cleared STAY.forgiveDpi despite missed
    *  LP requests. */
   forgiven: boolean;
+  /** The firm folded (DPI at or below STAY.firmFoldDpi): there's nothing to
+   *  stay at. Wins over everything else. */
+  folded: boolean;
   firmName: string;
   thesisId: string;
   tier: CareerState['tier'];
@@ -210,14 +213,16 @@ export function stayOption(next: CareerState, run: GameState): StayOption {
   const dpi = harvest?.dpi ?? 0;
   const won = dpi >= CAREER.associatePromotionDpi;
   const allMet = (run.lpRequests ?? []).every((r) => r.status === 'met');
-  const forgiven = !allMet && dpi >= STAY.forgiveDpi;
-  const allowed = allMet || forgiven;
+  const folded = dpi <= STAY.firmFoldDpi + 1e-9;
+  const forgiven = !folded && !allMet && dpi >= STAY.forgiveDpi;
+  const allowed = !folded && (allMet || forgiven);
   const outsideBaseM = next.pendingOffers
     ? Math.max(...next.pendingOffers.map((o) => o.fundSizeM))
     : (next.nextFundSizeM ?? run.fundSizeM);
   return {
     allowed,
     forgiven,
+    folded,
     firmName: run.firmName,
     thesisId: run.thesis.id,
     tier: won ? next.tier : run.tier,

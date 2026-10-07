@@ -106,6 +106,7 @@ export function ScorecardScreen({
         lines={lines}
         stamps
         forgiven={harvest.dpi >= STAY.forgiveDpi}
+        folded={harvest.dpi <= STAY.firmFoldDpi}
       />
       <div className="screen-actions">
         <button type="button" className="btn btn-secondary" onClick={onShare}>

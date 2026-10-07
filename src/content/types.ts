@@ -224,6 +224,8 @@ export interface FlavorLines {
     stayLocked: string;
     /** Stay allowed despite missed requests, thanks to a strong DPI. */
     stayForgiven: string;
+    /** The firm folded (terrible DPI): {firm} = its name. */
+    stayFolded: string;
   };
   /** Fund I: the firm options read as job offers on the engagement letter. */
   jobs: {
@@ -249,9 +251,12 @@ export interface FlavorLines {
     verdictMissed: string;
     /** Scorecard line: missed, but the DPI was high enough to be forgiven. */
     verdictForgiven: string;
+    /** Scorecard line: the DPI was so bad the firm folds, requests or not. */
+    verdictFolded: string;
     /** Copy variants per request kind. Tokens (filled from tuning):
      *  {pct} reserve share, {deployed} max deployed share, {n} off-thesis
-     *  deals to diversify, {heat} max deal heat, {team} min team rating. */
+     *  deals to diversify, {heat} max deal heat, {team} min team rating,
+     *  {x} the DPI target (returnFund). */
     kinds: Record<LpRequestKind, string[]>;
   };
 }
