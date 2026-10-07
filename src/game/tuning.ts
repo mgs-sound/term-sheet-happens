@@ -265,11 +265,16 @@ export const NEGOTIATION = {
 export const BOARD_SEATS = {
   /** Demanding a seat lowers negotiation acceptance by this much. TUNE */
   acceptancePenalty: 0.15,
-  /** Even sign-at-ask can spook the founder when a seat is demanded. TUNE */
-  signAtAskWalkChance: 0.08,
-  /** Harvest exit-timing: push improves the exit or zeroes it. TUNE */
-  pushImproveChance: 0.55,
-  pushMultiplier: 1.8,
+  /**
+   * At harvest a seat is a buff with risk: any exit pays this much more, but
+   * a company that goes to zero costs this share of what you put in (legal
+   * fees, D&O, the TechCrunch piece) — negative proceeds. So seats pay on
+   * companies you read well, and hurt on the ones you didn't. TUNE
+   */
+  // Sim (Partner deck, per $1 in): weak team+traction ≤5 −0.04, mid 6–7
+  // +0.09, strong 8+ +0.25. Seat the good ones, not everything.
+  exitMult: 1.2,
+  zeroPenalty: 0.5,
 } as const;
 
 // ---------------------------------------------------------------------------

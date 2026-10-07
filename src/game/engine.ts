@@ -223,14 +223,11 @@ export function reduce(state: GameState | null, action: Action): GameState {
     case 'CLOSE_FUND':
       handleCloseFund(s);
       break;
-    case 'TOGGLE_PUSH_EXIT':
-      handleTogglePushExit(s, action.companyId);
-      break;
     case 'RESOLVE_VETO_CHALLENGE':
       handleResolveVetoChallenge(s, rng, action.call);
       break;
     case 'HARVEST':
-      handleHarvest(s, rng, action.push ?? []);
+      handleHarvest(s, rng);
       break;
   }
 
@@ -531,11 +528,6 @@ function handleSignAtAsk(s: GameState, rng: RNG, boardSeat: boolean): void {
   if (boardSeat && !allowsBoardSeats(s)) {
     throw new Error('SIGN_AT_ASK: board seats unlock at Partner+');
   }
-  if (boardSeat && rng.chance(BOARD_SEATS.signAtAskWalkChance)) {
-    s.resolution = 'founderWalked';
-    log(s, 'founderWalked', { company: card.name });
-    return;
-  }
   completeSigning(s, rng, {
     checkM: card.askM,
     dealValuationM: card.valuationM,
@@ -790,32 +782,8 @@ function handleCloseFund(s: GameState): void {
   s.phase = 'fundClosed';
 }
 
-/** Board-seat exit push: a free, reversible choice until harvest. */
-function handleTogglePushExit(s: GameState, companyId: string): void {
-  if (s.phase === 'harvested') throw new Error('TOGGLE_PUSH_EXIT: already harvested');
-  const company = mustFindCompany(s, companyId);
-  if (!company.boardSeat) {
-    throw new Error(`TOGGLE_PUSH_EXIT: no board seat at ${companyId}`);
-  }
-  if (company.status !== 'active') {
-    throw new Error(`TOGGLE_PUSH_EXIT: ${companyId} is written off`);
-  }
-  company.pushExit = !company.pushExit;
-}
-
-function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
+function handleHarvest(s: GameState, rng: RNG): void {
   if (s.phase !== 'fundClosed') throw new Error('HARVEST: fund is not closed');
-  // Pushes marked in-run (TOGGLE_PUSH_EXIT) plus any passed explicitly.
-  const pushSet = new Set([
-    ...push,
-    ...s.portfolio.filter((c) => c.pushExit).map((c) => c.companyId),
-  ]);
-  for (const id of pushSet) {
-    const company = mustFindCompany(s, id);
-    if (!company.boardSeat) {
-      throw new Error(`HARVEST: cannot push ${id} without a board seat`);
-    }
-  }
 
   const companies: HarvestCompanyResult[] = [];
   let returnedM = 0;
@@ -823,12 +791,10 @@ function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
   let visionaries = 0;
 
   for (const company of s.portfolio) {
-    const result = resolveCompany(rng, company, pushSet.has(company.companyId), unicornScaleFor(s));
+    const result = resolveCompany(rng, company, unicornScaleFor(s));
     companies.push(result);
     returnedM += result.proceedsM;
-    // A board push that zeroed the exit returned nothing: it scores as a
-    // bust (no unicorn, no visionary, no win rep), whatever it would have been.
-    const outcome = result.boardPush === 'zeroed' ? 'zero' : result.bucket;
+    const outcome = result.bucket;
     if (outcome === 'unicorn') unicorns += 1;
     if (!result.onThesis && (outcome === 'win' || outcome === 'unicorn')) {
       visionaries += 1;
@@ -849,7 +815,8 @@ function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
     }
   }
 
-  returnedM = roundM(returnedM);
+  // Board-seat liabilities can eat into the winners, never below nothing.
+  returnedM = roundM(Math.max(0, returnedM));
   s.harvest = {
     companies,
     returnedM,
@@ -871,7 +838,6 @@ function unicornScaleFor(s: GameState): number {
 function resolveCompany(
   rng: RNG,
   company: PortfolioCompany,
-  pushed: boolean,
   unicornScale: number,
 ): HarvestCompanyResult {
   const base: Omit<HarvestCompanyResult, 'bucket' | 'proceedsM'> = {
@@ -881,30 +847,30 @@ function resolveCompany(
     onThesis: company.card.onThesis,
     investedM: company.investedM,
   };
+  // Board seat: a bonus on any exit, a liability on a zero (BOARD_SEATS).
+  const liability = (): HarvestCompanyResult => ({
+    ...base,
+    bucket: 'zero',
+    proceedsM: company.boardSeat ? -roundM(company.investedM * BOARD_SEATS.zeroPenalty) : 0,
+    ...(company.boardSeat ? { boardSeat: 'liability' as const } : {}),
+  });
 
-  if (company.status === 'writtenOff') {
-    return { ...base, bucket: 'zero', proceedsM: 0 };
-  }
+  if (company.status === 'writtenOff') return liability();
 
   const bucket = rollExitBucket(rng, company.card.quality, unicornScale);
-  let multiple = rollBucketMultiple(rng, bucket) * company.entryBonus;
-  let boardPush: HarvestCompanyResult['boardPush'];
-
-  // Board-seat exit timing: push the exit — it improves, or it zeroes.
-  if (pushed && bucket !== 'zero') {
-    if (rng.chance(BOARD_SEATS.pushImproveChance)) {
-      multiple *= BOARD_SEATS.pushMultiplier;
-      boardPush = 'improved';
-    } else {
-      multiple = 0;
-      boardPush = 'zeroed';
-    }
+  if (bucket === 'zero') {
+    // Keep the stream identical to a non-zero roll's draw count.
+    rollBucketMultiple(rng, bucket);
+    return liability();
   }
-
+  const multiple =
+    rollBucketMultiple(rng, bucket) *
+    company.entryBonus *
+    (company.boardSeat ? BOARD_SEATS.exitMult : 1);
   return {
     ...base,
     bucket,
     proceedsM: roundM(company.investedM * multiple),
-    ...(boardPush ? { boardPush } : {}),
+    ...(company.boardSeat ? { boardSeat: 'bonus' as const } : {}),
   };
 }

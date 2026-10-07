@@ -303,7 +303,12 @@
       "startCta": "Start using Term Sheet Happens"
     }
   },
-  "harvestPushZeroedLabel": "PUSHED TO ZERO",
+  "boardSeat": {
+    "label": "Demand a board seat",
+    "note": "+{bonus}% on exits, −{penalty}% if it dies",
+    "bonus": "Board seat: +{pct}% on the exit",
+    "liability": "Board liability: −{pct}% in legal fees"
+  },
   "jobs": {
     "nextOffer": "Next offer · {i}/{n}"
   },

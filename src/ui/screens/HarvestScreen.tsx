@@ -8,9 +8,12 @@ import { ScrollFade } from '../components/ScrollFade';
 import { services, type SfxId } from '../../services';
 import { useReducedMotion } from '../useReducedMotion';
 import { useCountUp } from '../useCountUp';
+import { BOARD_SEATS } from '../../game/tuning';
 
 /** Reveal pacing (presentation only). First beat waits for the VHS whine. */
 const FIRST_REVEAL_MS = 700;
+/** Board-seat stamp lands this long after its company's exit. */
+const SEAT_BEAT_MS = 320;
 /** Per-company beat: slow and dramatic for small funds, sped up so a big
  *  portfolio still opens in ~REVEAL_TOTAL_MS. */
 const REVEAL_MAX_MS = 650;
@@ -70,6 +73,14 @@ export function HarvestScreen({
     const t = window.setTimeout(() => {
       if (next) {
         services.audio.play(REVEAL_SFX[next.bucket]);
+        // Board seat lands a beat after the exit: a gavel for the bonus, the
+        // error buzz for the liability.
+        if (next.boardSeat) {
+          const seatSfx: SfxId = next.boardSeat === 'liability' ? 'denied' : 'finalOffer';
+          inflowTimers.current.push(
+            window.setTimeout(() => services.audio.play(seatSfx), SEAT_BEAT_MS),
+          );
+        }
         if (next.proceedsM > 0 && !reducedMotion) {
           const id = revealed + 1;
           setInflows((f) => [...f, { id, amountM: next.proceedsM }]);
@@ -152,37 +163,44 @@ export function HarvestScreen({
                 }}
                 className={`harvest-row ${shown ? 'reveal-in' : 'reveal-pending'} ${
                   shown && c.bucket === 'unicorn' ? 'reveal-unicorn' : ''
-                }`}
+                } ${shown && c.boardSeat ? `reveal-seat-${c.boardSeat}` : ''}`}
                 aria-hidden={!shown}
               >
                 <div className="harvest-row-top">
                   <span className="harvest-name" data-font={fontForCompany(deckFonts, c.companyId)}>
                     {c.name}
                   </span>
-                  {c.boardPush === 'zeroed' ? (
-                    // The exit was real, then the board push zeroed it: red, not
-                    // a green "strong exit" next to "out $0K".
-                    <span className="harvest-label label-red">{lines.harvestPushZeroedLabel}</span>
-                  ) : (
-                    <span
-                      className={`harvest-label ${
-                        c.bucket === 'zero'
-                          ? 'label-red'
-                          : c.bucket === 'acquihire'
-                            ? ''
-                            : c.bucket === 'unicorn'
-                              ? 'label-green label-unicorn'
-                              : 'label-green'
-                      }`}
-                    >
-                      {lines.harvestOutcomeLabels[c.bucket]}
-                      {c.boardPush === 'improved' && ' ↑'}
-                    </span>
-                  )}
+                  <span
+                    className={`harvest-label ${
+                      c.bucket === 'zero'
+                        ? 'label-red'
+                        : c.bucket === 'acquihire'
+                          ? ''
+                          : c.bucket === 'unicorn'
+                            ? 'label-green label-unicorn'
+                            : 'label-green'
+                    }`}
+                  >
+                    {lines.harvestOutcomeLabels[c.bucket]}
+                  </span>
                 </div>
                 <div className="harvest-row-nums">
-                  in {fmtM(c.investedM)} &rarr; out {fmtM(c.proceedsM)}
+                  in {fmtM(c.investedM)} &rarr; out{' '}
+                  {c.proceedsM < 0 ? `−${fmtM(-c.proceedsM)}` : fmtM(c.proceedsM)}
                 </div>
+                {c.boardSeat && (
+                  <div className={`harvest-seat ${c.boardSeat === 'liability' ? 'is-liability' : ''}`}>
+                    {c.boardSeat === 'liability'
+                      ? lines.boardSeat.liability.replace(
+                          '{pct}',
+                          String(Math.round(BOARD_SEATS.zeroPenalty * 100)),
+                        )
+                      : lines.boardSeat.bonus.replace(
+                          '{pct}',
+                          String(Math.round((BOARD_SEATS.exitMult - 1) * 100)),
+                        )}
+                  </div>
+                )}
               </li>
             );
           })}

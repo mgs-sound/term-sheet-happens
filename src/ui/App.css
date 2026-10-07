@@ -1834,6 +1834,62 @@
   }
 }
 
+/* Board seat at harvest: a stamp a beat after the exit. Bonus slams in green
+   with a yellow money flash; liability slams red and the row shakes. */
+.harvest-seat {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 1px 6px;
+  border: 2px solid var(--ledger-green);
+  color: var(--ledger-green);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.harvest-seat.is-liability {
+  border-color: var(--stamp-red);
+  color: var(--stamp-red);
+}
+.reveal-seat-bonus .harvest-seat,
+.reveal-seat-liability .harvest-seat {
+  animation: seat-stamp 0.32s ease-out 0.32s both;
+}
+.reveal-seat-bonus {
+  animation:
+    reveal-slide 0.28s ease-out,
+    seat-bonus-flash 0.9s ease-out 0.32s;
+}
+.reveal-seat-liability {
+  animation:
+    reveal-slide 0.28s ease-out,
+    seat-liability-shake 0.45s linear 0.32s;
+}
+@keyframes seat-stamp {
+  0% { transform: scale(1.8) rotate(-6deg); opacity: 0; }
+  60% { transform: scale(0.95) rotate(-2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-2deg); opacity: 1; }
+}
+@keyframes seat-bonus-flash {
+  0%, 30% { background: var(--sign-yellow); }
+  100% { background: transparent; }
+}
+@keyframes seat-liability-shake {
+  0%, 100% { transform: translateX(0); background: transparent; }
+  10% { background: rgba(179, 56, 44, 0.12); }
+  15%, 45%, 75% { transform: translateX(-5px); }
+  30%, 60%, 90% { transform: translateX(5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-seat-bonus,
+  .reveal-seat-liability,
+  .reveal-seat-bonus .harvest-seat,
+  .reveal-seat-liability .harvest-seat {
+    animation: none;
+  }
+}
+
 /* Scorecard: the DPI panel thumps once when the count lands. */
 .dpi-block {
   transition: background 0.25s;

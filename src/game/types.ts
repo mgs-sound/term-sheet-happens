@@ -60,13 +60,6 @@ export interface PortfolioCompany {
   followOnEvents: number; // taken + declined, for FOLLOW_ONS.maxPerCompany
   bridged: boolean;
   status: 'active' | 'writtenOff';
-  /**
-   * Board-seat exit timing (Partner+): when true, the exit is pushed at
-   * harvest — BOARD_SEATS.pushImproveChance to multiply it, else it zeroes.
-   * Toggled any time before harvest via TOGGLE_PUSH_EXIT. Optional so older
-   * saves stay valid.
-   */
-  pushExit?: boolean;
 }
 
 export interface VetoedRecord {
@@ -161,8 +154,9 @@ export interface HarvestCompanyResult {
   bucket: ExitBucket;
   investedM: number;
   proceedsM: number;
-  /** Present when a board-seat push was attempted. */
-  boardPush?: 'improved' | 'zeroed';
+  /** Board seat at harvest: a bonus on any exit, a liability (negative
+   *  proceeds) on a zero. Absent without a seat. */
+  boardSeat?: 'bonus' | 'liability';
 }
 
 export interface HarvestResult {
@@ -341,6 +335,5 @@ export type Action =
   | { type: 'RESOLVE_INTERRUPT'; accept: boolean }
   | { type: 'ADVANCE' }
   | { type: 'CLOSE_FUND' }
-  | { type: 'TOGGLE_PUSH_EXIT'; companyId: string }
   | { type: 'RESOLVE_VETO_CHALLENGE'; call: ChallengeCall }
-  | { type: 'HARVEST'; push?: string[] };
+  | { type: 'HARVEST' };

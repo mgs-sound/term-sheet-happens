@@ -507,7 +507,6 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           game={game}
           lines={content.lines}
           firmParts={content.firmNames}
-          onTogglePush={(companyId) => dispatch({ type: 'TOGGLE_PUSH_EXIT', companyId })}
           onSettings={() => setSettingsOpen(true)}
           onHarvest={() => {
             dispatch({ type: 'HARVEST' });

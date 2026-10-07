@@ -131,7 +131,9 @@ export interface FlavorLines {
   /** Stamped label per exit outcome on the harvest screen. */
   harvestOutcomeLabels: Record<ExitBucket, string>;
   /** Harvest label when a board-seat exit push blew up the company (out $0). */
-  harvestPushZeroedLabel: string;
+  /** Board seat copy. note: {bonus}/{penalty} = % (sign sheet); bonus /
+   *  liability: {pct} (harvest row). */
+  boardSeat: { label: string; note: string; bonus: string; liability: string };
   /**
    * Fund I difficulty bands shown on the engagement letter, index-aligned
    * with the engine's difficultyBand(): [soft, standard, brutal].

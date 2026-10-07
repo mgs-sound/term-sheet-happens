@@ -5,6 +5,14 @@ import { acceptanceProbability, offerBounds } from '../../game/negotiation';
 import { ownershipFromCheck } from '../../game/followons';
 import { fmtM, pickLine } from '../format';
 import { services } from '../../services';
+import { BOARD_SEATS } from '../../game/tuning';
+
+/** "+25% on exits, −25% if it dies": the seat's harvest risk, spelled out. */
+function seatNote(lines: FlavorLines): string {
+  return lines.boardSeat.note
+    .replace('{bonus}', String(Math.round((BOARD_SEATS.exitMult - 1) * 100)))
+    .replace('{penalty}', String(Math.round(BOARD_SEATS.zeroPenalty * 100)));
+}
 
 export interface OfferDraft {
   checkM: number;
@@ -77,7 +85,7 @@ export function SignSheet({
                   checked={boardSeat}
                   onChange={(e) => setBoardSeat(e.target.checked)}
                 />
-                Demand a board seat <span className="seat-note">(founders get nervous)</span>
+                {lines.boardSeat.label} <span className="seat-note">({seatNote(lines)})</span>
               </label>
             ) : (
               <p className="seat-locked">{pickLine(lines.boardSeatLocked, game.seed)}</p>
@@ -170,7 +178,7 @@ export function SignSheet({
                   checked={boardSeat}
                   onChange={(e) => setBoardSeat(e.target.checked)}
                 />
-                Demand a board seat <span className="seat-note">(founders get nervous)</span>
+                {lines.boardSeat.label} <span className="seat-note">({seatNote(lines)})</span>
               </label>
             </div>
           )}

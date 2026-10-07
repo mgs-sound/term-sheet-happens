@@ -563,7 +563,6 @@ export function RunScreen({
           game={game}
           lines={lines}
           onClose={() => setPortfolioOpen(false)}
-          onTogglePush={(companyId) => dispatch({ type: 'TOGGLE_PUSH_EXIT', companyId })}
           onSettings={() => {
             setPortfolioOpen(false);
             onSettings();

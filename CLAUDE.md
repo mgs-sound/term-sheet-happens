@@ -62,7 +62,7 @@ A satirical VC card-swipe roguelite. Reigns/Tinder loop: each run is one fund at
 - **Reputation:** 5 stages, DOG WATER → TOURIST → CREDIBLE → HEAT MAGNET → ENLIGHTENED. Passing too much decays it (zombie-fund jabs); hot deals and exits raise it.
 - **Partner vetoes (Associate only):** after terms agree, chance the partner kills it (higher if off-thesis / low traction). Vetoed companies are tracked; if one would have been a unicorn, the harvest shows the heartbreak.
 - **Follow-ons / reserves (flagship meal mechanic, Fund II+):** portfolio companies raise again mid-run as interrupt cards — take pro rata or get diluted. Reserves management is the skill.
-- **Board seats (Partner+):** costs acceptance risk at signing; pays off with exit-timing choices.
+- **Board seats (Partner+):** a buff with risk, decided at signing (costs some acceptance when negotiating). At harvest a seated company's exit pays ×1.2, but if it goes to zero the seat is a liability: −50% of what you put in (legal fees). Worth it on strong team/traction, a loss on weak ones.
 - **Bridge rounds (Partner+)** and **capital calls (GP):** designed in engine, gated by tier.
 - **Exit sim:** resolved mostly at harvest (5-year fast-forward), occasional mid-run markup/shutdown toasts. Outcome distribution keyed to hidden quality; negotiated entry price scales the payout.
 
