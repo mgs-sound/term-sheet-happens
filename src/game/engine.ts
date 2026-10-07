@@ -802,7 +802,7 @@ function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
   let visionaries = 0;
 
   for (const company of s.portfolio) {
-    const result = resolveCompany(rng, company, pushSet.has(company.companyId));
+    const result = resolveCompany(rng, company, pushSet.has(company.companyId), unicornScaleFor(s));
     companies.push(result);
     returnedM += result.proceedsM;
     // A board push that zeroed the exit returned nothing: it scores as a
@@ -822,7 +822,7 @@ function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
   // The heartbreak check: would any vetoed company have gone unicorn?
   let vetoedUnicorns = 0;
   for (const record of s.vetoed) {
-    if (rollExitBucket(rng, record.card.quality) === 'unicorn') {
+    if (rollExitBucket(rng, record.card.quality, unicornScaleFor(s)) === 'unicorn') {
       vetoedUnicorns += 1;
       log(s, 'vetoHeartbreak', { company: record.card.name });
     }
@@ -842,10 +842,16 @@ function handleHarvest(s: GameState, rng: RNG, push: string[]): void {
   s.phase = 'harvested';
 }
 
+/** Fund I keeps unicorns rare: the tutorial is meant to be lost. */
+function unicornScaleFor(s: GameState): number {
+  return s.isFundI ? FUND_I.unicornWeightMult : 1;
+}
+
 function resolveCompany(
   rng: RNG,
   company: PortfolioCompany,
   pushed: boolean,
+  unicornScale: number,
 ): HarvestCompanyResult {
   const base: Omit<HarvestCompanyResult, 'bucket' | 'proceedsM'> = {
     companyId: company.companyId,
@@ -859,7 +865,7 @@ function resolveCompany(
     return { ...base, bucket: 'zero', proceedsM: 0 };
   }
 
-  const bucket = rollExitBucket(rng, company.card.quality);
+  const bucket = rollExitBucket(rng, company.card.quality, unicornScale);
   let multiple = rollBucketMultiple(rng, bucket) * company.entryBonus;
   let boardPush: HarvestCompanyResult['boardPush'];
 

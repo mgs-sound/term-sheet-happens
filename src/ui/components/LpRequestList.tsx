@@ -46,7 +46,11 @@ export function LpRequestList({
             <span className="lp-request-text">{lpRequestText(lines, r)}</span>
             {stamps && r.status !== 'open' && (
               <span className={`harvest-label lp-request-stamp ${r.status === 'met' ? 'label-green' : 'label-red'}`}>
-                {r.status === 'met' ? copy.stampMet : copy.stampBroken}
+                {r.status === 'met'
+                  ? copy.stampMet
+                  : r.reason === 'noDeals'
+                    ? copy.stampNoDeals
+                    : copy.stampBroken}
               </span>
             )}
           </li>
@@ -61,6 +65,9 @@ export function LpRequestList({
         >
           {requests.every((r) => r.status === 'met') ? copy.verdictAllMet : copy.verdictMissed}
         </p>
+      )}
+      {stamps && requests.some((r) => r.reason === 'noDeals') && (
+        <p className="lp-requests-note">{copy.noDealsNote}</p>
       )}
       {note && (
         <p className="lp-requests-note">

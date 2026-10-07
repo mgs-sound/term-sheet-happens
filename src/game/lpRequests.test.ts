@@ -136,6 +136,7 @@ describe('live + harvest settling', () => {
     // No investments: staying on thesis by staying home doesn't count.
     expect(settleLpRequests(s)).toBe(2);
     expect(s.lpRequests?.map((r) => r.status)).toEqual(['broken', 'met', 'met']);
+    expect(s.lpRequests?.[0]?.reason).toBe('noDeals'); // explained, not a rule break
   });
 
   it('pays LP trust per request met at harvest, through the reducer', () => {

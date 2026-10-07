@@ -27,6 +27,17 @@ export function springBack(card: HTMLElement): void {
   setStamps(card, 0, 0);
 }
 
+/**
+ * Knockback to the "offer drafted" pose: back toward the centre with a little
+ * overshoot, left slightly shoved and tilted, OFFER stamp at full. Undo with
+ * springBack (e.g. the terms sheet's Back).
+ */
+export function parkOffer(card: HTMLElement): void {
+  card.style.transition = `transform ${SWIPE.parkMs}ms cubic-bezier(0.2, 0.9, 0.3, 1.35)`;
+  card.style.transform = `translateX(${SWIPE.parkOffsetPx}px) rotate(${SWIPE.parkTiltDeg}deg)`;
+  setStamps(card, 0, 1);
+}
+
 /** Full-opacity stamp for commits from buttons, keyboard, or short flicks. */
 export function showStamp(card: HTMLElement, dir: 'left' | 'right'): void {
   setStamps(card, dir === 'left' ? 1 : 0, dir === 'right' ? 1 : 0);

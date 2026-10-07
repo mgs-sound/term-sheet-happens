@@ -382,6 +382,8 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     !isNonEmptyString(lr.title) ||
     !isNonEmptyString(lr.stampMet) ||
     !isNonEmptyString(lr.stampBroken) ||
+    !isNonEmptyString(lr.stampNoDeals) ||
+    !isNonEmptyString(lr.noDealsNote) ||
     !isNonEmptyString(lr.brokenToast) ||
     !isNonEmptyString(lr.rewardNote) ||
     !isNonEmptyString(lr.verdictAllMet) ||

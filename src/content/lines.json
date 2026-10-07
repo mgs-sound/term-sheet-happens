@@ -258,7 +258,9 @@
       ]
     },
     "verdictAllMet": "All LP requests met: the firm wants you back.",
-    "verdictMissed": "LP requests missed: start polishing the résumé."
+    "verdictMissed": "LP requests missed: start polishing the résumé.",
+    "stampNoDeals": "NO DEALS",
+    "noDealsNote": "No investments, no credit: staying home doesn't count."
   },
   "profile": {
     "title": "Professional profile",

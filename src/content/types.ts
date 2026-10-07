@@ -233,6 +233,10 @@ export interface FlavorLines {
     title: string;
     stampMet: string;
     stampBroken: string;
+    /** Stamp when a request failed only because the fund made no investments. */
+    stampNoDeals: string;
+    /** Scorecard line explaining the NO DEALS stamp. */
+    noDealsNote: string;
     /** Toast when one breaks mid-run; {request} = the request's text. */
     brokenToast: string;
     /** Note under the list; {trust} = LP trust per request met. */

@@ -10,8 +10,11 @@ import { clamp01 } from './util.ts';
 
 export const EXIT_ORDER: ExitBucket[] = ['zero', 'acquihire', 'base', 'win', 'unicorn'];
 
-/** Normalized bucket probabilities for a given hidden quality. */
-export function outcomeWeights(quality: number): Record<ExitBucket, number> {
+/**
+ * Normalized bucket probabilities for a given hidden quality. `unicornScale`
+ * scales the unicorn weight before normalizing (Fund I keeps it rare).
+ */
+export function outcomeWeights(quality: number, unicornScale = 1): Record<ExitBucket, number> {
   const q = clamp01(quality);
   const w = EXITS.weights;
   const raw: Record<ExitBucket, number> = {
@@ -19,15 +22,15 @@ export function outcomeWeights(quality: number): Record<ExitBucket, number> {
     acquihire: Math.max(0, w.acquihire.base + w.acquihire.slope * q),
     base: Math.max(0, w.base.base + w.base.slope * q),
     win: Math.max(0, w.win.base + w.win.slope * q),
-    unicorn: Math.max(0, w.unicorn.base + w.unicorn.quad * q * q),
+    unicorn: Math.max(0, w.unicorn.base + w.unicorn.quad * q * q) * unicornScale,
   };
   const total = EXIT_ORDER.reduce((sum, b) => sum + raw[b], 0);
   for (const b of EXIT_ORDER) raw[b] /= total;
   return raw;
 }
 
-export function rollExitBucket(rng: RNG, quality: number): ExitBucket {
-  const weights = outcomeWeights(quality);
+export function rollExitBucket(rng: RNG, quality: number, unicornScale = 1): ExitBucket {
+  const weights = outcomeWeights(quality, unicornScale);
   let roll = rng.next();
   for (const bucket of EXIT_ORDER) {
     roll -= weights[bucket];

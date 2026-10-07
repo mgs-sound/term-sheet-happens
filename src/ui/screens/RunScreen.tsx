@@ -6,7 +6,7 @@ import { SWIPE } from '../../game/tuning';
 import { services } from '../../services';
 import { fmtM } from '../format';
 import { useReducedMotion } from '../useReducedMotion';
-import { applyDrag, showStamp, springBack } from '../gesture/cardVisual';
+import { applyDrag, parkOffer, showStamp, springBack } from '../gesture/cardVisual';
 import { useColumnSwipe, type SwipeDir } from '../gesture/useColumnSwipe';
 import { LedgerBar } from '../components/LedgerBar';
 import { PitchCardView } from '../components/PitchCardView';
@@ -174,6 +174,9 @@ export function RunScreen({
       finishFromResolution(dispatch({ type: 'SIGN_AT_ASK' }));
     } else {
       services.audio.play('draft'); // the term sheet comes out of the folder
+      // The card isn't leaving yet: knock it back toward the centre, left a
+      // little tilted with OFFER showing, while the terms are decided.
+      if (cardRef.current) parkOffer(cardRef.current);
       setSheetOpen(true); // terms sheet decides; no engine action yet
     }
   };
@@ -467,6 +470,8 @@ export function RunScreen({
             game={game}
             lines={lines}
             onCancel={() => {
+              // Back: the offer is withdrawn, the card straightens up.
+              if (cardRef.current) springBack(cardRef.current);
               if (game.phase === 'meeting') setSheetOpen(false);
             }}
             onSignAtAsk={(boardSeat) => {

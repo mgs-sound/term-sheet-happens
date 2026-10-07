@@ -109,6 +109,9 @@ export function settleLpRequests(s: GameState): number {
         break;
     }
     r.status = ok ? 'met' : 'broken';
+    if (!ok && s.portfolio.length === 0 && r.kind !== 'unicorn' && r.kind !== 'returnFund') {
+      r.reason = 'noDeals';
+    }
     if (ok) met += 1;
   }
   return met;

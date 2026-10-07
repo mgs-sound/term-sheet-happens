@@ -29,6 +29,11 @@ export const FUND_I = {
   qualityShift: -0.15,
   /** No card in Fund I exceeds this quality — no unicorn bait-outs. TUNE */
   qualityCap: 0.7,
+  /**
+   * Fund I unicorn weight multiplier. The quality cap alone still left ~10%
+   * of Fund I runs with a unicorn (and a 2x+ DPI from that one check). TUNE
+   */
+  unicornWeightMult: 0.2,
   /** Aggressive partner veto base chance (bonuses in VETO still apply). TUNE */
   vetoBase: 0.3,
   /** Fund I sees earlier-stage, smaller-check deals. TUNE */
@@ -423,6 +428,14 @@ export const SWIPE = {
   flickMinDistancePx: 40,
   /** Sub-threshold release springs the card back over this many ms. */
   springBackMs: 180,
+  /**
+   * Right swipe that opens the terms sheet: the card knocks back toward the
+   * centre but stays a little shoved and tilted, OFFER stamp showing, while
+   * you decide. TUNE
+   */
+  parkOffsetPx: 10,
+  parkTiltDeg: 3,
+  parkMs: 280,
 } as const;
 
 // ---------------------------------------------------------------------------
