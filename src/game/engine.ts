@@ -59,10 +59,8 @@ import {
   FOLLOW_ONS,
   FUND_I,
   FUND_SIZING,
-  MEETINGS_BY_TIER,
   HIGH_LOW,
   STICKS,
-  FIRST_FUND_AT_TIER_MEETINGS,
   REPUTATION,
   TRUST,
   VETO,
@@ -70,19 +68,14 @@ import {
   OFFER_PROFILES,
 } from './tuning.ts';
 import { roundM } from './util.ts';
+import { meetingsForCareer } from './career.ts';
 
 // ---------------------------------------------------------------------------
 // Run creation (START_RUN)
 // ---------------------------------------------------------------------------
 
-/** Fund II+ meetings: by tier, shorter on your first fund at a new tier. */
-export function meetingsForCareer(career: CareerState): number {
-  const firstAtTier = !career.ledger.some((entry) => entry.tier === career.tier);
-  const first = (FIRST_FUND_AT_TIER_MEETINGS as Partial<Record<CareerState['tier'], number>>)[
-    career.tier
-  ];
-  return firstAtTier && first !== undefined ? first : MEETINGS_BY_TIER[career.tier];
-}
+// Lives in career.ts (stayOption sizes the fund by it); re-exported here.
+export { meetingsForCareer };
 
 export function createRun(
   career: CareerState,

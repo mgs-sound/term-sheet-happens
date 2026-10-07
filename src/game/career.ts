@@ -8,8 +8,24 @@ import type { Thesis } from '../content/types.ts';
 import type { RNG } from './rng.ts';
 import type { CareerState, GameState, LpOffer } from './types.ts';
 import { trustSizeMultiplier } from './meters.ts';
-import { CAREER, FUND_SIZING, METERS, STAY } from './tuning.ts';
+import {
+  CAREER,
+  FIRST_FUND_AT_TIER_MEETINGS,
+  FUND_SIZING,
+  MEETINGS_BY_TIER,
+  METERS,
+  STAY,
+} from './tuning.ts';
 import { clamp, roundM } from './util.ts';
+
+/** Fund II+ meetings: by tier, shorter on your first fund at a new tier. */
+export function meetingsForCareer(career: CareerState): number {
+  const firstAtTier = !career.ledger.some((entry) => entry.tier === career.tier);
+  const first = (FIRST_FUND_AT_TIER_MEETINGS as Partial<Record<CareerState['tier'], number>>)[
+    career.tier
+  ];
+  return firstAtTier && first !== undefined ? first : MEETINGS_BY_TIER[career.tier];
+}
 
 export function initialCareer(): CareerState {
   return {
@@ -204,7 +220,9 @@ export interface StayOption {
 /**
  * The in-house offer after a harvested fund. `next` is closeCareerFund's
  * result (it already holds the promotion, if any, and the outside sizing).
- * Below 1x: same rung, and the fund is NOT shrunk for the DPI. 1x+: the
+ * Below 1x: same rung, and the fund is NOT shrunk for the DPI: it keeps the
+ * money per meeting, so it grows with the calendar (Fund I ~$9M over 15
+ * meetings → ~$15M over the repeat Associate's 25). 1x+: the
  * in-house promotion, a fund STAY.winSizeMult over the outside base, and a
  * little LP trust. Only open if every LP request was met.
  */
@@ -219,6 +237,9 @@ export function stayOption(next: CareerState, run: GameState): StayOption {
   const outsideBaseM = next.pendingOffers
     ? Math.max(...next.pendingOffers.map((o) => o.fundSizeM))
     : (next.nextFundSizeM ?? run.fundSizeM);
+  // Same capital per meeting as the fund just run, over the next calendar.
+  const perMeetingM = run.fundSizeM / Math.max(1, run.meetingsTotal);
+  const sameRungM = perMeetingM * meetingsForCareer({ ...next, tier: run.tier });
   return {
     allowed,
     forgiven,
@@ -226,7 +247,7 @@ export function stayOption(next: CareerState, run: GameState): StayOption {
     firmName: run.firmName,
     thesisId: run.thesis.id,
     tier: won ? next.tier : run.tier,
-    fundSizeM: won ? roundM(outsideBaseM * STAY.winSizeMult) : roundM(run.fundSizeM),
+    fundSizeM: won ? roundM(outsideBaseM * STAY.winSizeMult) : roundM(sameRungM),
     lpTrust: clamp(next.lpTrust + (won ? STAY.winTrustDelta : 0), METERS.min, METERS.max),
   };
 }

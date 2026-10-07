@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { loadContent } from '../content';
-import { acceptStay, closeCareerFund, stayOption } from './career';
+import { acceptStay, closeCareerFund, initialCareer, meetingsForCareer, stayOption } from './career';
 import { createRun } from './engine';
 import { eligibleOfferProfiles, offerProfileFor } from './fundTerms';
 import { createRng } from './rng';
@@ -51,8 +51,22 @@ describe('staying at your firm', () => {
     const stay = stayOption(next, run);
     expect(stay.allowed).toBe(true);
     expect(stay.tier).toBe('associate');
-    expect(stay.fundSizeM).toBeCloseTo(run.fundSizeM, 1);
+    // Same money per meeting over the next calendar.
+    const meetings = meetingsForCareer({ ...next, tier: 'associate' });
+    expect(stay.fundSizeM).toBeCloseTo((run.fundSizeM / run.meetingsTotal) * meetings, 0);
     expect(stay.fundSizeM).toBeGreaterThan(next.nextFundSizeM!); // outside shrank
+  });
+
+  it('after Fund I, staying grows the fund with the longer calendar', () => {
+    const career = initialCareer();
+    const run = simulateRun(career, 5, ec);
+    run.harvest = { ...run.harvest!, dpi: 0.6 };
+    run.lpRequests = [{ kind: 'onThesis', status: 'met', lineIndex: 0 }];
+    const next = closeCareerFund(career, run, createRng(1), content.theses);
+    const stay = stayOption(next, run);
+    const perMeeting = run.fundSizeM / run.meetingsTotal;
+    expect(stay.fundSizeM).toBeGreaterThan(run.fundSizeM);
+    expect(stay.fundSizeM / meetingsForCareer({ ...next, tier: 'associate' })).toBeCloseTo(perMeeting, 1);
   });
 
   it('1x+: in-house promotion, a fund over the outside base, same firm + thesis', () => {

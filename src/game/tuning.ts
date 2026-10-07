@@ -459,8 +459,18 @@ export const LP_REQUESTS = {
   coolDealsMaxHeat: 3,
   /** reliableTeams: broken by signing a team rated below this (1..5). TUNE */
   reliableTeamsMinTeam: 3,
-  /** Pairs that can't be asked together (they contradict each other). */
-  exclusive: [['onThesis', 'diversify']] as readonly (readonly [string, string])[],
+  /** Pairs that can't be asked together: they contradict each other, or
+   *  stack into a near-impossible combo (sitting on 30% of the fund while
+   *  hunting a unicorn / a DPI target: undeployed capital returns nothing). */
+  exclusive: [
+    ['onThesis', 'diversify'],
+    ['dryPowder', 'unicorn'],
+    ['dryPowder', 'returnFund'],
+  ] as readonly (readonly [string, string])[],
+  /** Results requests (decided by luck at harvest, not by your swipes). */
+  resultKinds: ['unicorn', 'returnFund'] as readonly string[],
+  /** At most this many results requests per fund. TUNE */
+  maxResultKinds: 1,
   /** returnFund: met at harvest when DPI reaches this (legacy default). */
   returnFundDpi: 1,
   /**

@@ -39,11 +39,14 @@ export function rollLpRequests(seed: number, isFundI: boolean, tier: Tier = 'ass
   const count = isFundI
     ? LP_REQUESTS.fundICount
     : rng.int(LP_REQUESTS.minCount, LP_REQUESTS.maxCount);
-  // Walk a shuffled pool, skipping anything that contradicts a pick.
+  // Walk a shuffled pool, skipping anything that contradicts a pick, and
+  // capping the luck-decided (results) requests.
+  const isResult = (k: LpRequestKind): boolean => LP_REQUESTS.resultKinds.includes(k);
   const picked: LpRequestKind[] = [];
   for (const kind of rng.shuffle(pool)) {
     if (picked.length >= count) break;
     if (picked.some((p) => clashes(p, kind))) continue;
+    if (isResult(kind) && picked.filter(isResult).length >= LP_REQUESTS.maxResultKinds) continue;
     picked.push(kind);
   }
   return picked.map((kind) => ({

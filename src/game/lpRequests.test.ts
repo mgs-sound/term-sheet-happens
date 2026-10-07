@@ -73,6 +73,10 @@ describe('request mix', () => {
     for (let seed = 1; seed < 500; seed++) {
       const kinds = rollLpRequests(seed, false).map((r) => r.kind);
       expect(kinds.includes('onThesis') && kinds.includes('diversify')).toBe(false);
+      expect(kinds.includes('dryPowder') && kinds.includes('unicorn')).toBe(false);
+      expect(kinds.includes('dryPowder') && kinds.includes('returnFund')).toBe(false);
+      const results = kinds.filter((k) => LP_REQUESTS.resultKinds.includes(k));
+      expect(results.length).toBeLessThanOrEqual(LP_REQUESTS.maxResultKinds);
       expect(kinds.length).toBeGreaterThanOrEqual(LP_REQUESTS.minCount);
     }
   });
