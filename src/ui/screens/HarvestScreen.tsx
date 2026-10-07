@@ -129,6 +129,8 @@ export function HarvestScreen({
           <dd
             key={inflows.length ? inflows[inflows.length - 1]!.id : 0}
             className={`${tally >= game.fundSizeM ? 'tally-over' : ''} ${
+              tally < 0 ? 'tally-negative' : ''
+            } ${
               inflows.length ? 'inflow-flash' : ''
             }`}
           >
@@ -185,8 +187,7 @@ export function HarvestScreen({
                   </span>
                 </div>
                 <div className="harvest-row-nums">
-                  in {fmtM(c.investedM)} &rarr; out{' '}
-                  {c.proceedsM < 0 ? `−${fmtM(-c.proceedsM)}` : fmtM(c.proceedsM)}
+                  in {fmtM(c.investedM)} &rarr; out {fmtM(c.proceedsM)}
                 </div>
                 {c.boardSeat && (
                   <div className={`harvest-seat ${c.boardSeat === 'liability' ? 'is-liability' : ''}`}>

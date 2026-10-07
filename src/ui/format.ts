@@ -2,8 +2,11 @@
 
 /** $8.4M / $120K style money labels from a millions figure. */
 export function fmtM(millions: number): string {
-  if (Math.abs(millions) >= 1000) return `$${(millions / 1000).toFixed(1)}B`;
-  if (Math.abs(millions) < 1) return `$${Math.round(millions * 1000)}K`;
+  // Negatives (board-seat legal fees) read "−$700K", never "$-700K".
+  if (millions < 0) return `−${fmtM(-millions)}`;
+  if (millions === 0) return '$0';
+  if (millions >= 1000) return `$${(millions / 1000).toFixed(1)}B`;
+  if (millions < 1) return `$${Math.round(millions * 1000)}K`;
   return `$${millions.toFixed(1)}M`;
 }
 
@@ -14,7 +17,7 @@ export function fmtArrK(arrK: number): string {
 }
 
 export function fmtDpi(dpi: number): string {
-  return `${dpi.toFixed(2)}x`;
+  return dpi < 0 ? `−${(-dpi).toFixed(2)}x` : `${dpi.toFixed(2)}x`;
 }
 
 /**

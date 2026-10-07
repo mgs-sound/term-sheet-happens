@@ -83,6 +83,30 @@
   background: var(--paper);
 }
 
+/* Stamp-red fill: the one irreversible "start over" (resignation letter). */
+.btn-danger {
+  background: var(--stamp-red);
+  color: var(--paper-bright);
+}
+
+/* Resignation letter: "Re-engagement" with the middle scrawled over in red. */
+.resignation-scrawl {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.35em;
+  letter-spacing: 0;
+  color: var(--stamp-red);
+  margin: 0 2px;
+}
+.resignation-line {
+  margin: 14px 0 0;
+  padding-left: 14px;
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--stamp-red);
+}
+
 .btn-text {
   background: none;
   border: none;
@@ -1777,6 +1801,11 @@
   color: var(--ledger-green);
 }
 
+/* In the red: legal fees ate past the exits (career-ending). */
+.harvest-tally .tally-negative {
+  color: var(--stamp-red);
+}
+
 /* Unrevealed rows keep their space so nothing below jumps around. */
 .harvest-row.reveal-pending {
   visibility: hidden;
@@ -1947,6 +1976,11 @@
 
 .dpi-bad {
   background: var(--stamp-red);
+}
+
+/* In the red past zero (legal fees): career over, mourning black. */
+.dpi-negative {
+  background: var(--ink);
 }
 
 .dpi-label {

@@ -129,6 +129,22 @@ export interface FlavorLines {
   /** Scorecard verdict copy per DPI band. */
   verdicts: Record<VerdictBucket, string[]>;
   /** Stamped label per exit outcome on the harvest screen. */
+  /** A fund in the red ends the career: the resignation letter, the
+   *  ledger tag and the obituary share card. shareLines: {funds}. */
+  careerOver: {
+    /** {red} = ruleRed, scrawled in red over the usual letterhead. */
+    rule: string;
+    ruleRed: string;
+    inbox: string;
+    lines: string[];
+    cta: string;
+    ledgerTag: string;
+    obituaryRule: string;
+    obituaryStamp: string;
+    obituaryLine: string;
+    shareCta: string;
+    shareLines: string[];
+  };
   harvestOutcomeLabels: Record<ExitBucket, string>;
   /** Harvest label when a board-seat exit push blew up the company (out $0). */
   /** Board seat copy. note: {bonus}/{penalty} = % (sign sheet); bonus /

@@ -28,6 +28,8 @@ export function LedgerScreen({
   onShare: () => void;
   onBack: () => void;
 }): JSX.Element {
+  // The career's last line ended it (legal fees): the share is an obituary.
+  const ended = career.ledger.at(-1)?.careerEnded === true;
   const copy = content.lines.profile;
   const ledger = career.ledger;
   const latest = ledger[ledger.length - 1];
@@ -114,6 +116,9 @@ export function LedgerScreen({
                   {fmtM(entry.fundSizeM)} fund &rarr; returned {fmtM(entry.returnedM)} &middot;{' '}
                   {fmtDpi(entry.dpi)}
                 </div>
+                {entry.careerEnded && (
+                  <div className="harvest-seat is-liability">{content.lines.careerOver.ledgerTag}</div>
+                )}
               </li>
             );
           })}
@@ -131,9 +136,15 @@ export function LedgerScreen({
       <p className="profile-endorsed">{copy.endorsed.replace('{n}', String(fundsReturned))}</p>
 
       <div className="screen-actions">
-        <button type="button" className="btn btn-sign" onClick={onShare}>
-          Share the flex
-        </button>
+        {ended ? (
+          <button type="button" className="btn btn-danger" onClick={onShare}>
+            {content.lines.careerOver.shareCta}
+          </button>
+        ) : (
+          <button type="button" className="btn btn-sign" onClick={onShare}>
+            Share the flex
+          </button>
+        )}
         <button type="button" className="btn btn-secondary" onClick={onBack}>
           Back
         </button>

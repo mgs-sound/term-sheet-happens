@@ -59,10 +59,25 @@ describe('board seat at harvest', () => {
     expect(liabilities).toBeGreaterThan(0);
   });
 
-  it('a fund never returns less than nothing', () => {
+});
+
+describe('career ended in legal fees', () => {
+  it('a fund in the red ends the career and is the ledger last line', async () => {
+    const { careerEnded, closeCareerFund } = await import('./career');
+    const { createRng } = await import('./rng');
     const s = signedWithSeat();
-    for (let k = 0; k < 100; k++) {
-      expect(harvestOnce(s, k, 0, true).returnedM).toBeGreaterThanOrEqual(0);
+    let found = false;
+    for (let k = 0; k < 200 && !found; k++) {
+      const x = structuredClone(s);
+      x.portfolio[0]!.card.quality = 0;
+      const h = reduce({ ...x, phase: 'fundClosed', rngState: (x.rngState + k * 7919) >>> 0 }, { type: 'HARVEST' });
+      if (h.harvest!.returnedM < 0) {
+        found = true;
+        expect(careerEnded(h)).toBe(true);
+        const next = closeCareerFund(careerForTier('partner'), h, createRng(1), content.theses);
+        expect(next.ledger.at(-1)!.careerEnded).toBe(true);
+      }
     }
+    expect(found).toBe(true);
   });
 });

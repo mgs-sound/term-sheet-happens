@@ -13,6 +13,7 @@ import {
   withFirmName,
   withPlayerName,
   acceptStay,
+  careerEnded,
   stayOption,
 } from '../game/career';
 import {
@@ -39,6 +40,7 @@ import { ClosingScreen } from './screens/ClosingScreen';
 import { HarvestScreen } from './screens/HarvestScreen';
 import { ScorecardScreen } from './screens/ScorecardScreen';
 import { RehireScreen } from './screens/RehireScreen';
+import { ResignationScreen } from './screens/ResignationScreen';
 import { GpOffersScreen } from './screens/GpOffersScreen';
 import { GpNamingScreen } from './screens/GpNamingScreen';
 import { LedgerScreen } from './screens/LedgerScreen';
@@ -366,11 +368,15 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
   }, [buildScorecardPng, content.lines, pushToast, toastForShareOutcome]);
 
   const shareCareer = useCallback(
-    async (careerToShare: CareerState): Promise<void> => {
-      const text = fillLine(pickLine(content.lines.shareCareerLines, careerToShare.fundIndex), {
-        returned: fmtM(careerToShare.totalReturnedM),
-        funds: String(careerToShare.ledger.length),
-      });
+    async (careerToShare: CareerState, ended = false): Promise<void> => {
+      const over = content.lines.careerOver;
+      const text = fillLine(
+        pickLine(ended ? over.shareLines : content.lines.shareCareerLines, careerToShare.fundIndex),
+        {
+          returned: fmtM(careerToShare.totalReturnedM),
+          funds: String(careerToShare.ledger.length),
+        },
+      );
       try {
         const blob = await renderCareerPng({
           returnedLabel: fmtM(careerToShare.totalReturnedM),
@@ -379,6 +385,15 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           bestDpiLabel: fmtDpi(careerToShare.bestDpi),
           unicornsLabel: String(careerToShare.unicornsFound),
           enlightened: careerToShare.enlightened,
+          ...(ended
+            ? {
+                obituary: {
+                  rule: over.obituaryRule,
+                  stamp: over.obituaryStamp,
+                  line: over.obituaryLine,
+                },
+              }
+            : {}),
         });
         const outcome = await services.share.share({
           title: 'Term Sheet Happens',
@@ -527,7 +542,16 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           }
         />
       )}
-      {screen === 'rehire' && nextCareer && (
+      {screen === 'rehire' && nextCareer && careerEnded(game) && (
+        <ResignationScreen
+          game={game}
+          lines={content.lines}
+          // A fresh name too: the blank profile, John Doe again.
+          onNewCareer={() => beginCareer(initialCareer())}
+          onLedger={() => setScreen('ledger')}
+        />
+      )}
+      {screen === 'rehire' && nextCareer && !careerEnded(game) && (
         <RehireScreen
           game={game}
           nextCareer={nextCareer}
@@ -573,7 +597,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
         <LedgerScreen
           career={nextCareer}
           content={content}
-          onShare={() => void shareCareer(nextCareer)}
+          onShare={() => void shareCareer(nextCareer, careerEnded(game))}
           onBack={() => setScreen('rehire')}
         />
       )}

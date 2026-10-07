@@ -289,6 +289,9 @@ export interface LedgerEntry {
   fundSizeM: number;
   returnedM: number;
   dpi: number;
+  /** The fund ended in the red (board-seat legal fees > returns): the
+   *  career's last line. */
+  careerEnded?: true;
 }
 
 /** Plain serializable career object — the whole save is this plus settings. */

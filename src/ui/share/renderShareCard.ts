@@ -40,6 +40,8 @@ export interface CareerShareArgs {
   bestDpiLabel: string;
   unicornsLabel: string;
   enlightened: boolean;
+  /** The career ended in legal fees: an obituary instead of a brag. */
+  obituary?: { rule: string; stamp: string; line: string };
 }
 
 function makeCanvas(): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } {
@@ -224,7 +226,7 @@ export async function renderScorecardPng(args: ScorecardShareArgs): Promise<Blob
 export async function renderCareerPng(args: CareerShareArgs): Promise<Blob> {
   const { canvas, ctx } = makeCanvas();
   drawPaperAndCard(ctx);
-  drawHeaderRule(ctx, 'Career ledger — confidential');
+  drawHeaderRule(ctx, args.obituary?.rule ?? 'Career ledger — confidential');
 
   const x = CARD.x + CARD.pad;
   const textW = CARD.w - CARD.pad * 2;
@@ -233,7 +235,7 @@ export async function renderCareerPng(args: CareerShareArgs): Promise<Blob> {
   ctx.fillStyle = INK;
   ctx.font = `24px ${MONO}`;
   ctx.fillText('RETURNED TO LPS', x, y);
-  ctx.fillStyle = GREEN;
+  ctx.fillStyle = args.obituary ? RED : GREEN;
   ctx.font = `700 190px ${MONO}`;
   const returned = wrapText(ctx, args.returnedLabel, textW, 1);
   ctx.fillText(returned[0] ?? args.returnedLabel, x - 6, y + 180);
@@ -241,9 +243,26 @@ export async function renderCareerPng(args: CareerShareArgs): Promise<Blob> {
 
   ctx.fillStyle = INK;
   ctx.font = `italic 42px ${SERIF}`;
-  ctx.fillText('Past performance is no guarantee.', x, y);
-  y += 56;
-  ctx.fillText('Neither is this.', x, y);
+  if (args.obituary) {
+    ctx.fillText(args.obituary.line, x, y);
+    // A red rubber stamp, slightly askew.
+    ctx.save();
+    ctx.font = `700 52px ${MONO}`;
+    const tag = args.obituary.stamp;
+    const w = ctx.measureText(tag).width + 56;
+    ctx.translate(x + 8, y + 70);
+    ctx.rotate(-0.05);
+    ctx.strokeStyle = RED;
+    ctx.lineWidth = 6;
+    ctx.strokeRect(0, 0, w, 96);
+    ctx.fillStyle = RED;
+    ctx.fillText(tag, 28, 66);
+    ctx.restore();
+  } else {
+    ctx.fillText('Past performance is no guarantee.', x, y);
+    y += 56;
+    ctx.fillText('Neither is this.', x, y);
+  }
 
   if (args.enlightened) {
     ctx.save();

@@ -65,7 +65,11 @@ export function ScorecardScreen({
       <p className="letterhead-kicker">
         <FirmName name={game.firmName} /> &middot; Fund {game.fundIndex}
       </p>
-      <div className={`dpi-block ${good ? 'dpi-good' : 'dpi-bad'} ${landed ? 'dpi-landed' : ''}`}>
+      <div
+        className={`dpi-block ${good ? 'dpi-good' : shownDpi < 0 ? 'dpi-negative' : 'dpi-bad'} ${
+          landed ? 'dpi-landed' : ''
+        }`}
+      >
         <span className="dpi-label">DPI</span>
         <span className="dpi-value">{fmtDpi(shownDpi)}</span>
       </div>

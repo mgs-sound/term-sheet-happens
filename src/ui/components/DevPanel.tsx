@@ -85,6 +85,9 @@ export function DevPanel({
           <button type="button" disabled={!harvested} onClick={() => onForceDpi(3.4, true)}>
             3.4x+gate
           </button>
+          <button type="button" disabled={!harvested} onClick={() => onForceDpi(-0.15, false)}>
+            −0.15x (fired)
+          </button>
           <span className="dev-label">lp requests {harvested ? '' : '(harvest first)'}</span>
           <button type="button" disabled={!harvested} onClick={() => onForceLpRequests('allMet')}>
             all met

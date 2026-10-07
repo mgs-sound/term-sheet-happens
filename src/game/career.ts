@@ -128,6 +128,7 @@ export function closeCareerFund(
         fundSizeM: run.fundSizeM,
         returnedM: harvest.returnedM,
         dpi,
+        ...(harvest.returnedM < 0 ? { careerEnded: true as const } : {}),
       },
     ],
   };
@@ -185,6 +186,14 @@ export function acceptLpOffer(career: CareerState, offerIndex: number): CareerSt
     },
     nextFundSizeM: offer.fundSizeM,
   };
+}
+
+/**
+ * A fund that returned less than nothing (board-seat legal fees ate past every
+ * exit) ends the career: no stay, no offers, a resignation letter.
+ */
+export function careerEnded(run: GameState): boolean {
+  return (run.harvest?.returnedM ?? 0) < 0;
 }
 
 /** Max length of the profile name (UI input + sanitizer agree on it). */

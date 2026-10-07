@@ -257,6 +257,19 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     }
   }
 
+  const over = data.careerOver as Record<string, unknown> | undefined;
+  if (
+    !over ||
+    !['rule', 'ruleRed', 'inbox', 'cta', 'ledgerTag', 'obituaryRule', 'obituaryStamp', 'obituaryLine', 'shareCta'].every(
+      (k) => isNonEmptyString(over[k]),
+    ) ||
+    !['lines', 'shareLines'].every(
+      (k) => Array.isArray(over[k]) && (over[k] as unknown[]).length > 0 && (over[k] as unknown[]).every(isNonEmptyString),
+    )
+  ) {
+    errors.push('lines.json: "careerOver" is missing copy (strings + non-empty lines/shareLines)');
+  }
+
   const seat = data.boardSeat as Record<string, unknown> | undefined;
   if (!seat || !['label', 'note', 'bonus', 'liability'].every((k) => isNonEmptyString(seat[k]))) {
     errors.push('lines.json: "boardSeat" needs non-empty label, note, bonus, liability');

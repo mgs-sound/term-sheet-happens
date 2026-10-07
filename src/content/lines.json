@@ -115,6 +115,28 @@
       "Returned {returned} to LPs in one fund. The endowment sent fruit. Term Sheet Happens."
     ]
   },
+  "careerOver": {
+    "rule": "Re{red} letter",
+    "ruleRed": "signation",
+    "inbox": "Inbox",
+    "lines": [
+      "Your career went to trash. You retire to a soy farm very far from every major city. Maybe in a few years you'll return with a fake name and try once again.",
+      "The LPs' lawyers have lawyers. You change your name, move to Portugal and take up pottery.",
+      "Your Patagonia vest has been repossessed. Your LinkedIn now says \"exploring what's next.\"",
+      "You returned less than nothing. Even the fees are suing you. You open a food truck under an assumed name.",
+      "Board seats, plural. Lawsuits, plural. You fake your own sabbatical and are never heard from again."
+    ],
+    "cta": "Start over with a fresh name",
+    "ledgerTag": "Career ended: legal fees",
+    "obituaryRule": "Obituary — career ledger",
+    "obituaryStamp": "CAREER ENDED",
+    "obituaryLine": "Survived by several lawsuits.",
+    "shareCta": "Share the obituary",
+    "shareLines": [
+      "My VC career ended in legal fees after {funds} funds. Term Sheet Happens.",
+      "I took too many board seats. The lawyers took the rest. Term Sheet Happens."
+    ]
+  },
   "shareCareerLines": [
     "I've returned {returned} to LPs. Term Sheet Happens.",
     "{returned} returned to LPs across {funds} funds. The fees were extra. Term Sheet Happens.",

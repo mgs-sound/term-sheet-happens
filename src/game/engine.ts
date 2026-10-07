@@ -815,8 +815,9 @@ function handleHarvest(s: GameState, rng: RNG): void {
     }
   }
 
-  // Board-seat liabilities can eat into the winners, never below nothing.
-  returnedM = roundM(Math.max(0, returnedM));
+  // Board-seat liabilities can eat past the winners: a fund in the red ends
+  // the career (see careerEnded).
+  returnedM = roundM(returnedM);
   s.harvest = {
     companies,
     returnedM,
