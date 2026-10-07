@@ -369,6 +369,7 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
       'sealedRole',
       'sealedLp',
       'sealedNote',
+      'lockedRole',
       'stayCta',
       'leaveCta',
       'stayLocked',

@@ -340,6 +340,7 @@
     "sealedRole": "Role: {role}.",
     "sealedLp": "{n} LP packages are waiting: funds between {lo} and {hi}. Your own firm, at last.",
     "sealedNote": "You won't know which one you got until you open the envelope.",
+    "lockedRole": "—",
     "stayCta": "Stay on firm",
     "leaveCta": "Take new job",
     "stayLocked": "Unmet LP requests. The LPs have asked for a word.",

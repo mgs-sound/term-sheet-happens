@@ -228,6 +228,8 @@ export interface FlavorLines {
     /** GP promotion: {n} LP packages, {lo}/{hi} fund range. */
     sealedLp: string;
     sealedNote: string;
+    /** Stay block's role when staying isn't allowed (locked / firm folded). */
+    lockedRole: string;
     stayCta: string;
     leaveCta: string;
     /** Why "stay" is greyed out (an LP request was broken). */

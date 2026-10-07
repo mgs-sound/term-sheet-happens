@@ -56,30 +56,31 @@ function Figures({
   copy: FlavorLines['rehire'];
   fundIndex: number;
   role: string;
-  roleTrend: Trend;
+  /** Null: no arrow (an offer that isn't on the table). */
+  roleTrend: Trend | null;
   fund: string;
-  fundTrend: Trend;
+  fundTrend: Trend | null;
   trust: string;
-  trustTrendValue: Trend;
+  trustTrendValue: Trend | null;
 }): JSX.Element {
   return (
     <dl className="figures-row rehire-figures">
       <div>
         <dt>{copy.role}</dt>
         <dd>
-          {role} <Arrow t={roleTrend} />
+          {role} {roleTrend && <Arrow t={roleTrend} />}
         </dd>
       </div>
       <div>
         <dt>{copy.fund.replace('{n}', String(fundIndex))}</dt>
         <dd>
-          {fund} <Arrow t={fundTrend} />
+          {fund} {fundTrend && <Arrow t={fundTrend} />}
         </dd>
       </div>
       <div>
         <dt>{copy.trust}</dt>
         <dd>
-          {trust} <Arrow t={trustTrendValue} />
+          {trust} {trustTrendValue && <Arrow t={trustTrendValue} />}
         </dd>
       </div>
     </dl>
@@ -127,16 +128,30 @@ export function RehireScreen({
       {/* Stay: the sign-here yellow block (matches its button). */}
       <section className={`rehire-block rehire-stay ${stay.allowed ? '' : 'is-locked'}`}>
         <h3 className="rehire-block-title">{copy.stayTitle.replace('{firm}', stay.firmName)}</h3>
-        <Figures
-          copy={copy}
-          fundIndex={nextCareer.fundIndex}
-          role={TIER_LABELS[stay.tier]}
-          roleTrend={tierTrend(game.tier, stay.tier)}
-          fund={`~${fmtM(stay.fundSizeM)}`}
-          fundTrend={trend(game.fundSizeM, stay.fundSizeM)}
-          trust={String(Math.round(stay.lpTrust))}
-          trustTrendValue={trustTrend(nowTrust, stay.lpTrust)}
-        />
+        {stay.allowed ? (
+          <Figures
+            copy={copy}
+            fundIndex={nextCareer.fundIndex}
+            role={TIER_LABELS[stay.tier]}
+            roleTrend={tierTrend(game.tier, stay.tier)}
+            fund={`~${fmtM(stay.fundSizeM)}`}
+            fundTrend={trend(game.fundSizeM, stay.fundSizeM)}
+            trust={String(Math.round(stay.lpTrust))}
+            trustTrendValue={trustTrend(nowTrust, stay.lpTrust)}
+          />
+        ) : (
+          // Not on the table: nothing to compare, so no arrows.
+          <Figures
+            copy={copy}
+            fundIndex={nextCareer.fundIndex}
+            role={copy.lockedRole}
+            roleTrend={null}
+            fund="$0"
+            fundTrend={null}
+            trust="0"
+            trustTrendValue={null}
+          />
+        )}
         {!stay.allowed && (
           <p className="rehire-locked">
             {stay.folded ? copy.stayFolded.replace('{firm}', stay.firmName) : copy.stayLocked}
