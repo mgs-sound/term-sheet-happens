@@ -21,6 +21,7 @@ export type SfxId =
   | 'dealWon' // signing actually closed
   | 'dealFail' // vetoed / founder walked
   | 'denied' // can't do that (e.g. check exceeds dry powder) — short buzz
+  | 'interrupt' // a mid-fund interrupt lands (pro rata, bridge, capital call) — desk-phone ring
   | 'draft' // terms sheet pulled out — paper
   | 'counter' // counteroffer lands — sword parry
   | 'meetCounter' // accept the counter's numbers
@@ -38,7 +39,7 @@ export type SfxId =
 
 /** Every cue, in the order the dev soundboard lists them. */
 export const SFX_IDS: readonly SfxId[] = [
-  'tap', 'tick', 'open', 'close', 'reroll', 'start', 'pass', 'sign', 'dealWon', 'dealFail', 'denied',
+  'tap', 'tick', 'open', 'close', 'reroll', 'start', 'pass', 'sign', 'dealWon', 'dealFail', 'denied', 'interrupt',
   'draft', 'counter', 'meetCounter', 'finalOffer', 'fastForward', 'countTick', 'coinFlip', 'cardFlip', 'diceRoll', 'sticksDraw', 'exitModest', 'unicorn',
   'fanfareGood', 'fanfareBad',
 ];
@@ -152,6 +153,18 @@ const CUES: Record<SfxId, Voice[]> = {
     { at: 0, dur: 0.06, wave: 'square', f: E6, vol: 0.5 },
     { at: 0.06, dur: 0.22, wave: 'square', f: G6, vol: 0.5 },
     { at: 0.06, dur: 0.18, wave: 'noise', f: 7000, vol: 0.25 },
+  ],
+  // Desk phone: two short rings, each a fast two-note trill. "Pick up, it's
+  // about the money."
+  interrupt: [
+    { at: 0, dur: 0.05, wave: 'square', f: C6, vol: 0.35 },
+    { at: 0.05, dur: 0.05, wave: 'square', f: E6, vol: 0.35 },
+    { at: 0.1, dur: 0.05, wave: 'square', f: C6, vol: 0.35 },
+    { at: 0.15, dur: 0.05, wave: 'square', f: E6, vol: 0.35 },
+    { at: 0.32, dur: 0.05, wave: 'square', f: C6, vol: 0.35 },
+    { at: 0.37, dur: 0.05, wave: 'square', f: E6, vol: 0.35 },
+    { at: 0.42, dur: 0.05, wave: 'square', f: C6, vol: 0.35 },
+    { at: 0.47, dur: 0.05, wave: 'square', f: E6, vol: 0.35 },
   ],
   // Wah-wah buzz.
   dealFail: [

@@ -258,6 +258,16 @@ export function RunScreen({
     };
   }, []);
 
+  // An interrupt card (wire pro rata, bridge, capital call) rings as it lands,
+  // so it never sneaks up on you mid-swipe. Keyed per interrupt.
+  const interruptKey =
+    game.phase === 'interrupt' && game.interrupt
+      ? `${game.meetingIndex}-${game.interrupt.kind}`
+      : null;
+  useEffect(() => {
+    if (interruptKey) services.audio.play('interrupt');
+  }, [interruptKey]);
+
   // While the terms sheet is open, slide the pitch card up just enough that
   // its TEAM / TRACTION / DEAL HEAT rows clear the sheet — measured, so it
   // adapts to the sheet's height (sign vs negotiate, counter, board seat) and
