@@ -1959,6 +1959,13 @@
   text-decoration: line-through;
 }
 
+.rehire-forgiven {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--ledger-green);
+}
+
 .rehire-locked {
   margin: 8px 0 0;
   font-size: 12px;

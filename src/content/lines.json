@@ -260,7 +260,8 @@
     "verdictAllMet": "All LP requests met: the firm wants you back.",
     "verdictMissed": "LP requests missed: start polishing the résumé.",
     "stampNoDeals": "NO DEALS",
-    "noDealsNote": "No investments, no credit: staying home doesn't count."
+    "noDealsNote": "No investments, no credit: staying home doesn't count.",
+    "verdictForgiven": "LP requests missed, but the returns did the talking: the firm will look the other way."
   },
   "profile": {
     "title": "Professional profile",
@@ -334,6 +335,7 @@
     "lpOffers": "{n} LP offers",
     "stayCta": "Stay on firm",
     "leaveCta": "Take new job",
-    "stayLocked": "Unmet LP requests. The LPs have asked for a word."
+    "stayLocked": "Unmet LP requests. The LPs have asked for a word.",
+    "stayForgiven": "LP requests missed, but nobody argues with these returns."
   }
 }

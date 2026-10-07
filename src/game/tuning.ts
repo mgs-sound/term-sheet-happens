@@ -510,5 +510,8 @@ export const STAY = {
   winSizeMult: 1.2,
   /** 1x+: LP trust bonus for staying. TUNE */
   winTrustDelta: 5,
+  /** Returns this good buy forgiveness: you may stay even with LP requests
+   *  missed ("nobody argues with the returns"). TUNE */
+  forgiveDpi: 1.25,
 } as const;
 

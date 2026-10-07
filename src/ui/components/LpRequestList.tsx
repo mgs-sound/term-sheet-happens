@@ -25,12 +25,15 @@ export function LpRequestList({
   lines,
   stamps = false,
   note = false,
+  forgiven = false,
 }: {
   requests: LpRequest[] | undefined;
   lines: FlavorLines;
   stamps?: boolean;
   /** Show the reward note (engagement letter). */
   note?: boolean;
+  /** Scorecard: missed requests were forgiven by a strong DPI. */
+  forgiven?: boolean;
 }): JSX.Element | null {
   if (!requests || requests.length === 0) return null;
   const copy = lines.lpRequests;
@@ -60,10 +63,14 @@ export function LpRequestList({
       {stamps && requests.every((r) => r.status !== 'open') && (
         <p
           className={`lp-requests-verdict ${
-            requests.every((r) => r.status === 'met') ? 'is-met' : 'is-missed'
+            requests.every((r) => r.status === 'met') || forgiven ? 'is-met' : 'is-missed'
           }`}
         >
-          {requests.every((r) => r.status === 'met') ? copy.verdictAllMet : copy.verdictMissed}
+          {requests.every((r) => r.status === 'met')
+            ? copy.verdictAllMet
+            : forgiven
+              ? copy.verdictForgiven
+              : copy.verdictMissed}
         </p>
       )}
       {stamps && requests.some((r) => r.reason === 'noDeals') && (

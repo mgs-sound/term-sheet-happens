@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import type { GameState } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
 import { verdictBucket } from '../../game/verdict';
+import { STAY } from '../../game/tuning';
 import { fmtDpi, fmtM, pickLine } from '../format';
 import { FirmName } from '../components/FirmName';
 import { LpRequestList } from '../components/LpRequestList';
@@ -100,7 +101,12 @@ export function ScorecardScreen({
           </strong>
         </p>
       )}
-      <LpRequestList requests={game.lpRequests} lines={lines} stamps />
+      <LpRequestList
+        requests={game.lpRequests}
+        lines={lines}
+        stamps
+        forgiven={harvest.dpi >= STAY.forgiveDpi}
+      />
       <div className="screen-actions">
         <button type="button" className="btn btn-secondary" onClick={onShare}>
           Share the memo

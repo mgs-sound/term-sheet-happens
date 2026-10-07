@@ -222,6 +222,8 @@ export interface FlavorLines {
     leaveCta: string;
     /** Why "stay" is greyed out (an LP request was broken). */
     stayLocked: string;
+    /** Stay allowed despite missed requests, thanks to a strong DPI. */
+    stayForgiven: string;
   };
   /** Fund I: the firm options read as job offers on the engagement letter. */
   jobs: {
@@ -245,6 +247,8 @@ export interface FlavorLines {
     verdictAllMet: string;
     /** Scorecard line under the list: any missed = you'll have to leave. */
     verdictMissed: string;
+    /** Scorecard line: missed, but the DPI was high enough to be forgiven. */
+    verdictForgiven: string;
     /** Copy variants per request kind. Tokens (filled from tuning):
      *  {pct} reserve share, {deployed} max deployed share, {n} off-thesis
      *  deals to diversify, {heat} max deal heat, {team} min team rating. */

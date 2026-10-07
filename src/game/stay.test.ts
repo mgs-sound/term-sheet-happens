@@ -27,6 +27,16 @@ describe('staying at your firm', () => {
     expect(() => acceptStay(next, stayOption(next, run))).toThrow();
   });
 
+  it('a strong DPI forgives missed LP requests', () => {
+    const { run, career } = harvested(STAY.forgiveDpi, false);
+    const next = closeCareerFund(career, run, createRng(1), content.theses);
+    const stay = stayOption(next, run);
+    expect(stay.allowed).toBe(true);
+    expect(stay.forgiven).toBe(true);
+    const { run: weak } = harvested(STAY.forgiveDpi - 0.05, false);
+    expect(stayOption(next, weak).allowed).toBe(false);
+  });
+
   it('below 1x: same rung, fund not shrunk for the DPI', () => {
     const { run, career } = harvested(0.6, true);
     const next = closeCareerFund(career, run, createRng(1), content.theses);

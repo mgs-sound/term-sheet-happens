@@ -125,6 +125,7 @@ export function RehireScreen({
           trustTrendValue={trustTrend(nowTrust, stay.lpTrust)}
         />
         {!stay.allowed && <p className="rehire-locked">{copy.stayLocked}</p>}
+        {stay.forgiven && <p className="rehire-forgiven">{copy.stayForgiven}</p>}
       </section>
 
       {/* New firm: one read-only row per offer (no profile tags here: those

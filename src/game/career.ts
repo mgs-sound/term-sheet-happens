@@ -185,8 +185,12 @@ export function withPlayerName(career: CareerState, name: string): CareerState {
 
 /** What staying at the firm you just ran would look like (rehire screen). */
 export interface StayOption {
-  /** False when any LP request was broken: the LPs want a word, you go. */
+  /** False when any LP request was broken (and the DPI didn't buy
+   *  forgiveness): the LPs want a word, you go. */
   allowed: boolean;
+  /** Allowed only because the DPI cleared STAY.forgiveDpi despite missed
+   *  LP requests. */
+  forgiven: boolean;
   firmName: string;
   thesisId: string;
   tier: CareerState['tier'];
@@ -205,12 +209,15 @@ export function stayOption(next: CareerState, run: GameState): StayOption {
   const harvest = run.harvest;
   const dpi = harvest?.dpi ?? 0;
   const won = dpi >= CAREER.associatePromotionDpi;
-  const allowed = (run.lpRequests ?? []).every((r) => r.status === 'met');
+  const allMet = (run.lpRequests ?? []).every((r) => r.status === 'met');
+  const forgiven = !allMet && dpi >= STAY.forgiveDpi;
+  const allowed = allMet || forgiven;
   const outsideBaseM = next.pendingOffers
     ? Math.max(...next.pendingOffers.map((o) => o.fundSizeM))
     : (next.nextFundSizeM ?? run.fundSizeM);
   return {
     allowed,
+    forgiven,
     firmName: run.firmName,
     thesisId: run.thesis.id,
     tier: won ? next.tier : run.tier,
