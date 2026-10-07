@@ -1,5 +1,5 @@
 import { createRng } from './rng.ts';
-import { FUND_I_TERMS, OFFER_PROFILES } from './tuning.ts';
+import { BIG_FUNDS, FUND_I_TERMS, OFFER_PROFILES } from './tuning.ts';
 import { OFFER_PROFILES_ORDER, type CareerState, type OfferProfile } from './types.ts';
 import { roundM } from './util.ts';
 
@@ -79,6 +79,21 @@ export function offerSwingFor(
     sizeMult: min + (max - min) * rng.next(),
     trustDelta: rng.int(-OFFER_PROFILES.trustSwing, OFFER_PROFILES.trustSwing),
   };
+}
+
+/**
+ * Big-fund terms (see BIG_FUNDS): how much card asks/valuations scale so the
+ * fund is deployable, and the LP pressure level that comes with it.
+ */
+export function bigFundTerms(
+  fundSizeM: number,
+  meetings: number,
+  tier: CareerState['tier'],
+): { checkScale: number; pressure: number } {
+  const perMeetingM = fundSizeM / Math.max(1, meetings);
+  const checkScale = Math.max(1, perMeetingM / BIG_FUNDS.refPerMeetingM[tier]);
+  const pressure = BIG_FUNDS.pressureAt.filter((at) => checkScale >= at).length;
+  return { checkScale, pressure };
 }
 
 /** One rung down the ladder (mega fund), never below associate. */

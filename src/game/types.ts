@@ -146,6 +146,8 @@ export interface LpRequest {
   lineIndex: number;
   /** returnFund: the DPI the LPs asked for (absent on older saves = 1x). */
   target?: number;
+  /** A big fund's LPs: the stricter thresholds (LP_REQUESTS.strict). */
+  strict?: boolean;
   /** Why it broke, when it isn't the obvious rule: the fund ended with no
    *  investments at all (e.g. the only deal was vetoed). */
   reason?: 'noDeals';
@@ -261,6 +263,8 @@ export interface GameState {
   lastSticks?: { call: StickCall; red: number; green: number; won: boolean } | null;
   /** Fund II+ offer flavor that bent this fund's terms (absent = none). */
   offerProfile?: OfferProfile;
+  /** Big fund: card asks/valuations were scaled by this (absent = 1). */
+  checkScale?: number;
   /** This fund's LP requests (absent on older saves = none). */
   lpRequests?: LpRequest[];
 }

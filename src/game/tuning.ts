@@ -446,9 +446,6 @@ export const LP_REQUESTS = {
   /** Fund I (the tutorial) always gets exactly this many, and only from the
    *  requests the player fully controls (see requestPool). */
   fundICount: 1,
-  /** Fund II+: how many requests a fund gets, rolled uniformly. */
-  minCount: 1,
-  maxCount: 3,
   /** Salt for the requests' own RNG, so rolling them never shifts the deck. */
   rngSalt: 0x4c50_5251,
   /** dryPowder: broken once deployed capital exceeds this share of the fund. TUNE */
@@ -469,8 +466,24 @@ export const LP_REQUESTS = {
   ] as readonly (readonly [string, string])[],
   /** Results requests (decided by luck at harvest, not by your swipes). */
   resultKinds: ['unicorn', 'returnFund'] as readonly string[],
-  /** At most this many results requests per fund. TUNE */
-  maxResultKinds: 1,
+  /**
+   * Fund II+: how many requests a fund gets (rolled uniformly in
+   * minCount..maxCount) and how many may be results requests. Index =
+   * pressure level: 0 a normal fund; 1..2 big funds (BIG_FUNDS.pressureAt)
+   * get more, and strict ones. TUNE
+   */
+  byPressure: [
+    { minCount: 1, maxCount: 3, maxResultKinds: 1 },
+    { minCount: 3, maxCount: 4, maxResultKinds: 1 },
+    { minCount: 4, maxCount: 5, maxResultKinds: 2 },
+  ],
+  /** Strict thresholds a big fund's LPs ask for instead. TUNE */
+  strict: {
+    dryPowderMaxDeployed: 0.6,
+    diversifyMinOffThesis: 3,
+    coolDealsMaxHeat: 2,
+    reliableTeamsMinTeam: 4,
+  },
   /** returnFund: met at harvest when DPI reaches this (legacy default). */
   returnFundDpi: 1,
   /**
@@ -524,6 +537,23 @@ export const OFFER_PROFILES = {
   sizeSwing: { min: 0.4, max: 1.0 },
   /** ± LP trust points around the profile's trust. TUNE */
   trustSwing: 10,
+} as const;
+
+// ---------------------------------------------------------------------------
+// Big funds: checks scale with the money (rehire screen offers, mega funds)
+// ---------------------------------------------------------------------------
+
+/**
+ * A fund bigger than its rung's usual money per meeting writes bigger checks:
+ * every card's ask and valuation are scaled up by checkScale (ownership and
+ * exit multiples unchanged), so the fund is actually deployable. In exchange,
+ * its LPs pile on requests (LP_REQUESTS.byPressure). Never scales down.
+ */
+export const BIG_FUNDS = {
+  /** A rung's usual fund per meeting ($M): base fund / its calendar. TUNE */
+  refPerMeetingM: { associate: 1.2, partner: 2.4, gp: 3.6 },
+  /** checkScale at/above these → LP pressure level 1, 2. TUNE */
+  pressureAt: [1.5, 2.5],
 } as const;
 
 // ---------------------------------------------------------------------------

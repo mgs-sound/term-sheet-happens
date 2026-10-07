@@ -31,7 +31,13 @@ import { CHALLENGE_GAMES, SUITS } from './types.ts';
 import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
-import { offerProfileFor, offerSwingFor, rollFundITerms, tierBelow } from './fundTerms.ts';
+import {
+  bigFundTerms,
+  offerProfileFor,
+  offerSwingFor,
+  rollFundITerms,
+  tierBelow,
+} from './fundTerms.ts';
 import { rollLpRequests, settleLpRequests, updateLiveLpRequests } from './lpRequests.ts';
 import {
   acceptanceProbability,
@@ -116,10 +122,24 @@ export function createRun(
     (career.pendingFund && findThesis(content.theses, career.pendingFund.thesisId)) ||
     pickThesis(rng, content.theses);
 
+  // Big funds write bigger checks (same ownership, same multiples), so the
+  // money is deployable; their LPs ask for more in return (BIG_FUNDS).
+  const big = isFundI
+    ? { checkScale: 1, pressure: 0 }
+    : bigFundTerms(fundSizeM, meetingsTotal, tier);
   const deck = buildDeck(rng, content.pitches, thesis, {
     count: meetingsTotal,
     fundI: isFundI,
-  });
+  }).map((c) =>
+    big.checkScale > 1
+      ? {
+          ...c,
+          askM: roundM(c.askM * big.checkScale),
+          valuationM: roundM(c.valuationM * big.checkScale),
+          arrK: Math.round(c.arrK * big.checkScale),
+        }
+      : c,
+  );
 
   return {
     phase: 'meeting',
@@ -141,6 +161,7 @@ export function createRun(
     ),
     ...(fundITerms ? { fundIDifficulty: fundITerms.difficulty } : {}),
     ...(offerProfile ? { offerProfile } : {}),
+    ...(big.checkScale > 1 ? { checkScale: big.checkScale } : {}),
     meetingsTotal,
     meetingIndex: 0,
     quarter: 1,
@@ -156,7 +177,7 @@ export function createRun(
     lastCapitalCallQuarter: 0,
     events: [],
     harvest: null,
-    lpRequests: rollLpRequests(seed, isFundI, tier),
+    lpRequests: rollLpRequests(seed, isFundI, tier, big.pressure),
   };
 }
 

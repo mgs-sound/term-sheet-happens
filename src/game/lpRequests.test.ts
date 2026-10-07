@@ -39,8 +39,8 @@ describe('rollLpRequests', () => {
     for (let seed = 1; seed < 300; seed++) {
       const a = rollLpRequests(seed, false);
       expect(a).toEqual(rollLpRequests(seed, false));
-      expect(a.length).toBeGreaterThanOrEqual(LP_REQUESTS.minCount);
-      expect(a.length).toBeLessThanOrEqual(LP_REQUESTS.maxCount);
+      expect(a.length).toBeGreaterThanOrEqual(LP_REQUESTS.byPressure[0]!.minCount);
+      expect(a.length).toBeLessThanOrEqual(LP_REQUESTS.byPressure[0]!.maxCount);
       expect(new Set(a.map((r) => r.kind)).size).toBe(a.length);
       expect(a.every((r) => r.status === 'open')).toBe(true);
       counts.add(a.length);
@@ -76,8 +76,8 @@ describe('request mix', () => {
       expect(kinds.includes('dryPowder') && kinds.includes('unicorn')).toBe(false);
       expect(kinds.includes('dryPowder') && kinds.includes('returnFund')).toBe(false);
       const results = kinds.filter((k) => LP_REQUESTS.resultKinds.includes(k));
-      expect(results.length).toBeLessThanOrEqual(LP_REQUESTS.maxResultKinds);
-      expect(kinds.length).toBeGreaterThanOrEqual(LP_REQUESTS.minCount);
+      expect(results.length).toBeLessThanOrEqual(LP_REQUESTS.byPressure[0]!.maxResultKinds);
+      expect(kinds.length).toBeGreaterThanOrEqual(LP_REQUESTS.byPressure[0]!.minCount);
     }
   });
 });

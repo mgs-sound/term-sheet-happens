@@ -32,13 +32,33 @@ function clashes(a: LpRequestKind, b: LpRequestKind): boolean {
   return LP_REQUESTS.exclusive.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
 }
 
-/** The fund's requests for a run seed: distinct kinds, count in min..max. */
-export function rollLpRequests(seed: number, isFundI: boolean, tier: Tier = 'associate'): LpRequest[] {
+/** The numbers a request is judged by: normal, or a big fund's strict ones. */
+export function requestThresholds(r: Pick<LpRequest, 'strict'>): {
+  dryPowderMaxDeployed: number;
+  diversifyMinOffThesis: number;
+  coolDealsMaxHeat: number;
+  reliableTeamsMinTeam: number;
+} {
+  return r.strict ? LP_REQUESTS.strict : LP_REQUESTS;
+}
+
+/**
+ * The fund's requests for a run seed: distinct kinds, count in min..max.
+ * `pressure` (0 normal, 1..2 big fund — see BIG_FUNDS) adds requests and
+ * makes them strict.
+ */
+export function rollLpRequests(
+  seed: number,
+  isFundI: boolean,
+  tier: Tier = 'associate',
+  pressure = 0,
+): LpRequest[] {
   const rng = createRng((seed ^ LP_REQUESTS.rngSalt) >>> 0);
   const pool = requestPool(isFundI);
-  const count = isFundI
-    ? LP_REQUESTS.fundICount
-    : rng.int(LP_REQUESTS.minCount, LP_REQUESTS.maxCount);
+  const level =
+    LP_REQUESTS.byPressure[Math.min(pressure, LP_REQUESTS.byPressure.length - 1)] ??
+    LP_REQUESTS.byPressure[0]!;
+  const count = isFundI ? LP_REQUESTS.fundICount : rng.int(level.minCount, level.maxCount);
   // Walk a shuffled pool, skipping anything that contradicts a pick, and
   // capping the luck-decided (results) requests.
   const isResult = (k: LpRequestKind): boolean => LP_REQUESTS.resultKinds.includes(k);
@@ -46,7 +66,7 @@ export function rollLpRequests(seed: number, isFundI: boolean, tier: Tier = 'ass
   for (const kind of rng.shuffle(pool)) {
     if (picked.length >= count) break;
     if (picked.some((p) => clashes(p, kind))) continue;
-    if (isResult(kind) && picked.filter(isResult).length >= LP_REQUESTS.maxResultKinds) continue;
+    if (isResult(kind) && picked.filter(isResult).length >= level.maxResultKinds) continue;
     picked.push(kind);
   }
   return picked.map((kind) => ({
@@ -54,6 +74,7 @@ export function rollLpRequests(seed: number, isFundI: boolean, tier: Tier = 'ass
     status: 'open' as const,
     lineIndex: rng.int(0, 999),
     ...(kind === 'returnFund' ? { target: rollDpiTarget(rng, tier) } : {}),
+    ...(pressure > 0 && !isFundI ? { strict: true } : {}),
   }));
 }
 
@@ -63,16 +84,17 @@ export function deployedM(s: GameState): number {
 }
 
 /** Would this request be broken by the run as it stands right now? */
-function brokenNow(s: GameState, kind: LpRequestKind): boolean {
-  switch (kind) {
+function brokenNow(s: GameState, r: LpRequest): boolean {
+  const t = requestThresholds(r);
+  switch (r.kind) {
     case 'onThesis':
       return s.portfolio.some((c) => !c.card.onThesis);
     case 'dryPowder':
-      return deployedM(s) > s.fundSizeM * LP_REQUESTS.dryPowderMaxDeployed + 1e-9;
+      return deployedM(s) > s.fundSizeM * t.dryPowderMaxDeployed + 1e-9;
     case 'coolDeals':
-      return s.portfolio.some((c) => c.card.heat > LP_REQUESTS.coolDealsMaxHeat);
+      return s.portfolio.some((c) => c.card.heat > t.coolDealsMaxHeat);
     case 'reliableTeams':
-      return s.portfolio.some((c) => c.card.team < LP_REQUESTS.reliableTeamsMinTeam);
+      return s.portfolio.some((c) => c.card.team < t.reliableTeamsMinTeam);
     default:
       return false; // decided at harvest
   }
@@ -85,7 +107,7 @@ function brokenNow(s: GameState, kind: LpRequestKind): boolean {
 export function updateLiveLpRequests(s: GameState): LpRequestKind[] {
   const broke: LpRequestKind[] = [];
   for (const r of s.lpRequests ?? []) {
-    if (r.status === 'open' && brokenNow(s, r.kind)) {
+    if (r.status === 'open' && brokenNow(s, r)) {
       r.status = 'broken';
       broke.push(r.kind);
     }
@@ -114,7 +136,7 @@ export function settleLpRequests(s: GameState): number {
         break;
       case 'diversify':
         ok =
-          s.portfolio.filter((c) => !c.card.onThesis).length >= LP_REQUESTS.diversifyMinOffThesis;
+          s.portfolio.filter((c) => !c.card.onThesis).length >= requestThresholds(r).diversifyMinOffThesis;
         break;
       case 'unicorn':
         ok = (harvest?.unicorns ?? 0) > 0;

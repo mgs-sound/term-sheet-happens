@@ -1,18 +1,20 @@
 import type { FlavorLines } from '../../content/types';
 import { LP_REQUESTS } from '../../game/tuning';
 import type { LpRequest } from '../../game/types';
+import { requestThresholds } from '../../game/lpRequests';
 
 /** The request's copy, with its tuning numbers filled in. */
 export function lpRequestText(lines: FlavorLines, r: LpRequest): string {
   const pool = lines.lpRequests.kinds[r.kind];
   const text = pool[r.lineIndex % pool.length] ?? '';
-  const deployed = Math.round(LP_REQUESTS.dryPowderMaxDeployed * 100);
+  const t = requestThresholds(r);
+  const deployed = Math.round(t.dryPowderMaxDeployed * 100);
   return text
     .replace('{pct}', String(100 - deployed))
     .replace('{deployed}', String(deployed))
-    .replace('{n}', String(LP_REQUESTS.diversifyMinOffThesis))
-    .replace('{heat}', String(LP_REQUESTS.coolDealsMaxHeat))
-    .replace('{team}', String(LP_REQUESTS.reliableTeamsMinTeam))
+    .replace('{n}', String(t.diversifyMinOffThesis))
+    .replace('{heat}', String(t.coolDealsMaxHeat))
+    .replace('{team}', String(t.reliableTeamsMinTeam))
     .replace('{x}', String(r.target ?? LP_REQUESTS.returnFundDpi));
 }
 

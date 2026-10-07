@@ -50,6 +50,7 @@ A satirical VC card-swipe roguelite. Reigns/Tinder loop: each run is one fund at
 
 - **Associate** → return 1x+ → poached to **Partner** at a new firm (board seats unlock, bigger fund).
 - **Partner** → return 2x+ → **GP**: choose between three LP offer packages (fund size + assigned thesis + a quirk), name your own firm (or reroll generated names).
+- **Big funds:** a fund with more money per meeting than its rung's usual writes bigger checks (card asks/valuations scale up; ownership and multiples unchanged) so it's actually deployable — and its LPs pile on stricter requests (3–4, or 4–5 for the biggest: team 4+, heat ≤2, …).
 - **GP:** DPI sizes the next fund (AUM is the career score). Capital calls become a hazard.
 - **Endgame:** 3x+ on a $200M+ fund with maxed reputation = **Enlightenment**. Final card: a young associate pitches YOU their fund — you swipe on them. Credits. Endless mode unlocks.
 
