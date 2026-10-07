@@ -20,6 +20,7 @@ export function DevPanel({
   onHighLow,
   onDice,
   onSticks,
+  onProRata,
 }: {
   game: GameState;
   onJump: (jump: DevJump) => void;
@@ -31,6 +32,7 @@ export function DevPanel({
   onHighLow: () => void;
   onDice: () => void;
   onSticks: () => void;
+  onProRata: () => void;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   // Minigame graphics are rounded by default; this flips them to hard edges
@@ -144,6 +146,18 @@ export function DevPanel({
           </button>
           <button type="button" onClick={toggleSticksFlat}>
             sticks: {sticksFlat ? 'flat' : 'upright'}
+          </button>
+          <span className="dev-label">
+            interrupt {game.portfolio.length > 0 ? '' : '(sign a deal first)'}
+          </span>
+          <button
+            type="button"
+            disabled={
+              game.phase !== 'meeting' || game.resolution !== null || game.portfolio.length === 0
+            }
+            onClick={onProRata}
+          >
+            wire pro rata
           </button>
           <span className="dev-label">sfx (placeholder soundboard)</span>
           {SFX_IDS.map((id) => (

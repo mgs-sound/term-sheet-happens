@@ -1502,6 +1502,24 @@
 
 .interrupt-card {
   box-shadow: 6px 6px 0 var(--stamp-red);
+  /* A phone buzzing on the desk, in step with the ring-ring cue: two short
+     bursts (0–0.2s, 0.32–0.52s), then still. */
+  animation: interrupt-buzz 0.55s linear both;
+}
+
+@keyframes interrupt-buzz {
+  0%, 36%, 95%, 100% { transform: translate(0, 0) rotate(0); }
+  4%, 12%, 20%, 28% { transform: translate(-2px, 0) rotate(-0.8deg); }
+  8%, 16%, 24%, 32% { transform: translate(2px, 0) rotate(0.8deg); }
+  58% { transform: translate(0, 0) rotate(0); }
+  62%, 70%, 78%, 86% { transform: translate(-2px, 0) rotate(-0.8deg); }
+  66%, 74%, 82%, 90% { transform: translate(2px, 0) rotate(0.8deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interrupt-card {
+    animation: none;
+  }
 }
 
 .interrupt-actions {

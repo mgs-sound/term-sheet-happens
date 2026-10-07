@@ -20,6 +20,7 @@ import {
   forceHarvestResult,
   forceLpRequests,
   forceVetoChallenge,
+  forceProRata,
 } from '../game/devtools';
 import { generateFirmName } from '../game/firm';
 import { FIRM_OPTION_COUNT, pickFirmOptions } from '../game/firmOptions';
@@ -638,6 +639,13 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           onSticks={() => {
             try {
               setGameDirect(forceVetoChallenge(gameRef.current, 'sticks'));
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+          onProRata={() => {
+            try {
+              setGameDirect(forceProRata(gameRef.current));
             } catch (err) {
               console.error(err);
             }

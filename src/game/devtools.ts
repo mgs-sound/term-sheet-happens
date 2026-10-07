@@ -9,6 +9,7 @@ import { drawCard } from './engine.ts';
 import { createRng } from './rng.ts';
 import { initialCareer } from './career.ts';
 import { requestPool } from './lpRequests.ts';
+import { makeFollowOnEvent } from './followons.ts';
 import { METERS } from './tuning.ts';
 import { clamp, roundM } from './util.ts';
 
@@ -57,6 +58,23 @@ export function forceVetoChallenge(
       ? { ...terms, game, shown: drawCard(createRng((state.rngState ^ 0xc0ffee) >>> 0)) }
       : { ...terms, game };
   s.negotiation = null;
+  return s;
+}
+
+/**
+ * Ring the phone now: a wire-pro-rata interrupt from the latest portfolio
+ * company (needs one signed deal), for previewing the urgent card + buzz.
+ * Resolving it moves on to the next card, as a natural interrupt does.
+ */
+export function forceProRata(state: GameState): GameState {
+  const company = state.portfolio.at(-1);
+  if (state.phase !== 'meeting' || state.resolution !== null || !company) {
+    throw new Error('forceProRata: needs an open meeting and a signed company');
+  }
+  const s = structuredClone(state) as GameState;
+  s.phase = 'interrupt';
+  // Side RNG so cheating never shifts the run's main stream.
+  s.interrupt = makeFollowOnEvent(createRng((state.rngState ^ 0xb022) >>> 0), company);
   return s;
 }
 

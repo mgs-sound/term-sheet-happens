@@ -345,6 +345,8 @@ export function RunScreen({
       <div className="card-arena">
         {game.phase === 'interrupt' && game.interrupt ? (
           <InterruptCard
+            // Remount per interrupt, so back-to-back ones each buzz.
+            key={interruptKey ?? 'interrupt'}
             event={game.interrupt}
             game={game}
             companyFont={
