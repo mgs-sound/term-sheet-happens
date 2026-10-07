@@ -2121,14 +2121,50 @@
 .seat-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px; /* room for the checkbox's block shadow */
   min-height: 44px;
 }
 
-.seat-label input {
+/* Checkboxes: hard square, 2px ink stroke like the LP request boxes; a mono
+   green ✓ when on. Never the native rounded control. */
+input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
   width: 18px;
   height: 18px;
-  accent-color: var(--ledger-green);
+  margin: 0;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper-bright);
+  /* Same offset block shadow (and press) as the buttons. */
+  box-shadow: 4px 4px 0 var(--ink);
+  display: inline-grid;
+  place-content: center;
+  vertical-align: middle;
+}
+
+input[type='checkbox']:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+input[type='checkbox']::before {
+  content: '✓';
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ledger-green);
+  visibility: hidden;
+}
+
+input[type='checkbox']:checked::before {
+  visibility: visible;
+}
+
+input[type='checkbox']:disabled {
+  opacity: 0.45;
 }
 
 .seat-note {
