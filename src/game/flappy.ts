@@ -140,6 +140,14 @@ export function flappyAt(
     const cx = FLAPPY.craneX + s.scroll;
     const r = FLAPPY.craneRadius;
     s.passed = obstacles.filter((o) => o.x + o.width / 2 < cx - r).length;
+    // Past the last triangle you're home: landing on the floor (or bumping
+    // the ceiling) by the red flag counts as arriving, not crashing.
+    if (s.passed >= obstacles.length && (s.y + r >= floor || s.y - r <= ceiling)) {
+      s.y = Math.max(ceiling + r, Math.min(floor - r, s.y));
+      s.finished = true;
+      s.endMs = t;
+      return s;
+    }
     const crashed =
       s.y - r < ceiling ||
       s.y + r > floor ||

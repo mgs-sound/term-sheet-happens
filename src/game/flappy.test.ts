@@ -35,6 +35,24 @@ describe('flappy crane', () => {
     }
   });
 
+  it('past the last triangle, dropping onto the floor by the flag is a win', () => {
+    let checked = 0;
+    for (let seed = 1; seed <= 30 && checked < 5; seed++) {
+      const course = makeFlappyCourse(createRng(seed), 0.5);
+      const taps = autopilot(course);
+      const run = flappyAt(course, taps, FLAPPY.maxMs);
+      if (!run.finished) continue;
+      // Stop flapping once the last triangle is behind: it falls, and lands home.
+      const last = course[course.length - 1]!;
+      const clearMs = ((last.x + last.width / 2 + FLAPPY.craneRadius - FLAPPY.craneX) / FLAPPY.scrollSpeed) + 20;
+      const lazy = flappyAt(course, taps.filter((t) => t < clearMs), FLAPPY.maxMs);
+      expect(lazy.crashed).toBe(false);
+      expect(lazy.finished).toBe(true);
+      checked++;
+    }
+    expect(checked).toBeGreaterThan(0);
+  });
+
   it('never tapping crashes; a sensible flapper clears the course', () => {
     let cleared = 0;
     for (let seed = 1; seed <= 30; seed++) {
