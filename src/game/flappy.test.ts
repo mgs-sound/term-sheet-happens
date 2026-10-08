@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { flappyAt, makeFlappyCourse, TRI_H } from './flappy';
+import { flappyAt, makeFlappyCourse } from './flappy';
 import { createRng } from './rng';
 import { FLAPPY } from './tuning';
 import type { FlappyObstacle } from './types';
@@ -22,16 +22,16 @@ function autopilot(course: FlappyObstacle[]): number[] {
 }
 
 describe('flappy crane', () => {
-  it('builds five zigzag triangles, all on stage', () => {
+  it('builds five zigzag triangles on the bars, of varying lengths', () => {
     for (let seed = 1; seed < 60; seed++) {
       const course = makeFlappyCourse(createRng(seed), 0);
       expect(course).toHaveLength(FLAPPY.obstacles);
+      const lengths = course.map((o) => (o.fromTop ? o.tip - FLAPPY.ceilingY : FLAPPY.floorY - o.tip));
       course.forEach((o, i) => {
         if (i > 0) expect(o.fromTop).toBe(!course[i - 1]!.fromTop);
-        const base = o.fromTop ? o.tip - TRI_H : o.tip + TRI_H;
-        expect(base).toBeGreaterThanOrEqual(-1);
-        expect(base).toBeLessThanOrEqual(FLAPPY.height + 1);
+        expect(lengths[i]).toBeGreaterThanOrEqual(FLAPPY.triangleMinHeight - 1);
       });
+      expect(new Set(lengths).size).toBeGreaterThan(1);
     }
   });
 

@@ -362,12 +362,21 @@ export const FLAPPY = {
   /** The whole course is on screen: the crane starts at craneX and flies
    *  right to the flag. Obstacles alternate top / bottom (zigzag). */
   craneX: 170,
-  flagX: 1560,
-  firstObstacleX: 540,
-  spacingMin: 205,
-  spacingMax: 220,
-  /** Equilateral triangles: base width (height = width × 0.866). */
-  triangleWidth: 300,
+  flagX: 1620,
+  firstObstacleX: 480,
+  spacingMin: 180,
+  spacingMax: 190,
+  /** The ceiling and floor bars (y): every triangle hangs from / stands on
+   *  one, and touching either is a crash. */
+  ceilingY: 40,
+  floorY: 960,
+  /** Triangle base width follows its length (× widthPerLength), clamped;
+   *  `triangleWidth` is the widest (used for proximity checks). */
+  triangleWidth: 340,
+  triangleMinWidth: 180,
+  widthPerLength: 1.1,
+  /** A triangle is never shorter than this. */
+  triangleMinHeight: 130,
   /** The corridor between a top point and a bottom point. */
   gapAtHopeless: 300,
   gapAtCertain: 440,

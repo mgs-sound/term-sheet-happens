@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FlavorLines } from '../../content/types';
-import { flappyAt, obstacleTriangle } from '../../game/flappy';
+import { flappyAt, flappyBounds, obstacleTriangle } from '../../game/flappy';
 import { FLAPPY } from '../../game/tuning';
 import type { FlappyObstacle } from '../../game/types';
 import { services } from '../../services';
@@ -106,6 +106,16 @@ export function FlappySheet({
       <div className="flappy-stage" aria-hidden="true">
         <svg className="flappy-art" viewBox={`0 0 ${FLAPPY.width} ${FLAPPY.height}`}>
           <rect className="flappy-sky" x="0" y="0" width={FLAPPY.width} height={FLAPPY.height} />
+          {/* Ceiling and floor: hit either and the deal is gone. */}
+          {(() => {
+            const { ceiling, floor } = flappyBounds(course);
+            return (
+              <>
+                <line className="flappy-bound" x1={0} y1={ceiling} x2={FLAPPY.width} y2={ceiling} />
+                <line className="flappy-bound" x1={0} y1={floor} x2={FLAPPY.width} y2={floor} />
+              </>
+            );
+          })()}
           {course.map((o, i) => (
             <path
               key={i}
@@ -113,11 +123,11 @@ export function FlappySheet({
               d={`M${obstacleTriangle(o).map((p) => p.join(' ')).join('L')}Z`}
             />
           ))}
-          {/* The goal: a red flag at the end of the course. */}
-          <g className="flappy-flag" transform={`translate(${FLAPPY.flagX} ${FLAPPY.height / 2})`}>
-            {/* One shape: pole and pennant drawn as a single outline. */}
-            <path className="flappy-flag-shape" d="M-14 90V-90H0L110 -50L0 -10V90Z" />
-          </g>
+          {/* The goal: a red marker pointing down at the floor. */}
+          <path
+            className="flappy-goal"
+            d={`M${FLAPPY.flagX - 60} ${FLAPPY.floorY - 110}H${FLAPPY.flagX + 60}L${FLAPPY.flagX} ${FLAPPY.floorY - 4}Z`}
+          />
           <g ref={craneRef} transform={craneTransform(FLAPPY.craneX, FLAPPY.height / 2, 0)}>
             <CraneArt />
           </g>

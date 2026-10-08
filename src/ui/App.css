@@ -3250,7 +3250,15 @@ input[type='range']::-moz-range-thumb {
   stroke: none !important;
 }
 .flappy-tri { fill: var(--ledger-green); }
-.flappy-flag-shape { fill: var(--stamp-red); }
+.flappy-bound {
+  stroke: var(--ink);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+.flappy-art .flappy-goal {
+  fill: var(--stamp-red);
+  stroke: none;
+}
 .flappy-actions {
   justify-content: center;
 }

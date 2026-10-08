@@ -199,6 +199,8 @@ export interface FlappyObstacle {
   x: number;
   fromTop: boolean;
   tip: number;
+  /** Base width: longer triangles are wider (no two alike). */
+  width: number;
 }
 
 /** One crane of the "shoot the cranes" final offer. */
