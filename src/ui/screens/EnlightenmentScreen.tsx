@@ -94,7 +94,9 @@ export function EnlightenmentScreen({
 
   if (stage === 'finalCard') {
     return (
-      <section className="screen run-screen" ref={sectionRef} {...swipe}>
+      // Same frame as the run screen, minus the mandate/portfolio row (see
+      // .final-meeting): ledger / card / action dock.
+      <section className="screen run-screen final-meeting" ref={sectionRef} {...swipe}>
         <header className="ledger-bar">
           <div className="ledger-firm">
             <span>The last meeting</span>
@@ -130,13 +132,15 @@ export function EnlightenmentScreen({
             </div>
           </SwipeShell>
         </div>
-        <div className="swipe-actions">
-          <button type="button" className="btn btn-pass" onClick={() => swipeFinal('left')}>
-            Pass
-          </button>
-          <button type="button" className="btn btn-sign" onClick={() => swipeFinal('right')}>
-            Fund them
-          </button>
+        <div className="action-dock">
+          <div className="swipe-actions">
+            <button type="button" className="btn btn-pass" onClick={() => swipeFinal('left')}>
+              Pass
+            </button>
+            <button type="button" className="btn btn-sign" onClick={() => swipeFinal('right')}>
+              Fund them
+            </button>
+          </div>
         </div>
       </section>
     );

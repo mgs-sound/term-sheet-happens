@@ -2783,6 +2783,12 @@ input[type='range']::-moz-range-thumb {
 
 /* ---------------------------------------------------- enlightenment/credits */
 
+/* The last meeting: the run screen's frame has no mandate/portfolio row
+   here, so the card takes the flexible row and the buttons stay button-sized. */
+.final-meeting {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
 .glow {
   color: var(--ledger-green);
 }
