@@ -20,6 +20,11 @@
   /* The column owns no bottom inset; each screen's action row does. */
   padding-bottom: calc(14px + env(safe-area-inset-bottom));
   min-height: 0;
+  /* Short viewports (a browser with its toolbars, iPhone X/SE): if a screen
+     outgrows the frame it scrolls inside itself, so its buttons are never
+     clipped out of reach. The run screen and fixed-frame lists opt out. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 /* ---------------------------------------------------------------- buttons */
@@ -2962,5 +2967,31 @@ input[type='range']::-moz-range-thumb {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Short screens (kept last so it wins the cascade): tighten the vertical
+   rhythm so most screens still fit without scrolling. */
+@media (max-height: 700px) {
+  .screen {
+    padding-top: 8px;
+  }
+  .letterhead {
+    gap: 6px;
+  }
+  .screen-actions {
+    gap: 10px;
+    padding-top: 12px;
+  }
+  .btn {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .dpi-block {
+    margin-top: 8px;
+    padding: 16px 14px 14px;
+  }
+  .dpi-value {
+    font-size: clamp(48px, 15vw, 64px);
   }
 }
