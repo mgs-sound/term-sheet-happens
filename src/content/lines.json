@@ -206,8 +206,8 @@
   "crane": {
     "title": "Final offer",
     "intros": [
-      "The deal is an origami crane. It will fly exactly once. Shoot it as it crosses the pole.",
-      "Watch the bushes. When the deal takes off, take the shot.",
+      "Three origami cranes: one warm-up, two very fast. Hit two as they cross the pole.",
+      "Watch the bushes. When a deal takes off, take the shot. Two hits close it.",
       "Deals don't wait. This one is hiding in a bush. Be ready."
     ],
     "won": [
@@ -218,7 +218,8 @@
       "It flew. Deals do that. The founder signs elsewhere.",
       "Missed. The crane lands in a competitor's portfolio."
     ],
-    "cta": "Shoot the deal"
+    "cta": "Shoot the deal",
+    "countdown": ["Ready…", "Set…", "Go!"]
   },
   "vetoChallenge": {
     "title": "Leadership challenge",

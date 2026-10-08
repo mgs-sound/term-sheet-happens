@@ -3051,9 +3051,14 @@ input[type='range']::-moz-range-thumb {
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
 }
-.wheel-pointer { fill: #d9d9d9; }
+.wheel-pointer { fill: var(--ledger-green); }
 .wheel-red { fill: var(--stamp-red); }
 .wheel-slice { fill: var(--sign-yellow); }
+.wheel-art .wheel-pepperoni {
+  fill: var(--stamp-red);
+  stroke: none;
+}
+.wheel-slice-edge { fill: none; }
 
 /* The blind: a blank paper sign that drops over the wheel while it spins
    and lifts away to reveal where it stopped. */
@@ -3102,7 +3107,29 @@ input[type='range']::-moz-range-thumb {
 /* ------------------------------------------- shoot the crane (final offer) */
 
 .crane-stage {
+  position: relative;
   margin: 34px 0 10px;
+}
+/* Ready, set, go: one word at a time, stamped over the stage. */
+.crane-countdown {
+  position: absolute;
+  inset: -30px 0 auto;
+  z-index: 2;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  animation: crane-count 0.65s ease-out both;
+  pointer-events: none;
+}
+@keyframes crane-count {
+  0% { transform: scale(1.6); opacity: 0; }
+  25% { transform: scale(1); opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
 }
 .crane-art {
   display: block;

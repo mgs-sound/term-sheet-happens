@@ -287,7 +287,7 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     !crane ||
     !isNonEmptyString(crane.title) ||
     !isNonEmptyString(crane.cta) ||
-    !['intros', 'won', 'lost'].every(
+    !['intros', 'won', 'lost', 'countdown'].every(
       (k) => Array.isArray(crane[k]) && (crane[k] as unknown[]).length > 0 && (crane[k] as unknown[]).every(isNonEmptyString),
     )
   ) {

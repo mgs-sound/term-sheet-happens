@@ -30,6 +30,13 @@ function slicePath(deg: number): string {
   return `M${CX} ${CY}L${x1} ${y1}A${R} ${R} 0 ${large} 1 ${x2} ${y2}Z`;
 }
 
+/** Pepperoni on the slice: [fraction of the half-angle, fraction of R]. */
+const PEPPERONI: readonly (readonly [number, number])[] = [
+  [-0.7, 0.68],
+  [0.55, 0.7],
+  [0.1, 0.36],
+];
+
 type Stage = 'ready' | 'spinning' | 'blind' | 'done';
 
 /**
@@ -139,7 +146,29 @@ export function WheelSheet({
           />
           <g ref={wheelRef}>
             <circle className="wheel-red" cx={CX} cy={CY} r={R} />
+            <defs>
+              <clipPath id="wheel-slice-clip">
+                <path d={slicePath(sliceDeg)} />
+              </clipPath>
+            </defs>
+            {/* The slice is a slice of pizza: pepperoni, cut by its edges. */}
             <path className="wheel-slice" d={slicePath(sliceDeg)} />
+            <g clipPath="url(#wheel-slice-clip)">
+              {PEPPERONI.map(([along, out], i) => {
+                const a = along * (sliceDeg / 2) * (Math.PI / 180);
+                return (
+                  <circle
+                    key={i}
+                    className="wheel-pepperoni"
+                    cx={CX + out * R * Math.sin(a)}
+                    cy={CY - out * R * Math.cos(a)}
+                    r={R * 0.12}
+                  />
+                );
+              })}
+            </g>
+            {/* Edge redrawn on top so the pepperoni sit under the crust line. */}
+            <path className="wheel-slice-edge" d={slicePath(sliceDeg)} />
           </g>
           {/* The blind: drops over the wheel while it spins. */}
           <rect

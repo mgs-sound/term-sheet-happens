@@ -148,7 +148,15 @@ export interface FlavorLines {
   /** Partner+ final-offer minigame (sword in the stone). */
   swordPull: { title: string; intros: string[]; won: string[]; lost: string[]; cta: string };
   /** Partner+ final-offer minigame (shoot the crane). */
-  crane: { title: string; intros: string[]; won: string[]; lost: string[]; cta: string };
+  crane: {
+    title: string;
+    intros: string[];
+    won: string[];
+    lost: string[];
+    cta: string;
+    /** One word per countdown step before the first crane (Ready, Set, Go). */
+    countdown: string[];
+  };
   /** Partner+ final-offer minigame (the blind wheel). */
   wheel: {
     title: string;

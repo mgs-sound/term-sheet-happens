@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FlavorLines } from '../../content/types';
 import { craneHits } from '../../game/engine';
-import { CRANE } from '../../game/tuning';
+import { CRANE, CRANE_GO_MS } from '../../game/tuning';
 import type { CraneFlight } from '../../game/types';
 import { services } from '../../services';
 import { pickLine } from '../format';
@@ -112,6 +112,19 @@ export function CraneSheet({
   // Per crane: null while pending, then hit or missed.
   const [marks, setMarks] = useState<(boolean | null)[]>(cranes.map(() => null));
   const [fired, setFired] = useState(0); // re-keys the pin's kick
+  // Ready, set, go: which word is up (null once GO has passed).
+  const [step, setStep] = useState<number | null>(0);
+
+  useEffect(() => {
+    const timers = Array.from({ length: CRANE.countdownSteps }, (_, i) =>
+      window.setTimeout(() => {
+        setStep(i);
+        services.audio.play(i === CRANE.countdownSteps - 1 ? 'start' : 'tick');
+      }, i * CRANE.countdownStepMs),
+    );
+    timers.push(window.setTimeout(() => setStep(null), CRANE_GO_MS + CRANE.countdownStepMs / 2));
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, []);
   const onDoneRef = useRef(onDone);
   onDoneRef.current = onDone;
 
@@ -153,6 +166,7 @@ export function CraneSheet({
   }, []);
 
   const shoot = (): void => {
+    if (performance.now() - t0.current < CRANE_GO_MS) return; // not before GO
     const i = current.current;
     if (i >= cranes.length || shots.current[i] != null) return;
     const t = performance.now() - t0.current;
@@ -179,6 +193,11 @@ export function CraneSheet({
       </p>
 
       <div className="crane-stage" aria-hidden="true">
+        {step !== null && (
+          <div key={step} className="crane-countdown">
+            {copy.countdown[step] ?? ''}
+          </div>
+        )}
         <svg className="crane-art" viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} overflow="visible">
           <defs>
             <clipPath id="crane-ground">
@@ -234,7 +253,7 @@ export function CraneSheet({
           type="button"
           className="btn btn-stay crane-btn"
           data-sfx="none"
-          disabled={done}
+          disabled={done || (step !== null && step < CRANE.countdownSteps - 1)}
           onPointerDown={(e) => {
             e.preventDefault();
             shoot();

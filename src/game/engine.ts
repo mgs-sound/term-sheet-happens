@@ -78,6 +78,7 @@ import {
   WHEEL,
   WHEEL_VISIBLE_MS,
   CRANE,
+  CRANE_GO_MS,
 } from './tuning.ts';
 import { roundM } from './util.ts';
 import { meetingsForCareer } from './career.ts';
@@ -667,11 +668,11 @@ export function makeFinalOffer(
 /** The cranes' schedule: each flight with its peeks, and the hit window. */
 function craneTiming(rng: RNG, acceptance: number): { cranes: CraneFlight[]; windowMs: number } {
   const cranes: CraneFlight[] = [];
-  let free = 0; // when the stage is clear (panel open / last landing)
+  let free = CRANE_GO_MS; // when the stage is clear (after GO / last landing)
   CRANE.flightsMs.forEach((flightMs, i) => {
     const takeoffMs =
       i === 0
-        ? rng.int(CRANE.firstTakeoffMinMs, CRANE.firstTakeoffMaxMs)
+        ? free + rng.int(CRANE.firstTakeoffMinMs, CRANE.firstTakeoffMaxMs)
         : free + rng.int(CRANE.gapMinMs, CRANE.gapMaxMs);
     const [lo, hi] = i === 0 ? CRANE.peeksFirst : CRANE.peeksLater;
     const peeks = rng.int(lo, hi);

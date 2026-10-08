@@ -321,9 +321,12 @@ export const CRANE = {
   flightsMs: [900, 380, 380],
   /** Hits needed (of the three) to sign the deal. */
   hitsToWin: 2,
-  /** First takeoff, ms after the panel opens (seeded within this range). */
-  firstTakeoffMinMs: 2000,
-  firstTakeoffMaxMs: 3200,
+  /** "Ready, set, go" before anything moves: one word per step (ms each). */
+  countdownStepMs: 650,
+  countdownSteps: 3,
+  /** First takeoff, ms after GO (seeded within this range). */
+  firstTakeoffMinMs: 1300,
+  firstTakeoffMaxMs: 2400,
   /** Each later takeoff: this long after the previous crane landed. */
   gapMinMs: 1700,
   gapMaxMs: 2800,
@@ -341,6 +344,9 @@ export const CRANE = {
   /** After a crane lands, this long without a shot counts as a miss. */
   graceMs: 400,
 } as const;
+
+/** When the crane countdown ends (GO), ms after the panel opens. */
+export const CRANE_GO_MS = CRANE.countdownStepMs * CRANE.countdownSteps;
 
 export const BOARD_SEATS = {
   /** Demanding a seat lowers negotiation acceptance by this much. TUNE */
