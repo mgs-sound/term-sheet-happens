@@ -362,7 +362,10 @@ export const FLAPPY = {
   /** The whole course is on screen: the crane starts at craneX and flies
    *  right to the flag. Obstacles alternate top / bottom (zigzag). */
   craneX: 170,
-  flagX: 1620,
+  /** The checkered finish line: its left edge (x), and its two columns of
+   *  red squares. Reach it and the deal is yours. */
+  finishX: 1580,
+  finishSquare: 44,
   firstObstacleX: 480,
   spacingMin: 180,
   spacingMax: 190,

@@ -123,11 +123,23 @@ export function FlappySheet({
               d={`M${obstacleTriangle(o).map((p) => p.join(' ')).join('L')}Z`}
             />
           ))}
-          {/* The goal: a red marker pointing down at the floor. */}
-          <path
-            className="flappy-goal"
-            d={`M${FLAPPY.flagX - 60} ${FLAPPY.floorY - 110}H${FLAPPY.flagX + 60}L${FLAPPY.flagX} ${FLAPPY.floorY - 4}Z`}
-          />
+          {/* The finish line: two columns of red squares, checkered,
+              from the ceiling bar to the floor bar. */}
+          {(() => {
+            const q = FLAPPY.finishSquare;
+            const rows = Math.floor((FLAPPY.floorY - FLAPPY.ceilingY) / q);
+            const h = (FLAPPY.floorY - FLAPPY.ceilingY) / rows;
+            return Array.from({ length: rows }, (_, r) => (
+              <rect
+                key={r}
+                className="flappy-finish"
+                x={FLAPPY.finishX + (r % 2) * q}
+                y={FLAPPY.ceilingY + r * h}
+                width={q}
+                height={h}
+              />
+            ));
+          })()}
           <g ref={craneRef} transform={craneTransform(FLAPPY.craneX, FLAPPY.height / 2, 0)}>
             <CraneArt />
           </g>

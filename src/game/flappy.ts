@@ -102,9 +102,9 @@ function hits(px: number, py: number, r: number, tri: [number, number][]): boole
   return false;
 }
 
-/** Where the course ends: the crane reaches the flag. */
+/** Where the course ends: the crane touches the checkered finish line. */
 export function flappyFinishScroll(): number {
-  return FLAPPY.flagX - FLAPPY.craneX;
+  return FLAPPY.finishX - FLAPPY.craneRadius - FLAPPY.craneX;
 }
 
 /**
@@ -141,7 +141,7 @@ export function flappyAt(
     const r = FLAPPY.craneRadius;
     s.passed = obstacles.filter((o) => o.x + o.width / 2 < cx - r).length;
     // Past the last triangle you're home: landing on the floor (or bumping
-    // the ceiling) by the red flag counts as arriving, not crashing.
+    // the ceiling) before the finish line counts as arriving, not crashing.
     if (s.passed >= obstacles.length && (s.y + r >= floor || s.y - r <= ceiling)) {
       s.y = Math.max(ceiling + r, Math.min(floor - r, s.y));
       s.finished = true;
