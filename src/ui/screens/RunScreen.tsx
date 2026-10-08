@@ -15,6 +15,7 @@ import { InterruptCard } from '../components/InterruptCard';
 import { SignSheet } from '../components/SignSheet';
 import { SwordPullSheet } from '../components/SwordPullSheet';
 import { WheelSheet } from '../components/WheelSheet';
+import { CraneSheet } from '../components/CraneSheet';
 import {
   COIN_HOLD_MS,
   COIN_SPIN_MS,
@@ -408,6 +409,26 @@ export function RunScreen({
             };
             const key = `final-${card.pitchId}-${game.meetingIndex}`;
             const seed = game.seed + game.meetingIndex;
+            if (finalGame === 'crane') {
+              const pending = game.finalOffer;
+              return (
+                <CraneSheet
+                  key={key}
+                  lines={lines}
+                  seed={seed}
+                  takeoffMs={pending?.takeoffMs ?? 0}
+                  peeksMs={pending?.peeksMs ?? []}
+                  result={
+                    finalShow?.game === 'crane'
+                      ? { won: finalShow.won, shotMs: finalShow.shotMs ?? null }
+                      : null
+                  }
+                  stampWon={lines.vetoChallenge.stampWon}
+                  stampLost={lines.vetoChallenge.stampLost}
+                  onShoot={(shotMs) => settle(dispatch({ type: 'RESOLVE_CRANE', shotMs }))}
+                />
+              );
+            }
             if (finalGame === 'wheel') {
               const pending = game.finalOffer;
               return (

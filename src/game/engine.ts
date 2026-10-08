@@ -77,6 +77,7 @@ import {
   FINAL_OFFER,
   WHEEL,
   WHEEL_VISIBLE_MS,
+  CRANE,
 } from './tuning.ts';
 import { roundM } from './util.ts';
 import { meetingsForCareer } from './career.ts';
@@ -236,6 +237,9 @@ export function reduce(state: GameState | null, action: Action): GameState {
       break;
     case 'RESOLVE_WHEEL':
       handleResolveWheel(s, rng, action.elapsedMs);
+      break;
+    case 'RESOLVE_CRANE':
+      handleResolveCrane(s, rng, action.shotMs);
       break;
     case 'HARVEST':
       handleHarvest(s, rng);
@@ -656,7 +660,28 @@ export function makeFinalOffer(
     sliceDeg: wheelSliceDeg(acceptance),
     // Where the slice starts; the pointer sits at 0° (top).
     startDeg: rng.int(WHEEL.startMinDeg, WHEEL.startMaxDeg),
+    ...craneTiming(rng, acceptance),
   };
+}
+
+/** The crane's schedule: takeoff, fake-out peeks before it, hit window. */
+function craneTiming(
+  rng: RNG,
+  acceptance: number,
+): { takeoffMs: number; peeksMs: number[]; windowMs: number } {
+  const takeoffMs = rng.int(CRANE.takeoffMinMs, CRANE.takeoffMaxMs);
+  const peeks = rng.int(CRANE.peeksMin, CRANE.peeksMax);
+  const latest = takeoffMs - CRANE.peekLeadMs;
+  const peeksMs = Array.from({ length: peeks }, () => rng.int(CRANE.peekLeadMs, latest)).sort(
+    (a, b) => a - b,
+  );
+  const windowMs = Math.round(lerp(CRANE.windowMsAtHopeless, CRANE.windowMsAtCertain, acceptance));
+  return { takeoffMs, peeksMs, windowMs };
+}
+
+/** When the crane crosses the pole (halfway through its flight). */
+export function craneCrossMs(takeoffMs: number): number {
+  return takeoffMs + CRANE.flightMs / 2;
 }
 
 /** The wheel's turn (degrees, clockwise) after spinning for `elapsedMs`. */
@@ -701,6 +726,14 @@ function handleResolveSwordPull(s: GameState, rng: RNG, taps: number): void {
   const c = requireFinalOffer(s, 'sword', 'RESOLVE_SWORD_PULL');
   const won = taps >= c.targetTaps;
   s.lastFinalOffer = { game: 'sword', won, taps, targetTaps: c.targetTaps };
+  settleFinalOffer(s, rng, c, won);
+}
+
+function handleResolveCrane(s: GameState, rng: RNG, shotMs: number | null): void {
+  const c = requireFinalOffer(s, 'crane', 'RESOLVE_CRANE');
+  const crossMs = craneCrossMs(c.takeoffMs);
+  const won = shotMs !== null && Math.abs(shotMs - crossMs) <= c.windowMs / 2;
+  s.lastFinalOffer = { game: 'crane', won, shotMs, crossMs };
   settleFinalOffer(s, rng, c, won);
 }
 

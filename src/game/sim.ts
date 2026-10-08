@@ -5,7 +5,7 @@
  */
 
 import type { CareerState, EngineContent, GameState } from './types.ts';
-import { reduce } from './engine.ts';
+import { craneCrossMs, reduce } from './engine.ts';
 import { initialCareer } from './career.ts';
 import { FUND_SIZING, SIM } from './tuning.ts';
 
@@ -62,10 +62,14 @@ function nextAction(
       if (c?.game === 'sticks') return { type: 'RESOLVE_VETO_CHALLENGE', call: 'red' };
       return { type: 'RESOLVE_VETO_CHALLENGE', call: 'heads' };
     }
-    case 'finalOffer':
-      return s.finalOffer?.game === 'wheel'
-        ? { type: 'RESOLVE_WHEEL', elapsedMs: SIM.wheelStopMs }
-        : { type: 'RESOLVE_SWORD_PULL', taps: SIM.swordTaps };
+    case 'finalOffer': {
+      const c = s.finalOffer;
+      if (c?.game === 'wheel') return { type: 'RESOLVE_WHEEL', elapsedMs: SIM.wheelStopMs };
+      if (c?.game === 'crane') {
+        return { type: 'RESOLVE_CRANE', shotMs: craneCrossMs(c.takeoffMs) + SIM.craneShotOffsetMs };
+      }
+      return { type: 'RESOLVE_SWORD_PULL', taps: SIM.swordTaps };
+    }
     case 'fundClosed':
       return { type: 'HARVEST' };
     default:

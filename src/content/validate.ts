@@ -282,6 +282,18 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     errors.push('lines.json: "swordPull" needs title, cta and non-empty intros / won / lost');
   }
 
+  const crane = data.crane as Record<string, unknown> | undefined;
+  if (
+    !crane ||
+    !isNonEmptyString(crane.title) ||
+    !isNonEmptyString(crane.cta) ||
+    !['intros', 'won', 'lost'].every(
+      (k) => Array.isArray(crane[k]) && (crane[k] as unknown[]).length > 0 && (crane[k] as unknown[]).every(isNonEmptyString),
+    )
+  ) {
+    errors.push('lines.json: "crane" needs title, cta and non-empty intros / won / lost');
+  }
+
   const wheel = data.wheel as Record<string, unknown> | undefined;
   if (
     !wheel ||

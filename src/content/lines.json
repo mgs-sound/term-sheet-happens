@@ -203,6 +203,23 @@
     "hidingCta": "Hiding in {s}…",
     "hidingNote": "look carefully"
   },
+  "crane": {
+    "title": "Final offer",
+    "intros": [
+      "The deal is an origami crane. It will fly exactly once. Shoot it as it crosses the pole.",
+      "Watch the bushes. When the deal takes off, take the shot.",
+      "Deals don't wait. This one is hiding in a bush. Be ready."
+    ],
+    "won": [
+      "Direct hit. The deal is yours, slightly creased.",
+      "Bagged it. Origami is just paper, like a term sheet."
+    ],
+    "lost": [
+      "It flew. Deals do that. The founder signs elsewhere.",
+      "Missed. The crane lands in a competitor's portfolio."
+    ],
+    "cta": "Shoot the deal"
+  },
   "vetoChallenge": {
     "title": "Leadership challenge",
     "youChose": "You chose",

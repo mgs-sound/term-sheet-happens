@@ -171,8 +171,8 @@ export interface HarvestResult {
 }
 
 /** Partner+ final-offer minigames (skill, not dice). */
-export type FinalOfferGame = 'sword' | 'wheel';
-export const FINAL_OFFER_GAMES: readonly FinalOfferGame[] = ['sword', 'wheel'];
+export type FinalOfferGame = 'sword' | 'wheel' | 'crane';
+export const FINAL_OFFER_GAMES: readonly FinalOfferGame[] = ['sword', 'wheel', 'crane'];
 
 export interface FinalOfferChallenge {
   game: FinalOfferGame;
@@ -184,6 +184,11 @@ export interface FinalOfferChallenge {
   /** Wheel: the yellow slice's width, and where it starts (pointer = 0°). */
   sliceDeg: number;
   startDeg: number;
+  /** Crane: when it takes off from the bush (ms after the panel opens), the
+   *  fake-out peeks before that, and the hit window around the pole. */
+  takeoffMs: number;
+  peeksMs: number[];
+  windowMs: number;
 }
 
 export type Phase =
@@ -283,6 +288,9 @@ export interface GameState {
     targetTaps?: number;
     stopDeg?: number;
     sliceDeg?: number;
+    /** Crane: when you fired (null = never) and when it crossed the pole. */
+    shotMs?: number | null;
+    crossMs?: number;
   } | null;
   /** Fund II+ offer flavor that bent this fund's terms (absent = none). */
   offerProfile?: OfferProfile;
@@ -372,4 +380,6 @@ export type Action =
   | { type: 'RESOLVE_SWORD_PULL'; taps: number }
   /** How long the wheel spun before the player stopped it (ms). */
   | { type: 'RESOLVE_WHEEL'; elapsedMs: number }
+  /** When the player fired, ms after the panel opened (null = never). */
+  | { type: 'RESOLVE_CRANE'; shotMs: number | null }
   | { type: 'HARVEST' };

@@ -280,7 +280,7 @@ export const SWORD_PULL = {
 
 /** Which skill minigame settles a Partner+ final offer: relative weights. TUNE */
 export const FINAL_OFFER = {
-  gameWeights: { sword: 1, wheel: 1 },
+  gameWeights: { sword: 1, wheel: 1, crane: 1 },
 } as const;
 
 /**
@@ -308,6 +308,30 @@ export const WHEEL = {
 
 /** How long the wheel stays uncovered (ms): WHEEL.visibleTurns full turns. */
 export const WHEEL_VISIBLE_MS = (WHEEL.visibleTurns * 360 * 1000) / WHEEL.degPerSec;
+
+/**
+ * Shoot the crane: the deal is an origami crane hiding in the right bush. It
+ * peeks out (fake-outs), then — fium — takes off in a fast parabola to the
+ * left bush, crossing the red pole. One shot: fire as it crosses the pole.
+ * The hit window is wider the more acceptable the offer was. TUNE all.
+ */
+export const CRANE = {
+  /** Takeoff, ms after the panel opens (seeded within this range). */
+  takeoffMinMs: 2200,
+  takeoffMaxMs: 4200,
+  /** Fake-out peeks before takeoff: how many, and how close to it at most. */
+  peeksMin: 1,
+  peeksMax: 2,
+  peekLeadMs: 700,
+  /** The flight, bush to bush (super fast). It crosses the pole halfway. */
+  flightMs: 600,
+  /** Total hit window around the crossing (ms) at acceptance 0 … */
+  windowMsAtHopeless: 80,
+  /** … and at acceptance 1. */
+  windowMsAtCertain: 220,
+  /** After it lands, this long without a shot counts as a miss. */
+  graceMs: 500,
+} as const;
 
 export const BOARD_SEATS = {
   /** Demanding a seat lowers negotiation acceptance by this much. TUNE */
@@ -466,6 +490,8 @@ export const SIM = {
   swordTaps: 36,
   /** Wheel: a blind guess at when to stop (ms). TUNE */
   wheelStopMs: 1500,
+  /** Crane: how far off the crossing a typical shot lands (ms). TUNE */
+  craneShotOffsetMs: 60,
   /** Safety cap on reducer steps per simulated run. */
   maxSteps: 5000,
 } as const;

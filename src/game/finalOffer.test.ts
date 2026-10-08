@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { loadContent } from '../content';
-import { reduce, swordTargetTaps, wheelAngleAt, wheelHits, wheelSliceDeg } from './engine';
+import { craneCrossMs, reduce, swordTargetTaps, wheelAngleAt, wheelHits, wheelSliceDeg } from './engine';
 import { offerBounds } from './negotiation';
 import { careerForTier } from './sim';
-import { SWORD_PULL, WHEEL, WHEEL_VISIBLE_MS } from './tuning';
+import { CRANE, SWORD_PULL, WHEEL, WHEEL_VISIBLE_MS } from './tuning';
 import type { GameState } from './types';
 
 const content = loadContent();
@@ -73,6 +73,21 @@ describe('sword in the stone (Partner+ final offer)', () => {
     const early = reduce(wheel, { type: 'RESOLVE_WHEEL', elapsedMs: 10 });
     const atDrop = reduce(wheel, { type: 'RESOLVE_WHEEL', elapsedMs: WHEEL_VISIBLE_MS });
     expect(early.lastFinalOffer?.stopDeg).toBe(atDrop.lastFinalOffer?.stopDeg);
+  });
+
+  it('crane: a shot inside the window around the crossing hits; early, late or none misses', () => {
+    const parked = finalBelowCounter(atCounter('partner')!);
+    const c = { ...parked.finalOffer!, game: 'crane' as const };
+    const crane = { ...parked, finalOffer: c };
+    const cross = craneCrossMs(c.takeoffMs);
+    expect(c.peeksMs.every((p) => p < c.takeoffMs)).toBe(true);
+    expect(c.windowMs).toBeGreaterThanOrEqual(CRANE.windowMsAtHopeless);
+    const shoot = (shotMs: number | null) => reduce(crane, { type: 'RESOLVE_CRANE', shotMs }).resolution;
+    expect(shoot(cross)).toBe('signed');
+    expect(shoot(cross + c.windowMs / 2)).toBe('signed');
+    expect(shoot(cross - c.windowMs / 2 - 1)).toBe('founderWalked');
+    expect(shoot(c.takeoffMs - 100)).toBe('founderWalked');
+    expect(shoot(null)).toBe('founderWalked');
   });
 
   it('wheel: slice widens with acceptance; hits are symmetric around the pointer', () => {

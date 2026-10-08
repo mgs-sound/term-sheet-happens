@@ -3099,6 +3099,74 @@ input[type='range']::-moz-range-thumb {
   opacity: 0.7;
 }
 
+/* ------------------------------------------- shoot the crane (final offer) */
+
+.crane-stage {
+  margin: 34px 0 10px;
+}
+.crane-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.crane-art path,
+.crane-art circle {
+  stroke: var(--ink);
+  stroke-width: 2px;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+.crane-bush { fill: var(--ledger-green); }
+.crane-paper { fill: var(--sign-yellow); }
+.crane-fold { fill: none; }
+.crane-pole {
+  stroke: var(--stamp-red);
+  stroke-width: 18;
+}
+.crane-art .crane-pin {
+  fill: var(--stamp-red);
+  stroke: none;
+}
+/* Fired: the pin kicks once. */
+.crane-pin.is-fired {
+  animation: crane-fire 0.25s ease-out;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes crane-fire {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+/* Hit: it tumbles out of the sky. */
+.crane-hit {
+  animation: crane-drop 0.9s cubic-bezier(0.5, 0, 0.9, 0.6) forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes crane-drop {
+  0% { transform: translateY(0) rotate(0); }
+  100% { transform: translateY(420px) rotate(200deg); }
+}
+
+.crane-actions {
+  justify-content: center;
+}
+.crane-btn {
+  width: 80%;
+  min-height: 52px;
+  font-size: 16px;
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crane-pin.is-fired,
+  .crane-hit {
+    animation: none;
+  }
+}
+
 /* ---------------------------------------------------------------- toasts */
 
 .toast-rail {
