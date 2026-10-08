@@ -726,7 +726,7 @@ export function wheelHits(angleDeg: number, sliceDeg: number): boolean {
   return off <= sliceDeg / 2;
 }
 
-function settleFinalOffer(s: GameState, rng: RNG, challenge: FinalOfferChallenge, won: boolean): void {
+function settleFinalOffer(s: GameState, _rng: RNG, challenge: FinalOfferChallenge, won: boolean): void {
   const card = s.currentCard;
   if (!card) throw new Error('final offer without a card');
   s.finalOffer = null;
@@ -737,7 +737,8 @@ function settleFinalOffer(s: GameState, rng: RNG, challenge: FinalOfferChallenge
   s.phase = 'meeting';
   s.negotiation = null;
   log(s, 'challengeWon', { company: card.name });
-  completeSigning(s, rng, {
+  // Won it outright: the deal signs, no partner veto on top of a minigame.
+  invest(s, card, {
     checkM: challenge.checkM,
     dealValuationM: challenge.valuationM,
     boardSeat: challenge.boardSeat,

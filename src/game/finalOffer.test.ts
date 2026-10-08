@@ -108,6 +108,18 @@ describe('sword in the stone (Partner+ final offer)', () => {
     expect(wheelHits(wheelAngleAt(100, (260 / WHEEL.degPerSec) * 1000), 2)).toBe(true);
   });
 
+  it('a won final offer signs outright, even for an Associate (no partner veto on top)', () => {
+    const parked = finalBelowCounter(atCounter('partner')!);
+    // As if an Associate got here (the dev panel can force one).
+    const assoc = { ...parked, tier: 'associate' as const, finalOffer: { ...parked.finalOffer!, game: 'sword' as const } };
+    for (let k = 0; k < 40; k++) {
+      const s = { ...structuredClone(assoc), rngState: (assoc.rngState + k * 7919) >>> 0 };
+      const won = reduce(s, { type: 'RESOLVE_SWORD_PULL', taps: 999 });
+      expect(won.phase).toBe('meeting');
+      expect(won.resolution).toBe('signed');
+    }
+  });
+
   it('Associates still roll the dice', () => {
     const s = atCounter('associate');
     expect(s).not.toBeNull();
