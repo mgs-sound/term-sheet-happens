@@ -310,27 +310,36 @@ export const WHEEL = {
 export const WHEEL_VISIBLE_MS = (WHEEL.visibleTurns * 360 * 1000) / WHEEL.degPerSec;
 
 /**
- * Shoot the crane: the deal is an origami crane hiding in the right bush. It
- * peeks out (fake-outs), then — fium — takes off in a fast parabola to the
- * left bush, crossing the red pole. One shot: fire as it crosses the pole.
- * The hit window is wider the more acceptable the offer was. TUNE all.
+ * Shoot the cranes: the deal is an origami crane hiding in a bush. Three fly,
+ * one after another, each in a fast parabola to the other bush across the
+ * red pole; one shot per crane, fire as it crosses. The first is a warm-up
+ * (slow), the other two are devilishly fast. Hit `hitsToWin` of them. The hit
+ * window is wider the more acceptable the offer was. TUNE all.
  */
 export const CRANE = {
-  /** Takeoff, ms after the panel opens (seeded within this range). */
-  takeoffMinMs: 2200,
-  takeoffMaxMs: 4200,
-  /** Fake-out peeks before takeoff: how many, and how close to it at most. */
-  peeksMin: 1,
-  peeksMax: 2,
-  peekLeadMs: 700,
-  /** The flight, bush to bush (super fast). It crosses the pole halfway. */
-  flightMs: 600,
-  /** Total hit window around the crossing (ms) at acceptance 0 … */
+  /** Each crane's flight, bush to bush (ms); it crosses the pole halfway. */
+  flightsMs: [900, 380, 380],
+  /** Hits needed (of the three) to sign the deal. */
+  hitsToWin: 2,
+  /** First takeoff, ms after the panel opens (seeded within this range). */
+  firstTakeoffMinMs: 2000,
+  firstTakeoffMaxMs: 3200,
+  /** Each later takeoff: this long after the previous crane landed. */
+  gapMinMs: 1700,
+  gapMaxMs: 2800,
+  /** Fake-out peeks before each takeoff: every crane teases from its bush. */
+  peeksFirst: [1, 2],
+  peeksLater: [1, 2],
+  /** Peeks never come closer to the takeoff (or the last landing) than this. */
+  peekLeadMs: 500,
+  /** How long a peek lasts (head up, then back down); peeks never overlap. */
+  peekMs: 520,
+  /** Total hit window around each crossing (ms) at acceptance 0 … */
   windowMsAtHopeless: 80,
   /** … and at acceptance 1. */
   windowMsAtCertain: 220,
-  /** After it lands, this long without a shot counts as a miss. */
-  graceMs: 500,
+  /** After a crane lands, this long without a shot counts as a miss. */
+  graceMs: 400,
 } as const;
 
 export const BOARD_SEATS = {
@@ -490,7 +499,7 @@ export const SIM = {
   swordTaps: 36,
   /** Wheel: a blind guess at when to stop (ms). TUNE */
   wheelStopMs: 1500,
-  /** Crane: how far off the crossing a typical shot lands (ms). TUNE */
+  /** Crane: how far off each crossing a typical shot lands (ms). TUNE */
   craneShotOffsetMs: 60,
   /** Safety cap on reducer steps per simulated run. */
   maxSteps: 5000,

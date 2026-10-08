@@ -3145,9 +3145,40 @@ input[type='range']::-moz-range-thumb {
   transform-box: fill-box;
   transform-origin: center;
 }
+/* Down it tumbles, through the ground and gone: nothing left lying around
+   to distract from the next crane. */
 @keyframes crane-drop {
-  0% { transform: translateY(0) rotate(0); }
-  100% { transform: translateY(420px) rotate(200deg); }
+  0% { transform: translateY(0) rotate(0); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translateY(700px) rotate(200deg); opacity: 0; }
+}
+
+/* One box per crane, like the LP request marks: ✓ hit, ✗ missed. */
+.crane-score {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.crane-mark {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-content: center;
+  border: 2px solid var(--ink);
+  background: var(--paper-bright);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+.crane-mark.is-hit {
+  color: var(--ledger-green);
+  border-color: var(--ledger-green);
+}
+.crane-mark.is-miss {
+  color: var(--stamp-red);
+  border-color: var(--stamp-red);
 }
 
 .crane-actions {

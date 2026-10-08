@@ -416,16 +416,12 @@ export function RunScreen({
                   key={key}
                   lines={lines}
                   seed={seed}
-                  takeoffMs={pending?.takeoffMs ?? 0}
-                  peeksMs={pending?.peeksMs ?? []}
-                  result={
-                    finalShow?.game === 'crane'
-                      ? { won: finalShow.won, shotMs: finalShow.shotMs ?? null }
-                      : null
-                  }
+                  cranes={pending?.cranes ?? []}
+                  windowMs={pending?.windowMs ?? 0}
+                  result={finalShow?.game === 'crane' ? { won: finalShow.won } : null}
                   stampWon={lines.vetoChallenge.stampWon}
                   stampLost={lines.vetoChallenge.stampLost}
-                  onShoot={(shotMs) => settle(dispatch({ type: 'RESOLVE_CRANE', shotMs }))}
+                  onDone={(shotsMs) => settle(dispatch({ type: 'RESOLVE_CRANE', shotsMs }))}
                 />
               );
             }

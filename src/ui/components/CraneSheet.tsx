@@ -1,30 +1,32 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FlavorLines } from '../../content/types';
+import { craneHits } from '../../game/engine';
 import { CRANE } from '../../game/tuning';
+import type { CraneFlight } from '../../game/types';
 import { services } from '../../services';
 import { pickLine } from '../format';
 import { ResultStamp } from './ResultStamp';
 
 /** Drawing units (the mockup's panel, ~1720 wide); strokes stay 2px. */
 const VIEW = { w: 1720, h: 600 };
-/** The ground: the crane is clipped here, so it hides behind the bushes. */
+/** The ground: cranes are clipped here, so they hide behind the bushes. */
 const GROUND = 570;
 const POLE_X = 860;
 const PIN = { y: 230, r: 48 };
 const CRANE_C = { x: 180, y: 120 }; // the crane art's centre (art is 360×240)
-/** Where the crane sits: hiding, peeking, and its flight (centre points). */
+/** Positions for a crane leaving the RIGHT bush (centre points); a crane
+ *  leaving the left bush uses the mirror image. */
 const HIDE = { x: 1380, y: 520 };
 const PEEK = { x: 1310, y: 485 };
 const LAND = { x: 340, y: 520 };
 /** Flight apex (centre y) — right over the pin. */
 const APEX_Y = 200;
-const PEEK_MS = 520;
 const PEEK_EASE_MS = 140;
 
 const BUSH_PATH =
   'M75 240A75 75 0 0 1 75 90A100 100 0 0 1 225 25A80 80 0 0 1 370 90A75 75 0 0 1 375 240Z';
 
-function Crane(): JSX.Element {
+function CraneArt(): JSX.Element {
   return (
     <g>
       <path
@@ -40,116 +42,140 @@ function Crane(): JSX.Element {
 }
 
 const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+const mirror = (p: { x: number; y: number }, right: boolean) =>
+  right ? p : { x: VIEW.w - p.x, y: p.y };
 
-/** The crane's centre at time `t` (ms since the panel opened). */
-function craneAt(t: number, takeoffMs: number, peeksMs: number[]): { x: number; y: number } {
-  if (t < takeoffMs) {
-    for (const p of peeksMs) {
-      if (t >= p && t <= p + PEEK_MS) {
-        const k = Math.min(1, (t - p) / PEEK_EASE_MS, (p + PEEK_MS - t) / PEEK_EASE_MS);
-        return { x: lerp(HIDE.x, PEEK.x, k), y: lerp(HIDE.y, PEEK.y, k) };
+/** A crane's centre at time `t` (ms since the panel opened). */
+function craneAt(c: CraneFlight, t: number): { x: number; y: number } {
+  const hide = mirror(HIDE, c.fromRight);
+  const land = mirror(LAND, c.fromRight);
+  if (t < c.takeoffMs) {
+    for (const p of c.peeksMs) {
+      if (t >= p && t <= p + CRANE.peekMs) {
+        const k = Math.min(1, (t - p) / PEEK_EASE_MS, (p + CRANE.peekMs - t) / PEEK_EASE_MS);
+        const peek = mirror(PEEK, c.fromRight);
+        return { x: lerp(hide.x, peek.x, k), y: lerp(hide.y, peek.y, k) };
       }
     }
-    return HIDE;
+    return hide;
   }
-  const u = Math.min(1, (t - takeoffMs) / CRANE.flightMs);
+  const u = Math.min(1, (t - c.takeoffMs) / c.flightMs);
   return {
-    x: lerp(HIDE.x, LAND.x, u),
+    x: lerp(hide.x, land.x, u),
     // A parabola: apex over the pole at u = 0.5.
-    y: lerp(HIDE.y, LAND.y, u) - 4 * (HIDE.y - APEX_Y) * u * (1 - u),
+    y: lerp(hide.y, land.y, u) - 4 * (hide.y - APEX_Y) * u * (1 - u),
   };
 }
 
+/** SVG transform for a crane: placed by its centre, nose leading. */
+function craneTransform(c: CraneFlight, t: number): string {
+  const p = craneAt(c, t);
+  const flip = c.fromRight ? '' : ` translate(${2 * CRANE_C.x} 0) scale(-1 1)`;
+  return `translate(${p.x - CRANE_C.x} ${p.y - CRANE_C.y})${flip}`;
+}
+
 /**
- * Shoot the crane: a Partner's final offer below the founder's counter. The
- * deal (an origami crane) hides in the right bush, peeks out, then flies fast
- * in a parabola to the left bush across the red pole. One shot: fire as it
- * crosses. The panel only times the shot — the engine decides (RESOLVE_CRANE).
+ * Shoot the cranes: a Partner's final offer below the founder's counter.
+ * Three cranes fly in turn, bush to bush across the red pole — a slow warm-up,
+ * then two devilishly fast ones. One shot per crane: fire as it crosses.
+ * Hit CRANE.hitsToWin of them. The panel only times the shots — the engine
+ * decides (RESOLVE_CRANE) by the same rule the score marks use.
  */
 export function CraneSheet({
   lines,
   seed,
-  takeoffMs,
-  peeksMs,
+  cranes: cranesProp,
+  windowMs: windowMsProp,
   result,
   stampWon,
   stampLost,
-  onShoot,
+  onDone,
 }: {
   lines: FlavorLines;
   seed: number;
-  takeoffMs: number;
-  peeksMs: number[];
-  /** The engine's verdict once fired (or given up). */
-  result: { won: boolean; shotMs: number | null } | null;
+  cranes: CraneFlight[];
+  windowMs: number;
+  /** The engine's verdict once every crane has flown. */
+  result: { won: boolean } | null;
   stampWon: string;
   stampLost: string;
-  onShoot: (shotMs: number | null) => void;
+  onDone: (shotsMs: (number | null)[]) => void;
 }): JSX.Element {
   const copy = lines.crane;
-  const craneRef = useRef<SVGGElement>(null);
+  // The plan is fixed on mount: the engine clears its copy once it settles,
+  // while this panel stays up to show how it ended.
+  const [{ cranes, windowMs }] = useState(() => ({ cranes: cranesProp, windowMs: windowMsProp }));
+  const craneRefs = useRef<(SVGGElement | null)[]>([]);
   const t0 = useRef(performance.now());
-  const fired = useRef(false);
-  const [shot, setShot] = useState(false);
-  const onShootRef = useRef(onShoot);
-  onShootRef.current = onShoot;
-  const won = result?.won === true;
+  const shots = useRef<(number | null)[]>(cranes.map(() => null));
+  const current = useRef(0); // the crane a shot goes to
+  // Per crane: null while pending, then hit or missed.
+  const [marks, setMarks] = useState<(boolean | null)[]>(cranes.map(() => null));
+  const [fired, setFired] = useState(0); // re-keys the pin's kick
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
 
-  const place = (t: number): void => {
-    const c = craneAt(t, takeoffMs, peeksMs);
-    craneRef.current?.setAttribute(
-      'transform',
-      `translate(${c.x - CRANE_C.x} ${c.y - CRANE_C.y})`,
-    );
+  const settleCrane = (i: number): void => {
+    const hit = craneHits([cranes[i]!], windowMs, [shots.current[i] ?? null])[0] === true;
+    setMarks((m) => m.map((v, j) => (j === i ? hit : v)));
+    current.current = i + 1;
+    if (current.current >= cranes.length) onDoneRef.current([...shots.current]);
   };
 
-  // The crane's whole act runs off the clock; a hit freezes it where it was.
+  // The cranes' whole act runs off one clock; a hit crane freezes and drops.
   useEffect(() => {
-    if (won) return;
     let raf = 0;
-    let flapped = false;
+    const flapped = new Set<number>();
+    const last = cranes[cranes.length - 1];
+    const lastLanding = last ? last.takeoffMs + last.flightMs : 0;
     const tick = (): void => {
       const t = performance.now() - t0.current;
-      place(t);
-      if (!flapped && t >= takeoffMs) {
-        flapped = true;
-        services.audio.play('draft'); // paper wings: fium
-      }
-      raf = requestAnimationFrame(tick);
+      cranes.forEach((c, i) => {
+        const el = craneRefs.current[i];
+        const shot = shots.current[i];
+        const frozen = el?.dataset.hit === '1' && shot != null;
+        el?.setAttribute('transform', craneTransform(c, frozen ? shot : t));
+        if (!flapped.has(i) && t >= c.takeoffMs) {
+          flapped.add(i);
+          services.audio.play('draft'); // paper wings: fium
+        }
+      });
+      // A crane that has landed (plus grace) unshot counts as a miss.
+      const i = current.current;
+      const c = cranes[i];
+      if (c && t > c.takeoffMs + c.flightMs + CRANE.graceMs) settleCrane(i);
+      // Keep flying until the last crane has landed, shot or not.
+      if (t < lastLanding + CRANE.graceMs) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    const giveUp = window.setTimeout(() => {
-      if (fired.current) return;
-      fired.current = true;
-      onShootRef.current(null);
-    }, takeoffMs + CRANE.flightMs + CRANE.graceMs);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.clearTimeout(giveUp);
-    };
+    return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [won, takeoffMs]);
-
-  // Hit: pin it where the shot caught it (then the CSS drop plays).
-  useEffect(() => {
-    if (won && result?.shotMs != null) place(result.shotMs);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [won]);
+  }, []);
 
   const shoot = (): void => {
-    if (fired.current) return;
-    fired.current = true;
-    setShot(true);
+    const i = current.current;
+    if (i >= cranes.length || shots.current[i] != null) return;
+    const t = performance.now() - t0.current;
+    shots.current[i] = t;
+    setFired((f) => f + 1);
     services.audio.play('finalOffer'); // bang
     void services.haptics.tap();
-    onShootRef.current(performance.now() - t0.current);
+    const hit = craneHits([cranes[i]!], windowMs, [t])[0] === true;
+    const el = craneRefs.current[i];
+    if (hit && el) {
+      el.dataset.hit = '1';
+      el.querySelector('.crane-body')?.classList.add('crane-hit');
+    }
+    settleCrane(i);
   };
+
+  const done = current.current >= cranes.length || result !== null;
 
   return (
     <div className="sheet challenge-sheet crane-sheet" role="dialog" aria-label={copy.title}>
       <div className="challenge-title">{copy.title}</div>
       <p className="challenge-line">
-        {result ? pickLine(won ? copy.won : copy.lost, seed) : pickLine(copy.intros, seed)}
+        {result ? pickLine(result.won ? copy.won : copy.lost, seed) : pickLine(copy.intros, seed)}
       </p>
 
       <div className="crane-stage" aria-hidden="true">
@@ -161,28 +187,54 @@ export function CraneSheet({
           </defs>
           {/* The sight: a red pin on a pole. */}
           <line className="crane-pole" x1={POLE_X} y1={PIN.y} x2={POLE_X} y2={GROUND} />
-          <circle className={`crane-pin ${shot ? 'is-fired' : ''}`} cx={POLE_X} cy={PIN.y} r={PIN.r} />
+          <circle
+            key={fired}
+            className={`crane-pin ${fired > 0 ? 'is-fired' : ''}`}
+            cx={POLE_X}
+            cy={PIN.y}
+            r={PIN.r}
+          />
           <g clipPath="url(#crane-ground)">
-            <g ref={craneRef} transform={`translate(${HIDE.x - CRANE_C.x} ${HIDE.y - CRANE_C.y})`}>
-              <g className={won ? 'crane-hit' : ''}>
-                <Crane />
+            {cranes.map((c, i) => (
+              <g
+                key={i}
+                ref={(el) => {
+                  craneRefs.current[i] = el;
+                }}
+                transform={craneTransform(c, 0)}
+              >
+                <g className="crane-body">
+                  <CraneArt />
+                </g>
               </g>
-            </g>
+            ))}
           </g>
-          {/* Bushes in front: the crane hides behind them. */}
+          {/* Bushes in front: the cranes hide behind them. */}
           <path className="crane-bush" d={BUSH_PATH} transform="translate(140 330)" />
           <path className="crane-bush" d={BUSH_PATH} transform="translate(1155 330)" />
         </svg>
       </div>
 
-      {result && <ResultStamp won={won} text={won ? stampWon : stampLost} />}
+      {/* Score: one box per crane — pending, hit (✓) or missed (✗). */}
+      <div className="crane-score" aria-label="Cranes">
+        {marks.map((m, i) => (
+          <span
+            key={i}
+            className={`crane-mark ${m === true ? 'is-hit' : m === false ? 'is-miss' : ''}`}
+          >
+            {m === true ? '✓' : m === false ? '✗' : ''}
+          </span>
+        ))}
+      </div>
+
+      {result && <ResultStamp won={result.won} text={result.won ? stampWon : stampLost} />}
 
       <div className="challenge-actions crane-actions">
         <button
           type="button"
           className="btn btn-stay crane-btn"
           data-sfx="none"
-          disabled={shot || result !== null}
+          disabled={done}
           onPointerDown={(e) => {
             e.preventDefault();
             shoot();

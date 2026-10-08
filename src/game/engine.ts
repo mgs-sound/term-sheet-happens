@@ -28,7 +28,7 @@ import type {
   PortfolioCompany,
 } from './types.ts';
 import { CHALLENGE_GAMES, FINAL_OFFER_GAMES, SUITS } from './types.ts';
-import type { FinalOfferChallenge, FinalOfferGame } from './types.ts';
+import type { CraneFlight, FinalOfferChallenge, FinalOfferGame } from './types.ts';
 import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
@@ -239,7 +239,7 @@ export function reduce(state: GameState | null, action: Action): GameState {
       handleResolveWheel(s, rng, action.elapsedMs);
       break;
     case 'RESOLVE_CRANE':
-      handleResolveCrane(s, rng, action.shotMs);
+      handleResolveCrane(s, rng, action.shotsMs);
       break;
     case 'HARVEST':
       handleHarvest(s, rng);
@@ -664,24 +664,48 @@ export function makeFinalOffer(
   };
 }
 
-/** The crane's schedule: takeoff, fake-out peeks before it, hit window. */
-function craneTiming(
-  rng: RNG,
-  acceptance: number,
-): { takeoffMs: number; peeksMs: number[]; windowMs: number } {
-  const takeoffMs = rng.int(CRANE.takeoffMinMs, CRANE.takeoffMaxMs);
-  const peeks = rng.int(CRANE.peeksMin, CRANE.peeksMax);
-  const latest = takeoffMs - CRANE.peekLeadMs;
-  const peeksMs = Array.from({ length: peeks }, () => rng.int(CRANE.peekLeadMs, latest)).sort(
-    (a, b) => a - b,
-  );
+/** The cranes' schedule: each flight with its peeks, and the hit window. */
+function craneTiming(rng: RNG, acceptance: number): { cranes: CraneFlight[]; windowMs: number } {
+  const cranes: CraneFlight[] = [];
+  let free = 0; // when the stage is clear (panel open / last landing)
+  CRANE.flightsMs.forEach((flightMs, i) => {
+    const takeoffMs =
+      i === 0
+        ? rng.int(CRANE.firstTakeoffMinMs, CRANE.firstTakeoffMaxMs)
+        : free + rng.int(CRANE.gapMinMs, CRANE.gapMaxMs);
+    const [lo, hi] = i === 0 ? CRANE.peeksFirst : CRANE.peeksLater;
+    const peeks = rng.int(lo, hi);
+    const earliest = free + CRANE.peekLeadMs;
+    const latest = takeoffMs - CRANE.peekLeadMs;
+    const drawn =
+      latest > earliest
+        ? Array.from({ length: peeks }, () => rng.int(earliest, latest)).sort((a, b) => a - b)
+        : [];
+    // Distinct peeks only: one that would overlap the previous is dropped.
+    const peeksMs = drawn.filter((p, j) => j === 0 || p - drawn[j - 1]! > CRANE.peekMs + 150);
+    // Alternate bushes so the next one comes from the other side.
+    cranes.push({ takeoffMs, flightMs, peeksMs, fromRight: i % 2 === 0 });
+    free = takeoffMs + flightMs;
+  });
   const windowMs = Math.round(lerp(CRANE.windowMsAtHopeless, CRANE.windowMsAtCertain, acceptance));
-  return { takeoffMs, peeksMs, windowMs };
+  return { cranes, windowMs };
 }
 
-/** When the crane crosses the pole (halfway through its flight). */
-export function craneCrossMs(takeoffMs: number): number {
-  return takeoffMs + CRANE.flightMs / 2;
+/** When a crane crosses the pole (halfway through its flight). */
+export function craneCrossMs(crane: CraneFlight): number {
+  return crane.takeoffMs + crane.flightMs / 2;
+}
+
+/** Which cranes a set of shots hit (one shot per crane, null = none). */
+export function craneHits(
+  cranes: readonly CraneFlight[],
+  windowMs: number,
+  shotsMs: readonly (number | null)[],
+): boolean[] {
+  return cranes.map((c, i) => {
+    const shot = shotsMs[i];
+    return shot !== null && shot !== undefined && Math.abs(shot - craneCrossMs(c)) <= windowMs / 2;
+  });
 }
 
 /** The wheel's turn (degrees, clockwise) after spinning for `elapsedMs`. */
@@ -729,11 +753,11 @@ function handleResolveSwordPull(s: GameState, rng: RNG, taps: number): void {
   settleFinalOffer(s, rng, c, won);
 }
 
-function handleResolveCrane(s: GameState, rng: RNG, shotMs: number | null): void {
+function handleResolveCrane(s: GameState, rng: RNG, shotsMs: (number | null)[]): void {
   const c = requireFinalOffer(s, 'crane', 'RESOLVE_CRANE');
-  const crossMs = craneCrossMs(c.takeoffMs);
-  const won = shotMs !== null && Math.abs(shotMs - crossMs) <= c.windowMs / 2;
-  s.lastFinalOffer = { game: 'crane', won, shotMs, crossMs };
+  const hits = craneHits(c.cranes, c.windowMs, shotsMs);
+  const won = hits.filter(Boolean).length >= CRANE.hitsToWin;
+  s.lastFinalOffer = { game: 'crane', won, shotsMs, hits };
   settleFinalOffer(s, rng, c, won);
 }
 

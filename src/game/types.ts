@@ -184,11 +184,20 @@ export interface FinalOfferChallenge {
   /** Wheel: the yellow slice's width, and where it starts (pointer = 0°). */
   sliceDeg: number;
   startDeg: number;
-  /** Crane: when it takes off from the bush (ms after the panel opens), the
-   *  fake-out peeks before that, and the hit window around the pole. */
-  takeoffMs: number;
-  peeksMs: number[];
+  /** Cranes: their flights (ms after the panel opens) and the hit window
+   *  around each pole crossing. */
+  cranes: CraneFlight[];
   windowMs: number;
+}
+
+/** One crane of the "shoot the cranes" final offer. */
+export interface CraneFlight {
+  takeoffMs: number;
+  flightMs: number;
+  /** Fake-out peeks before this takeoff. */
+  peeksMs: number[];
+  /** Takes off from the right bush (flies right to left), else the left. */
+  fromRight: boolean;
 }
 
 export type Phase =
@@ -288,9 +297,9 @@ export interface GameState {
     targetTaps?: number;
     stopDeg?: number;
     sliceDeg?: number;
-    /** Crane: when you fired (null = never) and when it crossed the pole. */
-    shotMs?: number | null;
-    crossMs?: number;
+    /** Cranes: the shot at each (null = never) and which ones hit. */
+    shotsMs?: (number | null)[];
+    hits?: boolean[];
   } | null;
   /** Fund II+ offer flavor that bent this fund's terms (absent = none). */
   offerProfile?: OfferProfile;
@@ -381,5 +390,5 @@ export type Action =
   /** How long the wheel spun before the player stopped it (ms). */
   | { type: 'RESOLVE_WHEEL'; elapsedMs: number }
   /** When the player fired, ms after the panel opened (null = never). */
-  | { type: 'RESOLVE_CRANE'; shotMs: number | null }
+  | { type: 'RESOLVE_CRANE'; shotsMs: (number | null)[] }
   | { type: 'HARVEST' };

@@ -75,19 +75,28 @@ describe('sword in the stone (Partner+ final offer)', () => {
     expect(early.lastFinalOffer?.stopDeg).toBe(atDrop.lastFinalOffer?.stopDeg);
   });
 
-  it('crane: a shot inside the window around the crossing hits; early, late or none misses', () => {
+  it('cranes: three flights (warm-up then fast), one shot each, 2 hits sign it', () => {
     const parked = finalBelowCounter(atCounter('partner')!);
     const c = { ...parked.finalOffer!, game: 'crane' as const };
     const crane = { ...parked, finalOffer: c };
-    const cross = craneCrossMs(c.takeoffMs);
-    expect(c.peeksMs.every((p) => p < c.takeoffMs)).toBe(true);
-    expect(c.windowMs).toBeGreaterThanOrEqual(CRANE.windowMsAtHopeless);
-    const shoot = (shotMs: number | null) => reduce(crane, { type: 'RESOLVE_CRANE', shotMs }).resolution;
+    expect(c.cranes).toHaveLength(3);
+    expect(c.cranes[0]!.flightMs).toBeGreaterThan(c.cranes[1]!.flightMs);
+    // Every crane teases from its bush first.
+    expect(c.cranes.every((cr) => cr.peeksMs.length >= 1)).toBe(true);
+    // In order, no overlap: each takes off after the previous one landed.
+    for (let i = 1; i < c.cranes.length; i++) {
+      const prev = c.cranes[i - 1]!;
+      expect(c.cranes[i]!.takeoffMs).toBeGreaterThan(prev.takeoffMs + prev.flightMs);
+      expect(c.cranes[i]!.peeksMs.every((p) => p > prev.takeoffMs + prev.flightMs)).toBe(true);
+    }
+    const cross = c.cranes.map(craneCrossMs);
+    const shoot = (shotsMs: (number | null)[]) =>
+      reduce(crane, { type: 'RESOLVE_CRANE', shotsMs }).resolution;
     expect(shoot(cross)).toBe('signed');
-    expect(shoot(cross + c.windowMs / 2)).toBe('signed');
-    expect(shoot(cross - c.windowMs / 2 - 1)).toBe('founderWalked');
-    expect(shoot(c.takeoffMs - 100)).toBe('founderWalked');
-    expect(shoot(null)).toBe('founderWalked');
+    expect(shoot([cross[0]!, null, cross[2]! + c.windowMs / 2])).toBe('signed');
+    expect(shoot([cross[0]!, null, null])).toBe('founderWalked');
+    expect(shoot([cross[0]! - c.windowMs, cross[1]! + c.windowMs, cross[2]!])).toBe('founderWalked');
+    expect(CRANE.hitsToWin).toBe(2);
   });
 
   it('wheel: slice widens with acceptance; hits are symmetric around the pointer', () => {

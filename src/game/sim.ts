@@ -66,7 +66,10 @@ function nextAction(
       const c = s.finalOffer;
       if (c?.game === 'wheel') return { type: 'RESOLVE_WHEEL', elapsedMs: SIM.wheelStopMs };
       if (c?.game === 'crane') {
-        return { type: 'RESOLVE_CRANE', shotMs: craneCrossMs(c.takeoffMs) + SIM.craneShotOffsetMs };
+        return {
+          type: 'RESOLVE_CRANE',
+          shotsMs: c.cranes.map((crane) => craneCrossMs(crane) + SIM.craneShotOffsetMs),
+        };
       }
       return { type: 'RESOLVE_SWORD_PULL', taps: SIM.swordTaps };
     }
