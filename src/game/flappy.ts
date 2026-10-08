@@ -13,29 +13,42 @@ import { FLAPPY } from './tuning.ts';
 
 const lerp = (a: number, b: number, t: number): number => a + (b - a) * Math.max(0, Math.min(1, t));
 
-/** Five obstacles, different every run; gaps are wider the better the offer. */
+/** A triangle's height (equilateral). */
+export const TRI_H = FLAPPY.triangleWidth * 0.866;
+
+/**
+ * Five free-standing triangles, zigzagging top / bottom, all on screen; the
+ * corridor between their points is wider the better the offer, and drifts a
+ * little every run.
+ */
 export function makeFlappyCourse(rng: RNG, acceptance: number): FlappyObstacle[] {
   const gap = lerp(FLAPPY.gapAtHopeless, FLAPPY.gapAtCertain, acceptance);
   const H = FLAPPY.height;
-  const obstacles: FlappyObstacle[] = [];
+  // Keep every triangle's base on the stage.
+  const lo = gap / 2 + TRI_H;
+  const hi = H - gap / 2 - TRI_H;
+  let fromTop = rng.chance(0.5);
+  let centre = rng.float(lo, hi);
   let x = FLAPPY.firstObstacleX;
+  const obstacles: FlappyObstacle[] = [];
   for (let i = 0; i < FLAPPY.obstacles; i++) {
-    const kind = rng.pick(['top', 'bottom', 'both'] as const);
-    let top = 0;
-    let bottom = 0;
-    if (kind === 'both') {
-      const centre = rng.float(gap / 2 + FLAPPY.edgeMargin, H - gap / 2 - FLAPPY.edgeMargin);
-      top = centre - gap / 2;
-      bottom = H - (centre + gap / 2);
-    } else {
-      const h = rng.float(H * FLAPPY.singleMinShare, H - gap);
-      if (kind === 'top') top = h;
-      else bottom = h;
-    }
-    obstacles.push({ x: Math.round(x), top: Math.round(top), bottom: Math.round(bottom) });
+    centre = rng.float(Math.max(lo, centre - FLAPPY.maxShift), Math.min(hi, centre + FLAPPY.maxShift));
+    const tip = fromTop ? centre - gap / 2 : centre + gap / 2;
+    obstacles.push({ x: Math.round(x), fromTop, tip: Math.round(tip) });
+    fromTop = !fromTop;
     x += rng.float(FLAPPY.spacingMin, FLAPPY.spacingMax);
   }
   return obstacles;
+}
+
+/** The rows' outer edges (the triangles' bases): flying past them is out. */
+export function flappyBounds(obstacles: readonly FlappyObstacle[]): { ceiling: number; floor: number } {
+  const tops = obstacles.filter((o) => o.fromTop).map((o) => o.tip - TRI_H);
+  const bottoms = obstacles.filter((o) => !o.fromTop).map((o) => o.tip + TRI_H);
+  return {
+    ceiling: Math.max(0, tops.length ? Math.min(...tops) : 0),
+    floor: Math.min(FLAPPY.height, bottoms.length ? Math.max(...bottoms) : FLAPPY.height),
+  };
 }
 
 export interface FlappyState {
@@ -52,18 +65,15 @@ export interface FlappyState {
   endMs: number | null;
 }
 
-/** Triangles of an obstacle, as [apex, base-left, base-right] points. */
-export function obstacleTriangles(
-  o: FlappyObstacle,
-): [number, number][][] {
+/** An obstacle's triangle as [point, base-left, base-right]. */
+export function obstacleTriangle(o: FlappyObstacle): [number, number][] {
   const w = FLAPPY.triangleWidth / 2;
-  const tris: [number, number][][] = [];
-  if (o.top > 0) tris.push([[o.x, o.top], [o.x - w, 0], [o.x + w, 0]]);
-  if (o.bottom > 0) {
-    const H = FLAPPY.height;
-    tris.push([[o.x, H - o.bottom], [o.x - w, H], [o.x + w, H]]);
-  }
-  return tris;
+  const base = o.fromTop ? o.tip - TRI_H : o.tip + TRI_H;
+  return [
+    [o.x, o.tip],
+    [o.x - w, base],
+    [o.x + w, base],
+  ];
 }
 
 function distToSegment(px: number, py: number, ax: number, ay: number, bx: number, by: number): number {
@@ -96,11 +106,9 @@ function hits(px: number, py: number, r: number, tri: [number, number][]): boole
   return false;
 }
 
-/** Where the course ends: the crane is clear of the last triangle. */
-export function flappyFinishScroll(obstacles: readonly FlappyObstacle[]): number {
-  const last = obstacles[obstacles.length - 1];
-  const lastX = last ? last.x : 0;
-  return lastX + FLAPPY.triangleWidth / 2 + FLAPPY.craneRadius + FLAPPY.finishMargin - FLAPPY.craneX;
+/** Where the course ends: the crane reaches the flag. */
+export function flappyFinishScroll(): number {
+  return FLAPPY.flagX - FLAPPY.craneX;
 }
 
 /**
@@ -121,7 +129,8 @@ export function flappyAt(
     finished: false,
     endMs: null,
   };
-  const finish = flappyFinishScroll(obstacles);
+  const finish = flappyFinishScroll();
+  const { ceiling, floor } = flappyBounds(obstacles);
   const end = Math.min(untilMs, FLAPPY.maxMs);
   let tap = 0;
   for (let t = 0; t <= end; t += FLAPPY.stepMs) {
@@ -136,10 +145,10 @@ export function flappyAt(
     const r = FLAPPY.craneRadius;
     s.passed = obstacles.filter((o) => o.x + FLAPPY.triangleWidth / 2 < cx - r).length;
     const crashed =
-      s.y - r < 0 ||
-      s.y + r > FLAPPY.height ||
+      s.y - r < ceiling ||
+      s.y + r > floor ||
       obstacles.some(
-        (o) => Math.abs(o.x - cx) < FLAPPY.triangleWidth && obstacleTriangles(o).some((tri) => hits(cx, s.y, r, tri)),
+        (o) => Math.abs(o.x - cx) < FLAPPY.triangleWidth && hits(cx, s.y, r, obstacleTriangle(o)),
       );
     if (crashed) {
       s.crashed = true;

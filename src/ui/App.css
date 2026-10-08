@@ -3236,10 +3236,7 @@ input[type='range']::-moz-range-thumb {
   box-sizing: border-box;
   width: 100%;
   height: auto;
-  overflow: hidden;
-  /* The frame is a CSS border: a stroke on the SVG's own edge gets half
-     clipped (1px); this is a true 2px like every other stroke. */
-  border: 2px solid var(--ink);
+  overflow: visible;
 }
 .flappy-art path,
 .flappy-art rect {
@@ -3249,31 +3246,11 @@ input[type='range']::-moz-range-thumb {
   vector-effect: non-scaling-stroke;
 }
 .flappy-sky {
-  fill: var(--paper-bright);
+  fill: transparent;
   stroke: none !important;
 }
-.flappy-art .flappy-tri {
-  fill: var(--ledger-green);
-  stroke: none;
-}
-.flappy-tri-sides { fill: none; }
-.flappy-hint {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 10%;
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  pointer-events: none;
-  animation: flappy-blink 1s steps(2, start) infinite;
-}
-@keyframes flappy-blink {
-  to { visibility: hidden; }
-}
+.flappy-tri { fill: var(--ledger-green); }
+.flappy-flag-shape { fill: var(--stamp-red); }
 .flappy-actions {
   justify-content: center;
 }
@@ -3282,9 +3259,6 @@ input[type='range']::-moz-range-thumb {
   min-height: 52px;
   font-size: 16px;
   touch-action: manipulation;
-}
-@media (prefers-reduced-motion: reduce) {
-  .flappy-hint { animation: none; }
 }
 
 /* ---------------------------------------------------------------- toasts */

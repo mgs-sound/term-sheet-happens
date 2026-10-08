@@ -192,12 +192,13 @@ export interface FinalOfferChallenge {
   flappy: FlappyObstacle[];
 }
 
-/** A flappy-crane obstacle: green triangles from the ceiling (top) and/or
- *  the floor (bottom), by height in world units (0 = none), centred on x. */
+/** A flappy-crane obstacle: one free-standing green triangle, centred on x,
+ *  hanging point-down from the top row (fromTop) or point-up from the bottom
+ *  row; `tip` is the y of its point (world units, y down). */
 export interface FlappyObstacle {
   x: number;
-  top: number;
-  bottom: number;
+  fromTop: boolean;
+  tip: number;
 }
 
 /** One crane of the "shoot the cranes" final offer. */

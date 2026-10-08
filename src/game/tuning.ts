@@ -359,32 +359,32 @@ export const FLAPPY = {
   width: 1720,
   height: 1000,
   obstacles: 5,
-  /** First obstacle's x, and the spacing between the next ones. */
-  firstObstacleX: 1500,
-  spacingMin: 640,
-  spacingMax: 860,
-  /** Triangle base width. */
-  triangleWidth: 380,
-  /** The clear gap a "both" obstacle leaves (and singles can't close more). */
-  gapAtHopeless: 380,
-  gapAtCertain: 560,
-  /** A "both" gap never hugs the ceiling/floor closer than this. */
-  edgeMargin: 90,
-  /** A single triangle is at least this share of the height. */
-  singleMinShare: 0.35,
-  /** The crane: fixed x, hit radius. */
-  craneX: 420,
-  craneRadius: 62,
+  /** The whole course is on screen: the crane starts at craneX and flies
+   *  right to the flag. Obstacles alternate top / bottom (zigzag). */
+  craneX: 170,
+  flagX: 1560,
+  firstObstacleX: 540,
+  spacingMin: 205,
+  spacingMax: 220,
+  /** Equilateral triangles: base width (height = width × 0.866). */
+  triangleWidth: 300,
+  /** The corridor between a top point and a bottom point. */
+  gapAtHopeless: 300,
+  gapAtCertain: 440,
+  /** The corridor's centre drifts at most this much from one triangle to
+   *  the next. */
+  maxShift: 120,
+  /** Crane hit radius (the art is spikier than this). */
+  craneRadius: 55,
   /** Physics (units/ms, units/ms²): a flap sets the climb speed. */
   gravity: 0.0042,
-  flapSpeed: 1.2,
+  flapSpeed: 1.0,
   maxFall: 1.6,
-  scrollSpeed: 0.55,
+  /** How fast the crane crosses the stage. */
+  scrollSpeed: 0.35,
   /** Fixed physics step (ms) and a safety cap on a run's length. */
   stepMs: 8,
   maxMs: 20000,
-  /** Fly this far past the last triangle to finish. */
-  finishMargin: 60,
 } as const;
 
 export const BOARD_SEATS = {
