@@ -270,6 +270,18 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     errors.push('lines.json: "careerOver" is missing copy (strings + non-empty lines/shareLines)');
   }
 
+  const sword = data.swordPull as Record<string, unknown> | undefined;
+  if (
+    !sword ||
+    !isNonEmptyString(sword.title) ||
+    !isNonEmptyString(sword.cta) ||
+    !['intros', 'won', 'lost'].every(
+      (k) => Array.isArray(sword[k]) && (sword[k] as unknown[]).length > 0 && (sword[k] as unknown[]).every(isNonEmptyString),
+    )
+  ) {
+    errors.push('lines.json: "swordPull" needs title, cta and non-empty intros / won / lost');
+  }
+
   const seat = data.boardSeat as Record<string, unknown> | undefined;
   if (!seat || !['label', 'note', 'risk', 'bonus', 'liability'].every((k) => isNonEmptyString(seat[k]))) {
     errors.push('lines.json: "boardSeat" needs non-empty label, note, risk, bonus, liability');

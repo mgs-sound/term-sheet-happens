@@ -57,7 +57,7 @@ A satirical VC card-swipe roguelite. Reigns/Tinder loop: each run is one fund at
 ## Core systems
 
 - **Pitch card:** name, one-liner idea, sector, stage, team (1–5), traction (1–5), ARR, deal heat (1–5), ask + valuation, ON-THESIS tab when applicable. Hidden quality drives outcomes.
-- **Sign vs Negotiate (Fund II+):** swipe right offers SIGN AT ASK (instant, full price) or NEGOTIATE (check + valuation sliders, 1 counter round, better entry improves exit multiple, risk of founder walking; high heat jacks demands).
+- **Sign vs Negotiate (Fund II+):** swipe right offers SIGN AT ASK (instant, full price) or NEGOTIATE (check + valuation sliders, 1 counter round, better entry improves exit multiple, risk of founder walking; high heat jacks demands). From Partner up, a final offer below the founder's counter is settled by skill, not dice: **sword in the stone** — tap to pull it out within 5s; the taps needed (~30–44) come from how acceptable the offer was.
 - **Thesis / LP Trust:** deck ~60/40 on/off thesis. Off-thesis checks drain LP Trust; low trust shrinks the next fund. An off-thesis deal that exits big flips to a "visionary" reputation spike. Tunable temptation, not a wall.
 - **Reputation:** 5 stages, DOG WATER → TOURIST → CREDIBLE → HEAT MAGNET → ENLIGHTENED. Passing too much decays it (zombie-fund jabs); hot deals and exits raise it.
 - **Partner vetoes (Associate only):** after terms agree, chance the partner kills it (higher if off-thesis / low traction). Vetoed companies are tracked; if one would have been a unicorn, the harvest shows the heartbreak.

@@ -2929,6 +2929,102 @@ input[type='range']::-moz-range-thumb {
   overflow: hidden;
 }
 
+/* -------------------------------------- sword in the stone (final offer) */
+
+/* Same panel as the partner's minigames; the art may rise over the copy. */
+.sword-stage {
+  display: flex;
+  justify-content: center;
+  /* Headroom (as in the mockup) the sword climbs into without touching the
+     copy: its full pull before the tip clears is ~68px. */
+  margin: 72px 0 4px;
+}
+.sword-art {
+  display: block;
+  width: 202px;
+  height: auto;
+  overflow: visible;
+}
+.sword-art path,
+.sword-art rect,
+.sword-art circle {
+  stroke: var(--ink);
+  stroke-width: 2px;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+.sword-blade { fill: #d9d9d9; }
+.sword-ink { fill: var(--ink); }
+.sword-grip { fill: var(--stamp-red); }
+.sword-gold { fill: var(--sign-yellow); }
+.sword-rock { fill: #757575; }
+.sword-crack { fill: none; }
+
+/* Each tap nudges it up (eased); a win launches it out of the panel. */
+.sword-lift {
+  transition: transform 0.12s ease-out;
+}
+.sword-lift.is-won {
+  transition: transform 0.7s cubic-bezier(0.5, -0.4, 0.7, 1), opacity 0.7s ease-in;
+  opacity: 0;
+}
+.sword-lift.is-lost {
+  transition: transform 0.35s cubic-bezier(0.6, 0, 0.9, 0.5);
+}
+.sword-jolt {
+  animation: sword-jolt 0.12s linear;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+@keyframes sword-jolt {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(-2.5deg); }
+  70% { transform: rotate(2.5deg); }
+}
+
+/* Time left: an ink rule that runs down. */
+.sword-clock {
+  /* Only appears once the pull starts (the first tap starts the clock). */
+  visibility: hidden;
+  height: 6px;
+  margin: 2px 16px 0;
+  border: 2px solid var(--ink);
+  background: var(--paper-bright);
+}
+.sword-clock.is-on {
+  visibility: visible;
+}
+.sword-clock-fill {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform-origin: left center;
+}
+.sword-clock-fill.is-running {
+  animation: sword-clock linear forwards;
+}
+@keyframes sword-clock {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+.sword-actions {
+  justify-content: center;
+}
+.sword-pull-btn {
+  width: 80%;
+  min-height: 52px;
+  font-size: 16px;
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sword-jolt,
+  .sword-clock-fill.is-running {
+    animation: none;
+  }
+}
+
 /* ---------------------------------------------------------------- toasts */
 
 .toast-rail {

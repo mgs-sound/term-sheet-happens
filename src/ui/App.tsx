@@ -18,10 +18,12 @@ import {
 } from '../game/career';
 import {
   careerAtEnlightenmentGate,
+  careerAtGpNaming,
   forceHarvestResult,
   forceLpRequests,
   forceVetoChallenge,
   forceProRata,
+  forceSwordPull,
 } from '../game/devtools';
 import { generateFirmName } from '../game/firm';
 import { FIRM_OPTION_COUNT, pickFirmOptions } from '../game/firmOptions';
@@ -432,7 +434,11 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
       gate: careerAtEnlightenmentGate,
     } as const;
     if (jump === 'fundI') beginCareer(initialCareer());
-    else startRun(presets[jump]());
+    else if (jump === 'name firm') {
+      // Straight to "name your own firm" (GP promotion, LP package picked).
+      setPendingCareer(careerAtGpNaming(content.theses));
+      setScreen('gpNaming');
+    } else startRun(presets[jump]());
   };
 
   const devAutoplay = (): void => {
@@ -662,6 +668,13 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           onSticks={() => {
             try {
               setGameDirect(forceVetoChallenge(gameRef.current, 'sticks'));
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+          onSwordPull={() => {
+            try {
+              setGameDirect(forceSwordPull(gameRef.current));
             } catch (err) {
               console.error(err);
             }

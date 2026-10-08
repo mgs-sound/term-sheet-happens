@@ -262,6 +262,22 @@ export const NEGOTIATION = {
 // Board seats (Partner+)
 // ---------------------------------------------------------------------------
 
+/**
+ * Sword in the stone (Partner+): a final offer that doesn't meet the founder's
+ * counter is settled by skill instead of a dice roll. Tap to pull the sword
+ * out within the time limit; the taps it takes come from how acceptable the
+ * offer was (acceptanceProbability): a fair offer is easier, a lowball is
+ * nearly hopeless.
+ */
+export const SWORD_PULL = {
+  /** Time to pull, from the first tap. TUNE */
+  durationMs: 5000,
+  /** Taps needed at acceptance 1 (a near-certain offer) … TUNE */
+  tapsAtCertain: 30,
+  /** … and at acceptance 0 (hopeless). Middle offers land ~35–40. TUNE */
+  tapsAtHopeless: 44,
+} as const;
+
 export const BOARD_SEATS = {
   /** Demanding a seat lowers negotiation acceptance by this much. TUNE */
   acceptancePenalty: 0.15,
@@ -415,6 +431,8 @@ export const SIM = {
   signStatSumMin: 6,
   /** ...or when heat is at least this (FOMO is the point). */
   signHeatMin: 4,
+  /** Sword pull: taps a typical thumb lands in SWORD_PULL.durationMs. TUNE */
+  swordTaps: 36,
   /** Safety cap on reducer steps per simulated run. */
   maxSteps: 5000,
 } as const;

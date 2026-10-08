@@ -164,6 +164,25 @@
     "No positions yet. Your LPs are paying 2% for vibes.",
     "Nothing signed. Technically a perfect track record."
   ],
+  "swordPull": {
+    "title": "Final offer",
+    "intros": [
+      "Your number is below theirs. Only a true dealmaker can pull the term sheet from the stone.",
+      "The founder won't budge. Prove your conviction: pull the sword.",
+      "Legend says whoever pulls this sword gets pro rata rights."
+    ],
+    "won": [
+      "The sword is yours. So are the terms.",
+      "Excalibur, but for preferred stock.",
+      "The stone yields. So does the founder."
+    ],
+    "lost": [
+      "The stone keeps the sword. The founder keeps the cap table.",
+      "Not worthy. The founder takes the bigger fund's call.",
+      "You pulled. The sword did not. Neither did the founder."
+    ],
+    "cta": "Tap to pull"
+  },
   "vetoChallenge": {
     "title": "Leadership challenge",
     "youChose": "You chose",

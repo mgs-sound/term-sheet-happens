@@ -174,6 +174,7 @@ export type Phase =
   | 'meeting'
   | 'negotiation'
   | 'vetoChallenge'
+  | 'swordPull'
   | 'interrupt'
   | 'fundClosed'
   | 'harvested';
@@ -255,6 +256,16 @@ export interface GameState {
   lastDice?: { call: DiceCall; roll: number; won: boolean } | null;
   /** The last longest-stick draw (lengths as % of the ruler). */
   lastSticks?: { call: StickCall; red: number; green: number; won: boolean } | null;
+  /** Partner+ final offer below the founder's counter: pull the sword from
+   *  the stone (phase 'swordPull'). The parked terms and the taps it takes. */
+  swordPull?: {
+    checkM: number;
+    valuationM: number;
+    boardSeat: boolean;
+    targetTaps: number;
+  } | null;
+  /** The last sword pull, so the UI can land its stamp. */
+  lastSwordPull?: { taps: number; targetTaps: number; won: boolean } | null;
   /** Fund II+ offer flavor that bent this fund's terms (absent = none). */
   offerProfile?: OfferProfile;
   /** Big fund: card asks/valuations were scaled by this (absent = 1). */
@@ -339,4 +350,6 @@ export type Action =
   | { type: 'ADVANCE' }
   | { type: 'CLOSE_FUND' }
   | { type: 'RESOLVE_VETO_CHALLENGE'; call: ChallengeCall }
+  /** Taps the player landed in SWORD_PULL.durationMs (the UI counts them). */
+  | { type: 'RESOLVE_SWORD_PULL'; taps: number }
   | { type: 'HARVEST' };

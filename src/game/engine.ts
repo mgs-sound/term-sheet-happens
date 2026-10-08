@@ -72,6 +72,7 @@ import {
   VETO,
   LP_REQUESTS,
   OFFER_PROFILES,
+  SWORD_PULL,
 } from './tuning.ts';
 import { roundM } from './util.ts';
 import { meetingsForCareer } from './career.ts';
@@ -225,6 +226,9 @@ export function reduce(state: GameState | null, action: Action): GameState {
       break;
     case 'RESOLVE_VETO_CHALLENGE':
       handleResolveVetoChallenge(s, rng, action.call);
+      break;
+    case 'RESOLVE_SWORD_PULL':
+      handleResolveSwordPull(s, rng, action.taps);
       break;
     case 'HARVEST':
       handleHarvest(s, rng);
@@ -572,6 +576,17 @@ function handleSendOffer(s: GameState, rng: RNG, offer: Offer): void {
   }
 
   const negotiation = s.negotiation;
+  // Partner+ final offer under the counter: skill, not dice (SWORD_PULL).
+  if (negotiation.round === 1 && s.tier !== 'associate' && !meetsCounter(offer, negotiation)) {
+    s.phase = 'swordPull';
+    s.swordPull = {
+      checkM: offer.checkM,
+      valuationM: offer.valuationM,
+      boardSeat: offer.boardSeat,
+      targetTaps: swordTargetTaps(acceptanceProbability(card, offer, 1)),
+    };
+    return;
+  }
   const accepted =
     meetsCounter(offer, negotiation) ||
     rng.chance(acceptanceProbability(card, offer, negotiation.round));
@@ -598,6 +613,35 @@ function handleSendOffer(s: GameState, rng: RNG, offer: Offer): void {
 
   // Round 1 rejection: the founder is done with you.
   finishNegotiation(s, 'founderWalked');
+}
+
+/** Taps the sword takes: fewer the more acceptable the offer was. */
+export function swordTargetTaps(acceptance: number): number {
+  const p = Math.max(0, Math.min(1, acceptance));
+  const { tapsAtCertain, tapsAtHopeless } = SWORD_PULL;
+  return Math.round(tapsAtHopeless - p * (tapsAtHopeless - tapsAtCertain));
+}
+
+function handleResolveSwordPull(s: GameState, rng: RNG, taps: number): void {
+  const pull = s.swordPull;
+  if (s.phase !== 'swordPull' || !pull || !s.currentCard) {
+    throw new Error('RESOLVE_SWORD_PULL: no sword to pull');
+  }
+  const won = taps >= pull.targetTaps;
+  s.swordPull = null;
+  s.lastSwordPull = { taps, targetTaps: pull.targetTaps, won };
+  if (!won) {
+    finishNegotiation(s, 'founderWalked');
+    return;
+  }
+  s.phase = 'meeting';
+  s.negotiation = null;
+  log(s, 'challengeWon', { company: s.currentCard.name });
+  completeSigning(s, rng, {
+    checkM: pull.checkM,
+    dealValuationM: pull.valuationM,
+    boardSeat: pull.boardSeat,
+  });
 }
 
 function finishNegotiation(s: GameState, resolution: 'founderWalked' | 'walkedAway'): void {

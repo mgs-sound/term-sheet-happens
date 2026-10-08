@@ -145,6 +145,8 @@ export interface FlavorLines {
     shareCta: string;
     shareLines: string[];
   };
+  /** Partner+ final-offer minigame (sword in the stone). */
+  swordPull: { title: string; intros: string[]; won: string[]; lost: string[]; cta: string };
   harvestOutcomeLabels: Record<ExitBucket, string>;
   /** Harvest label when a board-seat exit push blew up the company (out $0). */
   /** Board seat copy. Sign sheet: note ({bonus} %) then risk ({penalty} %,

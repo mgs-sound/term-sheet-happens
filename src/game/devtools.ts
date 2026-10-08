@@ -4,13 +4,14 @@
  * Nothing here is reachable from normal play.
  */
 
+import type { Thesis } from '../content/types.ts';
 import type { CareerState, ChallengeGame, GameState } from './types.ts';
-import { drawCard } from './engine.ts';
+import { drawCard, swordTargetTaps } from './engine.ts';
 import { createRng } from './rng.ts';
-import { initialCareer } from './career.ts';
+import { acceptLpOffer, generateLpOffers, initialCareer } from './career.ts';
 import { requestPool } from './lpRequests.ts';
 import { makeFollowOnEvent } from './followons.ts';
-import { METERS } from './tuning.ts';
+import { FUND_SIZING, METERS } from './tuning.ts';
 import { clamp, roundM } from './util.ts';
 
 /** Rewrite a harvested run's headline numbers (DPI, fund size, reputation). */
@@ -62,6 +63,28 @@ export function forceVetoChallenge(
 }
 
 /**
+ * Pull the sword now: park the current card's asked terms in a sword pull at
+ * a middling target, for feeling out the minigame without negotiating down
+ * to a counter first.
+ */
+export function forceSwordPull(state: GameState): GameState {
+  const card = state.currentCard;
+  if (state.phase !== 'meeting' || !card || state.resolution !== null) {
+    throw new Error('forceSwordPull: needs an open meeting card');
+  }
+  const s = structuredClone(state) as GameState;
+  s.phase = 'swordPull';
+  s.negotiation = { round: 1, counter: { checkM: card.askM, valuationM: card.valuationM } };
+  s.swordPull = {
+    checkM: Math.min(card.askM, s.capitalM),
+    valuationM: card.valuationM,
+    boardSeat: false,
+    targetTaps: swordTargetTaps(0.5),
+  };
+  return s;
+}
+
+/**
  * Ring the phone now: a wire-pro-rata interrupt from the latest portfolio
  * company (needs one signed deal), for previewing the urgent card + buzz.
  * Resolving it moves on to the next card, as a natural interrupt does.
@@ -95,6 +118,24 @@ export function forceLpRequests(state: GameState, mode: 'allMet' | 'mixed'): Gam
     status: mode === 'allMet' || i % 2 === 0 ? ('met' as const) : ('broken' as const),
   }));
   return s;
+}
+
+/**
+ * A Partner just promoted to GP, LP package already picked: the career the
+ * "name your firm" screen expects (pendingFund set, no firm name yet).
+ */
+export function careerAtGpNaming(theses: readonly Thesis[]): CareerState {
+  const promoted: CareerState = {
+    ...initialCareer(),
+    tier: 'gp',
+    fundIndex: 4,
+    reputation: 70,
+    lpTrust: 70,
+    lastFundDpi: 2.2,
+    bestDpi: 2.2,
+  };
+  const offers = generateLpOffers(createRng(0x6e616d65), theses, FUND_SIZING.gpBaseM);
+  return acceptLpOffer({ ...promoted, pendingOffers: offers }, 0);
 }
 
 /** A GP career one great fund away from Enlightenment. */

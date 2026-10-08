@@ -3,7 +3,7 @@ import type { GameState } from '../../game/types';
 import { services } from '../../services';
 import { SFX_IDS } from '../../services/AudioService';
 
-export type DevJump = 'fundI' | 'associate' | 'partner' | 'gp' | 'gate';
+export type DevJump = 'fundI' | 'associate' | 'partner' | 'gp' | 'gate' | 'name firm';
 
 /**
  * Dev-only cheat panel (?dev). All mutations route through engine/devtools
@@ -21,6 +21,7 @@ export function DevPanel({
   onDice,
   onSticks,
   onProRata,
+  onSwordPull,
 }: {
   game: GameState;
   onJump: (jump: DevJump) => void;
@@ -33,6 +34,7 @@ export function DevPanel({
   onDice: () => void;
   onSticks: () => void;
   onProRata: () => void;
+  onSwordPull: () => void;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   // Minigame graphics are rounded by default; this flips them to hard edges
@@ -66,7 +68,7 @@ export function DevPanel({
       {open && (
         <div className="dev-body">
           <span className="dev-label">jump</span>
-          {(['fundI', 'associate', 'partner', 'gp', 'gate'] as const).map((j) => (
+          {(['fundI', 'associate', 'partner', 'gp', 'gate', 'name firm'] as const).map((j) => (
             <button key={j} type="button" onClick={() => onJump(j)}>
               {j}
             </button>
@@ -149,6 +151,14 @@ export function DevPanel({
           </button>
           <button type="button" onClick={toggleSticksFlat}>
             sticks: {sticksFlat ? 'flat' : 'upright'}
+          </button>
+          <span className="dev-label">final offer (partner+)</span>
+          <button
+            type="button"
+            disabled={game.phase !== 'meeting' || !game.currentCard || game.resolution !== null}
+            onClick={onSwordPull}
+          >
+            sword pull
           </button>
           <span className="dev-label">
             interrupt {game.portfolio.length > 0 ? '' : '(sign a deal first)'}
