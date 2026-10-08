@@ -7,11 +7,21 @@ import { fmtM, pickLine } from '../format';
 import { services } from '../../services';
 import { BOARD_SEATS } from '../../game/tuning';
 
-/** "+25% on exits, −25% if it dies": the seat's harvest risk, spelled out. */
-function seatNote(lines: FlavorLines): string {
-  return lines.boardSeat.note
-    .replace('{bonus}', String(Math.round((BOARD_SEATS.exitMult - 1) * 100)))
-    .replace('{penalty}', String(Math.round(BOARD_SEATS.zeroPenalty * 100)));
+/** "+20% on exits, −50% if it dies": the upside, then the risk in bold red. */
+function SeatNote({ lines }: { lines: FlavorLines }): JSX.Element {
+  const note = lines.boardSeat.note.replace(
+    '{bonus}',
+    String(Math.round((BOARD_SEATS.exitMult - 1) * 100)),
+  );
+  const risk = lines.boardSeat.risk.replace(
+    '{penalty}',
+    String(Math.round(BOARD_SEATS.zeroPenalty * 100)),
+  );
+  return (
+    <span className="seat-note">
+      {note} <strong className="seat-risk">{risk}</strong>
+    </span>
+  );
 }
 
 export interface OfferDraft {
@@ -85,7 +95,7 @@ export function SignSheet({
                   checked={boardSeat}
                   onChange={(e) => setBoardSeat(e.target.checked)}
                 />
-                {lines.boardSeat.label} <span className="seat-note">({seatNote(lines)})</span>
+                {lines.boardSeat.label} <SeatNote lines={lines} />
               </label>
             ) : (
               <p className="seat-locked">{pickLine(lines.boardSeatLocked, game.seed)}</p>
@@ -178,7 +188,7 @@ export function SignSheet({
                   checked={boardSeat}
                   onChange={(e) => setBoardSeat(e.target.checked)}
                 />
-                {lines.boardSeat.label} <span className="seat-note">({seatNote(lines)})</span>
+                {lines.boardSeat.label} <SeatNote lines={lines} />
               </label>
             </div>
           )}

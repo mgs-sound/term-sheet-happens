@@ -327,7 +327,8 @@
   },
   "boardSeat": {
     "label": "Demand a board seat",
-    "note": "+{bonus}% on exits, −{penalty}% if it dies",
+    "note": "+{bonus}% on exits,",
+    "risk": "−{penalty}% if it dies",
     "bonus": "Board seat: +{pct}% on the exit",
     "liability": "Board liability: −{pct}% in legal fees"
   },

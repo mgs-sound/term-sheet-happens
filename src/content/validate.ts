@@ -271,8 +271,8 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
   }
 
   const seat = data.boardSeat as Record<string, unknown> | undefined;
-  if (!seat || !['label', 'note', 'bonus', 'liability'].every((k) => isNonEmptyString(seat[k]))) {
-    errors.push('lines.json: "boardSeat" needs non-empty label, note, bonus, liability');
+  if (!seat || !['label', 'note', 'risk', 'bonus', 'liability'].every((k) => isNonEmptyString(seat[k]))) {
+    errors.push('lines.json: "boardSeat" needs non-empty label, note, risk, bonus, liability');
   }
 
   const bands = data.fundIDifficulty;

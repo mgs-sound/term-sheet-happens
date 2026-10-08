@@ -2216,7 +2216,9 @@
 .seat-label {
   display: flex;
   align-items: center;
-  gap: 12px; /* room for the checkbox's block shadow */
+  white-space: nowrap;
+  gap: 10px; /* room for the checkbox's block shadow */
+  font-size: clamp(11px, 3.7vw, 15px);
   min-height: 44px;
 }
 
@@ -2262,10 +2264,17 @@ input[type='checkbox']:disabled {
   opacity: 0.45;
 }
 
+.seat-risk {
+  color: var(--stamp-red);
+  font-weight: 700;
+}
+
 .seat-note {
-  font-size: 11px;
+  /* Same line as the label, never wrapping: shrinks on narrow phones. */
+  margin-left: -4px;
+  font-size: clamp(9px, 2.75vw, 12px);
   font-style: italic;
-  opacity: 0.7;
+  color: rgb(28 27 23 / 70%);
 }
 
 .seat-locked {
