@@ -278,6 +278,37 @@ export const SWORD_PULL = {
   tapsAtHopeless: 44,
 } as const;
 
+/** Which skill minigame settles a Partner+ final offer: relative weights. TUNE */
+export const FINAL_OFFER = {
+  gameWeights: { sword: 1, wheel: 1 },
+} as const;
+
+/**
+ * The blind wheel: you see where the yellow slice starts, hit SPIN, a cover
+ * drops over the wheel, and you STOP it when you think the slice is under the
+ * pointer. Constant speed, so it's timing you can learn. The slice is wider
+ * the more acceptable the offer was. TUNE all.
+ */
+export const WHEEL = {
+  /** Spin speed: one turn every 360/degPerSec seconds. */
+  degPerSec: 240,
+  /** Slice width at acceptance 0 (hopeless) … */
+  sliceDegAtHopeless: 24,
+  /** … and at acceptance 1 (near-certain). */
+  sliceDegAtCertain: 90,
+  /** Where the slice may start (never already under the pointer). */
+  startMinDeg: 90,
+  startMaxDeg: 270,
+  /** Turns it spins in plain sight before the cover drops, so you can
+   *  read its rhythm (STOP only works once it's covered). */
+  visibleTurns: 2,
+  /** Never stopped: it stops itself this long after the cover drops. */
+  maxBlindMs: 8000,
+} as const;
+
+/** How long the wheel stays uncovered (ms): WHEEL.visibleTurns full turns. */
+export const WHEEL_VISIBLE_MS = (WHEEL.visibleTurns * 360 * 1000) / WHEEL.degPerSec;
+
 export const BOARD_SEATS = {
   /** Demanding a seat lowers negotiation acceptance by this much. TUNE */
   acceptancePenalty: 0.15,
@@ -433,6 +464,8 @@ export const SIM = {
   signHeatMin: 4,
   /** Sword pull: taps a typical thumb lands in SWORD_PULL.durationMs. TUNE */
   swordTaps: 36,
+  /** Wheel: a blind guess at when to stop (ms). TUNE */
+  wheelStopMs: 1500,
   /** Safety cap on reducer steps per simulated run. */
   maxSteps: 5000,
 } as const;

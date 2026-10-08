@@ -23,7 +23,7 @@ import {
   forceLpRequests,
   forceVetoChallenge,
   forceProRata,
-  forceSwordPull,
+  forceFinalOffer,
 } from '../game/devtools';
 import { generateFirmName } from '../game/firm';
 import { FIRM_OPTION_COUNT, pickFirmOptions } from '../game/firmOptions';
@@ -672,9 +672,9 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
               console.error(err);
             }
           }}
-          onSwordPull={() => {
+          onFinalOffer={(g) => {
             try {
-              setGameDirect(forceSwordPull(gameRef.current));
+              setGameDirect(forceFinalOffer(gameRef.current, g));
             } catch (err) {
               console.error(err);
             }

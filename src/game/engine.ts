@@ -27,7 +27,8 @@ import type {
   PlayingCard,
   PortfolioCompany,
 } from './types.ts';
-import { CHALLENGE_GAMES, SUITS } from './types.ts';
+import { CHALLENGE_GAMES, FINAL_OFFER_GAMES, SUITS } from './types.ts';
+import type { FinalOfferChallenge, FinalOfferGame } from './types.ts';
 import { buildDeck } from './deck.ts';
 import { generateFirmName, findThesis, pickThesis } from './firm.ts';
 import { clampMeter } from './meters.ts';
@@ -73,6 +74,9 @@ import {
   LP_REQUESTS,
   OFFER_PROFILES,
   SWORD_PULL,
+  FINAL_OFFER,
+  WHEEL,
+  WHEEL_VISIBLE_MS,
 } from './tuning.ts';
 import { roundM } from './util.ts';
 import { meetingsForCareer } from './career.ts';
@@ -229,6 +233,9 @@ export function reduce(state: GameState | null, action: Action): GameState {
       break;
     case 'RESOLVE_SWORD_PULL':
       handleResolveSwordPull(s, rng, action.taps);
+      break;
+    case 'RESOLVE_WHEEL':
+      handleResolveWheel(s, rng, action.elapsedMs);
       break;
     case 'HARVEST':
       handleHarvest(s, rng);
@@ -576,15 +583,10 @@ function handleSendOffer(s: GameState, rng: RNG, offer: Offer): void {
   }
 
   const negotiation = s.negotiation;
-  // Partner+ final offer under the counter: skill, not dice (SWORD_PULL).
+  // Partner+ final offer under the counter: skill, not dice (FINAL_OFFER).
   if (negotiation.round === 1 && s.tier !== 'associate' && !meetsCounter(offer, negotiation)) {
-    s.phase = 'swordPull';
-    s.swordPull = {
-      checkM: offer.checkM,
-      valuationM: offer.valuationM,
-      boardSeat: offer.boardSeat,
-      targetTaps: swordTargetTaps(acceptanceProbability(card, offer, 1)),
-    };
+    s.phase = 'finalOffer';
+    s.finalOffer = makeFinalOffer(rng, offer, acceptanceProbability(card, offer, 1));
     return;
   }
   const accepted =
@@ -615,33 +617,100 @@ function handleSendOffer(s: GameState, rng: RNG, offer: Offer): void {
   finishNegotiation(s, 'founderWalked');
 }
 
+const lerp = (a: number, b: number, t: number): number => a + (b - a) * Math.max(0, Math.min(1, t));
+
 /** Taps the sword takes: fewer the more acceptable the offer was. */
 export function swordTargetTaps(acceptance: number): number {
-  const p = Math.max(0, Math.min(1, acceptance));
-  const { tapsAtCertain, tapsAtHopeless } = SWORD_PULL;
-  return Math.round(tapsAtHopeless - p * (tapsAtHopeless - tapsAtCertain));
+  return Math.round(lerp(SWORD_PULL.tapsAtHopeless, SWORD_PULL.tapsAtCertain, acceptance));
 }
 
-function handleResolveSwordPull(s: GameState, rng: RNG, taps: number): void {
-  const pull = s.swordPull;
-  if (s.phase !== 'swordPull' || !pull || !s.currentCard) {
-    throw new Error('RESOLVE_SWORD_PULL: no sword to pull');
+/** The wheel's yellow slice (degrees): wider the more acceptable the offer. */
+export function wheelSliceDeg(acceptance: number): number {
+  return Math.round(lerp(WHEEL.sliceDegAtHopeless, WHEEL.sliceDegAtCertain, acceptance));
+}
+
+/** Weighted pick of the final-offer minigame. */
+function pickFinalOfferGame(rng: RNG): FinalOfferGame {
+  const w = FINAL_OFFER.gameWeights;
+  const total = FINAL_OFFER_GAMES.reduce((sum, g) => sum + w[g], 0);
+  let roll = rng.next() * total;
+  for (const g of FINAL_OFFER_GAMES) {
+    roll -= w[g];
+    if (roll < 0) return g;
   }
-  const won = taps >= pull.targetTaps;
-  s.swordPull = null;
-  s.lastSwordPull = { taps, targetTaps: pull.targetTaps, won };
+  return 'sword';
+}
+
+export function makeFinalOffer(
+  rng: RNG,
+  offer: { checkM: number; valuationM: number; boardSeat: boolean },
+  acceptance: number,
+  game: FinalOfferGame = pickFinalOfferGame(rng),
+): FinalOfferChallenge {
+  return {
+    game,
+    checkM: offer.checkM,
+    valuationM: offer.valuationM,
+    boardSeat: offer.boardSeat,
+    targetTaps: swordTargetTaps(acceptance),
+    sliceDeg: wheelSliceDeg(acceptance),
+    // Where the slice starts; the pointer sits at 0° (top).
+    startDeg: rng.int(WHEEL.startMinDeg, WHEEL.startMaxDeg),
+  };
+}
+
+/** The wheel's turn (degrees, clockwise) after spinning for `elapsedMs`. */
+export function wheelAngleAt(startDeg: number, elapsedMs: number): number {
+  const ms = Math.max(0, Math.min(elapsedMs, WHEEL_VISIBLE_MS + WHEEL.maxBlindMs));
+  return (startDeg + (WHEEL.degPerSec * ms) / 1000) % 360;
+}
+
+/** Does the pointer (top, 0°) sit inside the slice centred on `angleDeg`? */
+export function wheelHits(angleDeg: number, sliceDeg: number): boolean {
+  const off = Math.abs((((angleDeg % 360) + 540) % 360) - 180);
+  return off <= sliceDeg / 2;
+}
+
+function settleFinalOffer(s: GameState, rng: RNG, challenge: FinalOfferChallenge, won: boolean): void {
+  const card = s.currentCard;
+  if (!card) throw new Error('final offer without a card');
+  s.finalOffer = null;
   if (!won) {
     finishNegotiation(s, 'founderWalked');
     return;
   }
   s.phase = 'meeting';
   s.negotiation = null;
-  log(s, 'challengeWon', { company: s.currentCard.name });
+  log(s, 'challengeWon', { company: card.name });
   completeSigning(s, rng, {
-    checkM: pull.checkM,
-    dealValuationM: pull.valuationM,
-    boardSeat: pull.boardSeat,
+    checkM: challenge.checkM,
+    dealValuationM: challenge.valuationM,
+    boardSeat: challenge.boardSeat,
   });
+}
+
+function requireFinalOffer(s: GameState, game: FinalOfferGame, action: string): FinalOfferChallenge {
+  const c = s.finalOffer;
+  if (s.phase !== 'finalOffer' || !c || c.game !== game || !s.currentCard) {
+    throw new Error(`${action}: no ${game} final offer pending`);
+  }
+  return c;
+}
+
+function handleResolveSwordPull(s: GameState, rng: RNG, taps: number): void {
+  const c = requireFinalOffer(s, 'sword', 'RESOLVE_SWORD_PULL');
+  const won = taps >= c.targetTaps;
+  s.lastFinalOffer = { game: 'sword', won, taps, targetTaps: c.targetTaps };
+  settleFinalOffer(s, rng, c, won);
+}
+
+function handleResolveWheel(s: GameState, rng: RNG, elapsedMs: number): void {
+  const c = requireFinalOffer(s, 'wheel', 'RESOLVE_WHEEL');
+  // STOP only counts once the cover is down (no stopping it in plain sight).
+  const stopDeg = wheelAngleAt(c.startDeg, Math.max(elapsedMs, WHEEL_VISIBLE_MS));
+  const won = wheelHits(stopDeg, c.sliceDeg);
+  s.lastFinalOffer = { game: 'wheel', won, stopDeg, sliceDeg: c.sliceDeg };
+  settleFinalOffer(s, rng, c, won);
 }
 
 function finishNegotiation(s: GameState, resolution: 'founderWalked' | 'walkedAway'): void {

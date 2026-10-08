@@ -5,8 +5,8 @@
  */
 
 import type { Thesis } from '../content/types.ts';
-import type { CareerState, ChallengeGame, GameState } from './types.ts';
-import { drawCard, swordTargetTaps } from './engine.ts';
+import type { CareerState, ChallengeGame, FinalOfferGame, GameState } from './types.ts';
+import { drawCard, makeFinalOffer } from './engine.ts';
 import { createRng } from './rng.ts';
 import { acceptLpOffer, generateLpOffers, initialCareer } from './career.ts';
 import { requestPool } from './lpRequests.ts';
@@ -63,24 +63,24 @@ export function forceVetoChallenge(
 }
 
 /**
- * Pull the sword now: park the current card's asked terms in a sword pull at
- * a middling target, for feeling out the minigame without negotiating down
- * to a counter first.
+ * Final offer now: park the current card's asked terms in a sword pull or a
+ * wheel at a middling difficulty, without negotiating down to a counter.
  */
-export function forceSwordPull(state: GameState): GameState {
+export function forceFinalOffer(state: GameState, game: FinalOfferGame): GameState {
   const card = state.currentCard;
   if (state.phase !== 'meeting' || !card || state.resolution !== null) {
-    throw new Error('forceSwordPull: needs an open meeting card');
+    throw new Error('forceFinalOffer: needs an open meeting card');
   }
   const s = structuredClone(state) as GameState;
-  s.phase = 'swordPull';
+  s.phase = 'finalOffer';
   s.negotiation = { round: 1, counter: { checkM: card.askM, valuationM: card.valuationM } };
-  s.swordPull = {
-    checkM: Math.min(card.askM, s.capitalM),
-    valuationM: card.valuationM,
-    boardSeat: false,
-    targetTaps: swordTargetTaps(0.5),
-  };
+  // Side RNG so cheating never shifts the run's main stream.
+  s.finalOffer = makeFinalOffer(
+    createRng((state.rngState ^ 0xf1a1) >>> 0),
+    { checkM: Math.min(card.askM, s.capitalM), valuationM: card.valuationM, boardSeat: false },
+    0.5,
+    game,
+  );
   return s;
 }
 

@@ -147,6 +147,19 @@ export interface FlavorLines {
   };
   /** Partner+ final-offer minigame (sword in the stone). */
   swordPull: { title: string; intros: string[]; won: string[]; lost: string[]; cta: string };
+  /** Partner+ final-offer minigame (the blind wheel). */
+  wheel: {
+    title: string;
+    intros: string[];
+    won: string[];
+    lost: string[];
+    spinCta: string;
+    stopCta: string;
+    /** STOP while the wheel is still visible: {s} = seconds to the cover. */
+    hidingCta: string;
+    /** Small line under it. */
+    hidingNote: string;
+  };
   harvestOutcomeLabels: Record<ExitBucket, string>;
   /** Harvest label when a board-seat exit push blew up the company (out $0). */
   /** Board seat copy. Sign sheet: note ({bonus} %) then risk ({penalty} %,

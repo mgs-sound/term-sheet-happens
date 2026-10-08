@@ -14,6 +14,7 @@ import { SwipeShell } from '../components/SwipeShell';
 import { InterruptCard } from '../components/InterruptCard';
 import { SignSheet } from '../components/SignSheet';
 import { SwordPullSheet } from '../components/SwordPullSheet';
+import { WheelSheet } from '../components/WheelSheet';
 import {
   COIN_HOLD_MS,
   COIN_SPIN_MS,
@@ -96,11 +97,10 @@ export function RunScreen({
   const vetoOpen = game.phase === 'vetoChallenge' || challengeShow !== null;
   // Partner+ final offer: the sword in the stone, held on screen with its
   // verdict until the card flies.
-  const [swordShow, setSwordShow] = useState<{ taps: number; targetTaps: number; won: boolean } | null>(
-    null,
-  );
-  const swordOpen = game.phase === 'swordPull' || swordShow !== null;
-  const challengeOpen = vetoOpen || swordOpen;
+  const [finalShow, setFinalShow] = useState<NonNullable<GameState['lastFinalOffer']> | null>(null);
+  const finalOpen = game.phase === 'finalOffer' || finalShow !== null;
+  const finalGame = finalShow?.game ?? game.finalOffer?.game ?? 'sword';
+  const challengeOpen = vetoOpen || finalOpen;
   const pendingChallenge = game.vetoChallenge;
   const advanceTimer = useRef<number | null>(null);
   const screenRef = useRef<HTMLElement>(null);
@@ -389,30 +389,54 @@ export function RunScreen({
         ) : (
           <div className="arena-empty">No founders left in the lobby.</div>
         )}
-        {swordOpen && card && (
-          <SwordPullSheet
-            key={`sword-${card.pitchId}-${game.meetingIndex}`}
-            lines={lines}
-            seed={game.seed + game.meetingIndex}
-            targetTaps={swordShow?.targetTaps ?? game.swordPull?.targetTaps ?? 0}
-            result={swordShow}
-            stampWon={lines.vetoChallenge.stampWon}
-            stampLost={lines.vetoChallenge.stampLost}
-            onDone={(taps) => {
-              const committed = dispatch({ type: 'RESOLVE_SWORD_PULL', taps });
-              const pull = committed.lastSwordPull;
-              if (pull) setSwordShow(pull);
+        {finalOpen &&
+          card &&
+          (() => {
+            // Final offer: the panel counts / times, the engine decides; the
+            // verdict holds on screen with its stamp until the card flies.
+            const settle = (committed: GameState): void => {
+              const result = committed.lastFinalOffer;
+              if (result) setFinalShow(result);
               window.setTimeout(
-                () => services.audio.play(pull?.won ? 'sign' : 'pass'),
+                () => services.audio.play(result?.won ? 'sign' : 'pass'),
                 RESULT_STAMP_DELAY_MS,
               );
               window.setTimeout(() => {
-                setSwordShow(null);
+                setFinalShow(null);
                 finishFromResolution(committed);
               }, COIN_HOLD_MS);
-            }}
-          />
-        )}
+            };
+            const key = `final-${card.pitchId}-${game.meetingIndex}`;
+            const seed = game.seed + game.meetingIndex;
+            if (finalGame === 'wheel') {
+              const pending = game.finalOffer;
+              return (
+                <WheelSheet
+                  key={key}
+                  lines={lines}
+                  seed={seed}
+                  sliceDeg={finalShow?.sliceDeg ?? pending?.sliceDeg ?? 0}
+                  startDeg={pending?.startDeg ?? 0}
+                  result={finalShow?.game === 'wheel' ? { stopDeg: finalShow.stopDeg ?? 0, won: finalShow.won } : null}
+                  stampWon={lines.vetoChallenge.stampWon}
+                  stampLost={lines.vetoChallenge.stampLost}
+                  onStop={(elapsedMs) => settle(dispatch({ type: 'RESOLVE_WHEEL', elapsedMs }))}
+                />
+              );
+            }
+            return (
+              <SwordPullSheet
+                key={key}
+                lines={lines}
+                seed={seed}
+                targetTaps={finalShow?.targetTaps ?? game.finalOffer?.targetTaps ?? 0}
+                result={finalShow?.game === 'sword' ? { taps: finalShow.taps ?? 0, won: finalShow.won } : null}
+                stampWon={lines.vetoChallenge.stampWon}
+                stampLost={lines.vetoChallenge.stampLost}
+                onDone={(taps) => settle(dispatch({ type: 'RESOLVE_SWORD_PULL', taps }))}
+              />
+            );
+          })()}
         {vetoOpen &&
           card &&
           (() => {

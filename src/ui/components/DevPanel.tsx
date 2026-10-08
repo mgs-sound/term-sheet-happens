@@ -21,7 +21,7 @@ export function DevPanel({
   onDice,
   onSticks,
   onProRata,
-  onSwordPull,
+  onFinalOffer,
 }: {
   game: GameState;
   onJump: (jump: DevJump) => void;
@@ -34,7 +34,7 @@ export function DevPanel({
   onDice: () => void;
   onSticks: () => void;
   onProRata: () => void;
-  onSwordPull: () => void;
+  onFinalOffer: (game: 'sword' | 'wheel') => void;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   // Minigame graphics are rounded by default; this flips them to hard edges
@@ -153,13 +153,16 @@ export function DevPanel({
             sticks: {sticksFlat ? 'flat' : 'upright'}
           </button>
           <span className="dev-label">final offer (partner+)</span>
-          <button
-            type="button"
-            disabled={game.phase !== 'meeting' || !game.currentCard || game.resolution !== null}
-            onClick={onSwordPull}
-          >
-            sword pull
-          </button>
+          {(['sword', 'wheel'] as const).map((g) => (
+            <button
+              key={g}
+              type="button"
+              disabled={game.phase !== 'meeting' || !game.currentCard || game.resolution !== null}
+              onClick={() => onFinalOffer(g)}
+            >
+              {g}
+            </button>
+          ))}
           <span className="dev-label">
             interrupt {game.portfolio.length > 0 ? '' : '(sign a deal first)'}
           </span>

@@ -62,8 +62,10 @@ function nextAction(
       if (c?.game === 'sticks') return { type: 'RESOLVE_VETO_CHALLENGE', call: 'red' };
       return { type: 'RESOLVE_VETO_CHALLENGE', call: 'heads' };
     }
-    case 'swordPull':
-      return { type: 'RESOLVE_SWORD_PULL', taps: SIM.swordTaps };
+    case 'finalOffer':
+      return s.finalOffer?.game === 'wheel'
+        ? { type: 'RESOLVE_WHEEL', elapsedMs: SIM.wheelStopMs }
+        : { type: 'RESOLVE_SWORD_PULL', taps: SIM.swordTaps };
     case 'fundClosed':
       return { type: 'HARVEST' };
     default:

@@ -183,6 +183,26 @@
     ],
     "cta": "Tap to pull"
   },
+  "wheel": {
+    "title": "Final offer",
+    "intros": [
+      "Spin the wheel of fortune. Stop it on yellow. The founder will be watching. You won't.",
+      "Remember where the yellow is. Then spin it blind. This is due diligence.",
+      "Land the pointer on yellow and the founder signs. Miss and they take the other term sheet."
+    ],
+    "won": [
+      "Right on the yellow. Pure instinct. Definitely not luck.",
+      "Bullseye. You'll call it pattern matching in the podcast."
+    ],
+    "lost": [
+      "Red. The founder takes the other term sheet.",
+      "So close. In venture, close is a polite word for zero."
+    ],
+    "spinCta": "Spin",
+    "stopCta": "Stop!",
+    "hidingCta": "Hiding in {s}…",
+    "hidingNote": "look carefully"
+  },
   "vetoChallenge": {
     "title": "Leadership challenge",
     "youChose": "You chose",

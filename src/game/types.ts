@@ -170,11 +170,27 @@ export interface HarvestResult {
   visionaries: number;
 }
 
+/** Partner+ final-offer minigames (skill, not dice). */
+export type FinalOfferGame = 'sword' | 'wheel';
+export const FINAL_OFFER_GAMES: readonly FinalOfferGame[] = ['sword', 'wheel'];
+
+export interface FinalOfferChallenge {
+  game: FinalOfferGame;
+  checkM: number;
+  valuationM: number;
+  boardSeat: boolean;
+  /** Sword: taps needed within SWORD_PULL.durationMs. */
+  targetTaps: number;
+  /** Wheel: the yellow slice's width, and where it starts (pointer = 0°). */
+  sliceDeg: number;
+  startDeg: number;
+}
+
 export type Phase =
   | 'meeting'
   | 'negotiation'
   | 'vetoChallenge'
-  | 'swordPull'
+  | 'finalOffer'
   | 'interrupt'
   | 'fundClosed'
   | 'harvested';
@@ -256,16 +272,18 @@ export interface GameState {
   lastDice?: { call: DiceCall; roll: number; won: boolean } | null;
   /** The last longest-stick draw (lengths as % of the ruler). */
   lastSticks?: { call: StickCall; red: number; green: number; won: boolean } | null;
-  /** Partner+ final offer below the founder's counter: pull the sword from
-   *  the stone (phase 'swordPull'). The parked terms and the taps it takes. */
-  swordPull?: {
-    checkM: number;
-    valuationM: number;
-    boardSeat: boolean;
-    targetTaps: number;
+  /** Partner+ final offer below the founder's counter, settled by a skill
+   *  minigame (phase 'finalOffer'): the parked terms and the game's numbers. */
+  finalOffer?: FinalOfferChallenge | null;
+  /** The last final-offer minigame, so the UI can land its result. */
+  lastFinalOffer?: {
+    game: FinalOfferGame;
+    won: boolean;
+    taps?: number;
+    targetTaps?: number;
+    stopDeg?: number;
+    sliceDeg?: number;
   } | null;
-  /** The last sword pull, so the UI can land its stamp. */
-  lastSwordPull?: { taps: number; targetTaps: number; won: boolean } | null;
   /** Fund II+ offer flavor that bent this fund's terms (absent = none). */
   offerProfile?: OfferProfile;
   /** Big fund: card asks/valuations were scaled by this (absent = 1). */
@@ -352,4 +370,6 @@ export type Action =
   | { type: 'RESOLVE_VETO_CHALLENGE'; call: ChallengeCall }
   /** Taps the player landed in SWORD_PULL.durationMs (the UI counts them). */
   | { type: 'RESOLVE_SWORD_PULL'; taps: number }
+  /** How long the wheel spun before the player stopped it (ms). */
+  | { type: 'RESOLVE_WHEEL'; elapsedMs: number }
   | { type: 'HARVEST' };

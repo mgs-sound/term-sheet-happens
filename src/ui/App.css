@@ -3031,6 +3031,74 @@ input[type='range']::-moz-range-thumb {
   }
 }
 
+/* -------------------------------------------- blind wheel (final offer) */
+
+.wheel-stage {
+  margin: 10px 0 4px;
+}
+.wheel-art {
+  display: block;
+  width: 100%;
+  max-width: 351px;
+  height: auto;
+  margin: 0 auto;
+}
+.wheel-art path,
+.wheel-art circle,
+.wheel-art rect {
+  stroke: var(--ink);
+  stroke-width: 2px;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+.wheel-pointer { fill: #d9d9d9; }
+.wheel-red { fill: var(--stamp-red); }
+.wheel-slice { fill: var(--sign-yellow); }
+
+/* The blind: a blank paper sign that drops over the wheel while it spins
+   and lifts away to reveal where it stopped. */
+.wheel-cover {
+  fill: var(--paper-bright);
+  opacity: 0;
+  transform: translateY(-24px);
+  transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+}
+.wheel-cover.is-down {
+  opacity: 1;
+  transform: none;
+}
+
+.wheel-actions {
+  justify-content: center;
+}
+.wheel-btn {
+  width: 80%;
+  min-height: 52px;
+  font-size: 16px;
+  touch-action: manipulation;
+}
+
+/* Still in plain sight: a countdown, not a dead button. */
+.wheel-btn.wheel-hiding:disabled {
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.wheel-hiding-note {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.7;
+}
+
 /* ---------------------------------------------------------------- toasts */
 
 .toast-rail {
