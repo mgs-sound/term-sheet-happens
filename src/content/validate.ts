@@ -294,6 +294,17 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     errors.push('lines.json: "crane" needs title, cta and non-empty intros / won / lost');
   }
 
+  const flappy = data.flappy as Record<string, unknown> | undefined;
+  if (
+    !flappy ||
+    !['title', 'cta', 'startHint'].every((k) => isNonEmptyString(flappy[k])) ||
+    !['intros', 'won', 'lost'].every(
+      (k) => Array.isArray(flappy[k]) && (flappy[k] as unknown[]).length > 0 && (flappy[k] as unknown[]).every(isNonEmptyString),
+    )
+  ) {
+    errors.push('lines.json: "flappy" needs title, cta, startHint and non-empty intros / won / lost');
+  }
+
   const wheel = data.wheel as Record<string, unknown> | undefined;
   if (
     !wheel ||

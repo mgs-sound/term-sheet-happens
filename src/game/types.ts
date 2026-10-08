@@ -171,8 +171,8 @@ export interface HarvestResult {
 }
 
 /** Partner+ final-offer minigames (skill, not dice). */
-export type FinalOfferGame = 'sword' | 'wheel' | 'crane';
-export const FINAL_OFFER_GAMES: readonly FinalOfferGame[] = ['sword', 'wheel', 'crane'];
+export type FinalOfferGame = 'sword' | 'wheel' | 'crane' | 'flappy';
+export const FINAL_OFFER_GAMES: readonly FinalOfferGame[] = ['sword', 'wheel', 'crane', 'flappy'];
 
 export interface FinalOfferChallenge {
   game: FinalOfferGame;
@@ -188,6 +188,16 @@ export interface FinalOfferChallenge {
    *  around each pole crossing. */
   cranes: CraneFlight[];
   windowMs: number;
+  /** Flappy crane: the five obstacles of this run's course. */
+  flappy: FlappyObstacle[];
+}
+
+/** A flappy-crane obstacle: green triangles from the ceiling (top) and/or
+ *  the floor (bottom), by height in world units (0 = none), centred on x. */
+export interface FlappyObstacle {
+  x: number;
+  top: number;
+  bottom: number;
 }
 
 /** One crane of the "shoot the cranes" final offer. */
@@ -300,6 +310,9 @@ export interface GameState {
     /** Cranes: the shot at each (null = never) and which ones hit. */
     shotsMs?: (number | null)[];
     hits?: boolean[];
+    /** Flappy: the taps (ms since the first) and how many it cleared. */
+    tapsMs?: number[];
+    passed?: number;
   } | null;
   /** Fund II+ offer flavor that bent this fund's terms (absent = none). */
   offerProfile?: OfferProfile;
@@ -391,4 +404,6 @@ export type Action =
   | { type: 'RESOLVE_WHEEL'; elapsedMs: number }
   /** When the player fired, ms after the panel opened (null = never). */
   | { type: 'RESOLVE_CRANE'; shotsMs: (number | null)[] }
+  /** Every flap, ms since the first (which is 0 and starts the run). */
+  | { type: 'RESOLVE_FLAPPY'; tapsMs: number[] }
   | { type: 'HARVEST' };

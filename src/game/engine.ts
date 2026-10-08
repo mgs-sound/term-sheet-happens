@@ -40,6 +40,7 @@ import {
   tierBelow,
 } from './fundTerms.ts';
 import { rollLpRequests, settleLpRequests, updateLiveLpRequests } from './lpRequests.ts';
+import { flappyAt, makeFlappyCourse } from './flappy.ts';
 import {
   acceptanceProbability,
   entryBonus,
@@ -241,6 +242,9 @@ export function reduce(state: GameState | null, action: Action): GameState {
       break;
     case 'RESOLVE_CRANE':
       handleResolveCrane(s, rng, action.shotsMs);
+      break;
+    case 'RESOLVE_FLAPPY':
+      handleResolveFlappy(s, rng, action.tapsMs);
       break;
     case 'HARVEST':
       handleHarvest(s, rng);
@@ -662,6 +666,7 @@ export function makeFinalOffer(
     // Where the slice starts; the pointer sits at 0° (top).
     startDeg: rng.int(WHEEL.startMinDeg, WHEEL.startMaxDeg),
     ...craneTiming(rng, acceptance),
+    flappy: makeFlappyCourse(rng, acceptance),
   };
 }
 
@@ -760,6 +765,14 @@ function handleResolveCrane(s: GameState, rng: RNG, shotsMs: (number | null)[]):
   const won = hits.filter(Boolean).length >= CRANE.hitsToWin;
   s.lastFinalOffer = { game: 'crane', won, shotsMs, hits };
   settleFinalOffer(s, rng, c, won);
+}
+
+function handleResolveFlappy(s: GameState, rng: RNG, tapsMs: number[]): void {
+  const c = requireFinalOffer(s, 'flappy', 'RESOLVE_FLAPPY');
+  const taps = [...tapsMs].filter((t) => t >= 0).sort((a, b) => a - b);
+  const run = flappyAt(c.flappy, taps, Number.POSITIVE_INFINITY);
+  s.lastFinalOffer = { game: 'flappy', won: run.finished, tapsMs: taps, passed: run.passed };
+  settleFinalOffer(s, rng, c, run.finished);
 }
 
 function handleResolveWheel(s: GameState, rng: RNG, elapsedMs: number): void {

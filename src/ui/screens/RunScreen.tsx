@@ -16,6 +16,7 @@ import { SignSheet } from '../components/SignSheet';
 import { SwordPullSheet } from '../components/SwordPullSheet';
 import { WheelSheet } from '../components/WheelSheet';
 import { CraneSheet } from '../components/CraneSheet';
+import { FlappySheet } from '../components/FlappySheet';
 import {
   COIN_HOLD_MS,
   COIN_SPIN_MS,
@@ -409,6 +410,20 @@ export function RunScreen({
             };
             const key = `final-${card.pitchId}-${game.meetingIndex}`;
             const seed = game.seed + game.meetingIndex;
+            if (finalGame === 'flappy') {
+              return (
+                <FlappySheet
+                  key={key}
+                  lines={lines}
+                  seed={seed}
+                  course={game.finalOffer?.flappy ?? []}
+                  result={finalShow?.game === 'flappy' ? { won: finalShow.won } : null}
+                  stampWon={lines.vetoChallenge.stampWon}
+                  stampLost={lines.vetoChallenge.stampLost}
+                  onDone={(tapsMs) => settle(dispatch({ type: 'RESOLVE_FLAPPY', tapsMs }))}
+                />
+              );
+            }
             if (finalGame === 'crane') {
               const pending = game.finalOffer;
               return (

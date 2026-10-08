@@ -280,7 +280,7 @@ export const SWORD_PULL = {
 
 /** Which skill minigame settles a Partner+ final offer: relative weights. TUNE */
 export const FINAL_OFFER = {
-  gameWeights: { sword: 1, wheel: 1, crane: 1 },
+  gameWeights: { sword: 1, wheel: 1, crane: 1, flappy: 1 },
 } as const;
 
 /**
@@ -347,6 +347,45 @@ export const CRANE = {
 
 /** When the crane countdown ends (GO), ms after the panel opens. */
 export const CRANE_GO_MS = CRANE.countdownStepMs * CRANE.countdownSteps;
+
+/**
+ * Flappy crane: tap to flap the origami crane through five green triangles
+ * (from the ceiling, the floor or both); touch one, or the ceiling/floor,
+ * and the deal is gone. Gaps are wider the more acceptable the offer was.
+ * World units: a FLAPPY.width × FLAPPY.height stage, y down; time in ms.
+ * TUNE all.
+ */
+export const FLAPPY = {
+  width: 1720,
+  height: 1000,
+  obstacles: 5,
+  /** First obstacle's x, and the spacing between the next ones. */
+  firstObstacleX: 1500,
+  spacingMin: 640,
+  spacingMax: 860,
+  /** Triangle base width. */
+  triangleWidth: 380,
+  /** The clear gap a "both" obstacle leaves (and singles can't close more). */
+  gapAtHopeless: 380,
+  gapAtCertain: 560,
+  /** A "both" gap never hugs the ceiling/floor closer than this. */
+  edgeMargin: 90,
+  /** A single triangle is at least this share of the height. */
+  singleMinShare: 0.35,
+  /** The crane: fixed x, hit radius. */
+  craneX: 420,
+  craneRadius: 62,
+  /** Physics (units/ms, units/ms²): a flap sets the climb speed. */
+  gravity: 0.0042,
+  flapSpeed: 1.2,
+  maxFall: 1.6,
+  scrollSpeed: 0.55,
+  /** Fixed physics step (ms) and a safety cap on a run's length. */
+  stepMs: 8,
+  maxMs: 20000,
+  /** Fly this far past the last triangle to finish. */
+  finishMargin: 60,
+} as const;
 
 export const BOARD_SEATS = {
   /** Demanding a seat lowers negotiation acceptance by this much. TUNE */
@@ -507,6 +546,8 @@ export const SIM = {
   wheelStopMs: 1500,
   /** Crane: how far off each crossing a typical shot lands (ms). TUNE */
   craneShotOffsetMs: 60,
+  /** Flappy: a naive steady flap rhythm (ms). TUNE */
+  flappyEveryMs: 450,
   /** Safety cap on reducer steps per simulated run. */
   maxSteps: 5000,
 } as const;

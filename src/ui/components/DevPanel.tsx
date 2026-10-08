@@ -34,7 +34,7 @@ export function DevPanel({
   onDice: () => void;
   onSticks: () => void;
   onProRata: () => void;
-  onFinalOffer: (game: 'sword' | 'wheel' | 'crane') => void;
+  onFinalOffer: (game: 'sword' | 'wheel' | 'crane' | 'flappy') => void;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   // Minigame graphics are rounded by default; this flips them to hard edges
@@ -153,7 +153,7 @@ export function DevPanel({
             sticks: {sticksFlat ? 'flat' : 'upright'}
           </button>
           <span className="dev-label">final offer (partner+)</span>
-          {(['sword', 'wheel', 'crane'] as const).map((g) => (
+          {(['sword', 'wheel', 'crane', 'flappy'] as const).map((g) => (
             <button
               key={g}
               type="button"

@@ -157,6 +157,16 @@ export interface FlavorLines {
     /** One word per countdown step before the first crane (Ready, Set, Go). */
     countdown: string[];
   };
+  /** Partner+ final-offer minigame (flappy crane). */
+  flappy: {
+    title: string;
+    intros: string[];
+    won: string[];
+    lost: string[];
+    cta: string;
+    /** Over the stage until the first tap. */
+    startHint: string;
+  };
   /** Partner+ final-offer minigame (the blind wheel). */
   wheel: {
     title: string;

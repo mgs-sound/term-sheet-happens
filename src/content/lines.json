@@ -221,6 +221,24 @@
     "cta": "Shoot the deal",
     "countdown": ["Ready…", "Set…", "Go!"]
   },
+  "flappy": {
+    "title": "Final offer",
+    "intros": [
+      "Fly the deal through five obstacles. Due diligence, but with wings.",
+      "Keep the crane airborne past every green triangle. Touch one and it's over.",
+      "Five hurdles between you and a signed term sheet. Flap."
+    ],
+    "won": [
+      "Clean flight. The founder signs mid-air.",
+      "Through every hurdle. The crane lands on the dotted line."
+    ],
+    "lost": [
+      "Crumpled. The deal folds like the paper it's made of.",
+      "Clipped a triangle. The founder takes the safer fund."
+    ],
+    "cta": "Flap",
+    "startHint": "Tap to take off"
+  },
   "vetoChallenge": {
     "title": "Leadership challenge",
     "youChose": "You chose",

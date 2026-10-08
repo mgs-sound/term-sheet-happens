@@ -26,7 +26,7 @@ const PEEK_EASE_MS = 140;
 const BUSH_PATH =
   'M75 240A75 75 0 0 1 75 90A100 100 0 0 1 225 25A80 80 0 0 1 370 90A75 75 0 0 1 375 240Z';
 
-function CraneArt(): JSX.Element {
+export function CraneArt(): JSX.Element {
   return (
     <g>
       <path

@@ -71,6 +71,13 @@ function nextAction(
           shotsMs: c.cranes.map((crane) => craneCrossMs(crane) + SIM.craneShotOffsetMs),
         };
       }
+      if (c?.game === 'flappy') {
+        // A steady flapper: one flap every SIM.flappyEveryMs.
+        return {
+          type: 'RESOLVE_FLAPPY',
+          tapsMs: Array.from({ length: 40 }, (_, i) => i * SIM.flappyEveryMs),
+        };
+      }
       return { type: 'RESOLVE_SWORD_PULL', taps: SIM.swordTaps };
     }
     case 'fundClosed':
