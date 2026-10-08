@@ -49,8 +49,13 @@ export function LpRequestList({
       <ul className="lp-requests-list">
         {requests.map((r) => (
           <li key={r.kind} className={`lp-request lp-request-${r.status}`}>
-            <span className="lp-request-box" aria-hidden="true">
-              {r.status === 'met' ? '✓' : r.status === 'broken' ? '✗' : ''}
+            {/* Still open: a plain bullet, not an empty box (it isn't tappable).
+                Settled: a ✓ / ✗ mark. */}
+            <span
+              className={`lp-request-box ${r.status === 'open' ? 'is-bullet' : ''}`}
+              aria-hidden="true"
+            >
+              {r.status === 'met' ? '✓' : r.status === 'broken' ? '✗' : '•'}
             </span>
             <span className="lp-request-text">{lpRequestText(lines, r)}</span>
             {stamps && r.status !== 'open' && (

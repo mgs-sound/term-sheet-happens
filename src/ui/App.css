@@ -302,6 +302,11 @@
   text-decoration-color: var(--stamp-red);
   opacity: 0.65;
 }
+.lp-request-box.is-bullet {
+  border-color: transparent;
+  background: transparent;
+}
+
 .lp-request-broken .lp-request-box {
   color: var(--stamp-red);
   border-color: var(--stamp-red);
@@ -2265,7 +2270,10 @@ input[type='checkbox']:disabled {
 }
 
 .seat-risk {
-  color: var(--stamp-red);
+  /* Sign-here highlighter swipe, like the LP requests: ink on yellow. */
+  color: var(--ink);
+  background: var(--sign-yellow);
+  padding: 1px 3px;
   font-weight: 700;
 }
 
