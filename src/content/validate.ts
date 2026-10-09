@@ -325,10 +325,10 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
   if (
     !Array.isArray(bands) ||
     bands.length !== 3 ||
-    !bands.every((b) => isRecord(b) && isNonEmptyString(b.label) && isNonEmptyString(b.blurb))
+    !bands.every((b) => isRecord(b) && isNonEmptyString(b.label) && isStringArray(b.blurbs) && (b.blurbs as unknown[]).length > 0)
   ) {
     errors.push(
-      'lines.json: "fundIDifficulty" must be exactly 3 { label, blurb } entries (soft, standard, brutal)',
+      'lines.json: "fundIDifficulty" must be exactly 3 { label, blurbs[] } entries (soft, standard, brutal)',
     );
   }
 
@@ -388,13 +388,14 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
   const ob = isRecord(pr) ? pr.onboarding : null;
   if (
     !isRecord(ob) ||
-    !['defaultName', 'about', 'startCta', 'endorsedNamed', 'endorsedAnon'].every((k) =>
-      isNonEmptyString(ob[k]),
+    !['defaultName', 'startCta'].every((k) => isNonEmptyString(ob[k])) ||
+    !['about', 'skills', 'endorsedNamed', 'endorsedAnon'].every(
+      (k) => isStringArray(ob[k]) && (ob[k] as unknown[]).length > 0,
     ) ||
-    !isStringArray(ob.skills)
+    (ob.skills as unknown[]).length < 3
   ) {
     errors.push(
-      'lines.json: "profile.onboarding" needs namePlaceholder / about / endorsedNamed / endorsedAnon / cta and skills[]',
+      'lines.json: "profile.onboarding" needs defaultName / startCta and non-empty about[] / endorsedNamed[] / endorsedAnon[] / skills[] (3+)',
     );
   }
 
@@ -403,11 +404,11 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     !isRecord(op) ||
     !['bigChecks', 'dealFlow', 'lpDarling', 'megaFund'].every((k) => {
       const v = op[k];
-      return isRecord(v) && isNonEmptyString(v.label) && isNonEmptyString(v.blurb);
+      return isRecord(v) && isNonEmptyString(v.label) && isStringArray(v.blurbs) && (v.blurbs as unknown[]).length > 0;
     })
   ) {
     errors.push(
-      'lines.json: "offerProfiles" needs { label, blurb } for bigChecks / dealFlow / lpDarling / megaFund',
+      'lines.json: "offerProfiles" needs { label, blurbs[] } for bigChecks / dealFlow / lpDarling / megaFund',
     );
   }
 

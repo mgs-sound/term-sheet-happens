@@ -1,7 +1,7 @@
 import type { FirmNameParts, FlavorLines } from '../../content/types';
 import { difficultyBand } from '../../game/fundTerms';
 import type { GameState } from '../../game/types';
-import { fmtM } from '../format';
+import { fmtM, pickLine } from '../format';
 import { FitFirmTitle } from '../components/FitFirmTitle';
 import { LpRequestList } from '../components/LpRequestList';
 
@@ -70,7 +70,7 @@ export function FirmReveal({
       {terms && band !== null && (
         <div className="terms-difficulty">
           <span className={`harvest-label ${BAND_CLASS[band]}`}>{terms.label}</span>
-          <p className="terms-blurb">{terms.blurb}</p>
+          <p className="terms-blurb">{pickLine(terms.blurbs, game.seed)}</p>
         </div>
       )}
       {/* Fund II+: what this offer trades (same slot as Fund I's difficulty). */}
@@ -79,7 +79,7 @@ export function FirmReveal({
           <span className={`harvest-label ${PROFILE_CLASS[game.offerProfile]}`}>
             {lines.offerProfiles[game.offerProfile].label}
           </span>
-          <p className="terms-blurb">{lines.offerProfiles[game.offerProfile].blurb}</p>
+          <p className="terms-blurb">{pickLine(lines.offerProfiles[game.offerProfile].blurbs, game.seed)}</p>
         </div>
       )}
       <LpRequestList requests={game.lpRequests} lines={lines} note />

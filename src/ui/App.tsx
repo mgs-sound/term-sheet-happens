@@ -475,6 +475,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           key={career.playerName ?? ''}
           career={career}
           lines={content.lines}
+          seed={game.seed}
           onSearch={(name) => {
             // The three firm options ARE the job offers: the engagement letter
             // shows the first, "Next offer" steps through them.

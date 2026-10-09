@@ -189,7 +189,7 @@ export interface FlavorLines {
    * Fund I difficulty bands shown on the engagement letter, index-aligned
    * with the engine's difficultyBand(): [soft, standard, brutal].
    */
-  fundIDifficulty: { label: string; blurb: string }[];
+  fundIDifficulty: { label: string; blurbs: string[] }[];
   /** Partner's coin-flip veto challenge panel. */
   vetoChallenge: {
     title: string;
@@ -243,18 +243,20 @@ export interface FlavorLines {
     onboarding: {
       /** Everyone starts as this until they tap the name to change it. */
       defaultName: string;
-      about: string;
+      /** One picked per new career (seeded). */
+      about: string[];
+      /** A pool: each new career shows ONBOARDING_SKILLS of them. */
       skills: string[];
       /** The one button: starts the career (on to the job offers). */
       startCta: string;
-      endorsedNamed: string;
-      endorsedAnon: string;
+      endorsedNamed: string[];
+      endorsedAnon: string[];
     };
   };
   /** Fund II+ offer flavors on the engagement letter (keys = OfferProfile). */
   offerProfiles: Record<
     'bigChecks' | 'dealFlow' | 'lpDarling' | 'megaFund',
-    { label: string; blurb: string }
+    { label: string; blurbs: string[] }
   >;
   /** Rehire "inbox": stay at your firm vs. new firm opportunities. */
   rehire: {

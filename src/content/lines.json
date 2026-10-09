@@ -219,7 +219,11 @@
       "Missed. The crane lands in a competitor's portfolio."
     ],
     "cta": "Shoot the deal",
-    "countdown": ["Ready…", "Set…", "Go!"]
+    "countdown": [
+      "Ready…",
+      "Set…",
+      "Go!"
+    ]
   },
   "flappy": {
     "title": "Final offer",
@@ -300,15 +304,27 @@
   "fundIDifficulty": [
     {
       "label": "SOFT LANDING",
-      "blurb": "Small fund, long calendar, LPs who still believe in you. Practically a grant."
+      "blurbs": [
+        "Small fund, long calendar, LPs who still believe in you. Practically a grant.",
+        "A gentle start. The LPs are rooting for you, for some reason.",
+        "Few dollars, many meetings, low expectations. Ideal."
+      ]
     },
     {
       "label": "STANDARD ISSUE",
-      "blurb": "Ordinary terms. Ordinary disappointment."
+      "blurbs": [
+        "Ordinary terms. Ordinary disappointment.",
+        "Standard fund, standard LPs, standard chance of failing.",
+        "Nothing special. Just like your first fund should be."
+      ]
     },
     {
       "label": "BRUTAL",
-      "blurb": "Too much money, too few meetings, LPs already drafting the email."
+      "blurbs": [
+        "Too much money, too few meetings, LPs already drafting the email.",
+        "Big fund, tight calendar. The LPs have a lawyer on speed dial.",
+        "Brutal terms. Even the coffee is bitter."
+      ]
     }
   ],
   "lpRequests": {
@@ -389,14 +405,46 @@
     "empty": "No experience yet. Every legend starts as a junior associate.",
     "onboarding": {
       "defaultName": "John Doe",
-      "about": "Ready to start a journey in the VC world. Experience in disruptive, fast-growing businesses such as local organic refreshing-beverage pop-up stores.",
+      "about": [
+        "Ready to start a journey in the VC world. Experience in disruptive, fast-growing businesses such as local organic refreshing-beverage pop-up stores.",
+        "Recent graduate of a 6-week investing newsletter. Strong opinions on founders I have never met.",
+        "Former lemonade-stand operator (exited at 0.8x). Looking to bring that discipline to venture.",
+        "Passionate about leverage, synergies and the word \"ecosystem\". Open to relocate to any WeWork.",
+        "Built three apps nobody downloaded. Now ready to judge the people who build apps.",
+        "MBA candidate (pending). Fluent in Excel, LinkedIn and confident nodding.",
+        "Seeking a role where I can be wrong with other people's money, at scale.",
+        "Self-taught investor. Mostly taught by losing my own savings on a coin named after a dog."
+      ],
       "skills": [
         "Job Searcher",
         "Bed Maker",
-        "Best in Kindergarten"
+        "Best in Kindergarten",
+        "Microsoft Paint",
+        "Nodding in meetings",
+        "Reply-all",
+        "Networking (aggressively)",
+        "Thought leadership (pending)",
+        "Owning a vest",
+        "Calendly power user",
+        "Saying \"circle back\"",
+        "Podcast listener (1.5x)",
+        "Pivot table (once)",
+        "Coffee chats",
+        "Hustle (self-reported)"
       ],
-      "endorsedNamed": "Endorsed by {name}'s mother",
-      "endorsedAnon": "Endorsed by your mother",
+      "endorsedNamed": [
+        "Endorsed by {name}'s mother",
+        "Endorsed by {name}'s gym buddy",
+        "Endorsed by {name}'s former roommate (reluctantly)",
+        "Endorsed by {name} (from a second account)",
+        "Endorsed by {name}'s dog"
+      ],
+      "endorsedAnon": [
+        "Endorsed by your mother",
+        "Endorsed by a bot",
+        "Endorsed by nobody, yet",
+        "Endorsed by your landlord, conditionally"
+      ],
       "startCta": "Start using Term Sheet Happens"
     }
   },
@@ -413,19 +461,35 @@
   "offerProfiles": {
     "bigChecks": {
       "label": "BIG CHECKS",
-      "blurb": "Bigger fund, same calendar. More money to deploy, more to explain."
+      "blurbs": [
+        "Bigger fund, same calendar. More money to deploy, more to explain.",
+        "Your checks just got heavier. So did the LP questions.",
+        "More capital, same meetings. Spend it or justify it."
+      ]
     },
     "dealFlow": {
       "label": "DEAL FLOW",
-      "blurb": "More founders than you can count, a smaller fund to count them with."
+      "blurbs": [
+        "More founders than you can count, a smaller fund to count them with.",
+        "Your inbox is a firehose. Your wallet is a garden hose.",
+        "Endless pitches, modest checks. Swipe wisely."
+      ]
     },
     "lpDarling": {
       "label": "LP DARLING",
-      "blurb": "Same fund, but the LPs adore you. Spend it before they read the memo."
+      "blurbs": [
+        "Same fund, but the LPs adore you. Spend it before they read the memo.",
+        "Your LPs are fans. Fans are fickle.",
+        "The LPs trust you. For now. Don't make it weird."
+      ]
     },
     "megaFund": {
       "label": "MEGA FUND",
-      "blurb": "Colossal fund, junior title. Nobody here knows your name yet."
+      "blurbs": [
+        "Colossal fund, junior title. Nobody here knows your name yet.",
+        "Billions in the bank, your badge says 'Visitor'.",
+        "A huge fund and a desk near the printer."
+      ]
     }
   },
   "rehire": {
