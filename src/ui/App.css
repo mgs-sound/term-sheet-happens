@@ -302,6 +302,34 @@
   text-decoration-color: var(--stamp-red);
   opacity: 0.65;
 }
+/* Run screen: the requests stay in view, small, under the mandate. */
+.run-requests .lp-requests {
+  margin-top: 0;
+}
+.lp-requests-compact .lp-requests-title {
+  margin: 0 0 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.lp-requests-compact .lp-requests-list {
+  gap: 3px;
+}
+.lp-requests-compact .lp-request {
+  gap: 7px;
+  padding: 1px 8px 1px 3px;
+}
+.lp-requests-compact .lp-request-text {
+  font-size: 12px;
+}
+.lp-requests-compact .lp-request-box {
+  width: 12px;
+  height: 12px;
+  font-size: 10px;
+}
+
 .lp-request-box.is-bullet {
   border-color: transparent;
   background: transparent;
@@ -442,8 +470,8 @@
 .run-screen {
   position: relative;
   display: grid;
-  /* ledger / mandate + portfolio / card / actions */
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  /* ledger / mandate + portfolio / LP requests / card / actions */
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
   gap: 12px;
   overflow: hidden;
   padding-bottom: 0; /* .action-dock owns the bottom inset */

@@ -13,6 +13,7 @@ import { PitchCardView } from '../components/PitchCardView';
 import { SwipeShell } from '../components/SwipeShell';
 import { InterruptCard } from '../components/InterruptCard';
 import { SignSheet } from '../components/SignSheet';
+import { LpRequestList } from '../components/LpRequestList';
 import { SwordPullSheet } from '../components/SwordPullSheet';
 import { WheelSheet } from '../components/WheelSheet';
 import { CraneSheet } from '../components/CraneSheet';
@@ -350,6 +351,11 @@ export function RunScreen({
             </span>
           )}
         </button>
+      </div>
+
+      {/* The fund's LP requests, always in view while you play (compact). */}
+      <div className="run-requests">
+        <LpRequestList requests={game.lpRequests} lines={lines} compact />
       </div>
 
       <div className="card-arena">

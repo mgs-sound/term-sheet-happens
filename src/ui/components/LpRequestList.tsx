@@ -30,6 +30,7 @@ export function LpRequestList({
   note = false,
   forgiven = false,
   folded = false,
+  compact = false,
 }: {
   requests: LpRequest[] | undefined;
   lines: FlavorLines;
@@ -40,11 +41,13 @@ export function LpRequestList({
   forgiven?: boolean;
   /** Scorecard: the DPI was so bad the firm folds, whatever the requests. */
   folded?: boolean;
+  /** Small, for the run screen (always in view while playing). */
+  compact?: boolean;
 }): JSX.Element | null {
   if (!requests || requests.length === 0) return null;
   const copy = lines.lpRequests;
   return (
-    <section className="lp-requests" aria-label={copy.title}>
+    <section className={`lp-requests ${compact ? 'lp-requests-compact' : ''}`} aria-label={copy.title}>
       <h2 className="lp-requests-title">{copy.title}</h2>
       <ul className="lp-requests-list">
         {requests.map((r) => (
