@@ -88,7 +88,15 @@ export function PortfolioSheet({
                 <div className="harvest-row-nums">
                   in {fmtM(c.investedM)} &middot; {(c.ownership * 100).toFixed(1)}% owned
                 </div>
-                <div className="portfolio-tags">{tags.join(' · ')}</div>
+                <div className="portfolio-tags">
+                  {tags.map((t, k) => (
+                    <span key={t}>
+                      {k > 0 && ' · '}
+                      {/* A board seat is a risk you carry: highlighted. */}
+                      <span className={t === 'BOARD SEAT' ? 'portfolio-seat' : undefined}>{t}</span>
+                    </span>
+                  ))}
+                </div>
               </li>
             );
           })}

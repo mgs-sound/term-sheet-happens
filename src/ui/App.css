@@ -1298,7 +1298,17 @@
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.08em;
-  opacity: 0.7;
+  /* Faded ink via colour, not opacity, so the board-seat highlight stays
+     full-strength yellow. */
+  color: rgb(28 27 23 / 70%);
+}
+
+/* Board seat tag: the sign-here yellow highlighter swipe. */
+.portfolio-seat {
+  background: var(--sign-yellow);
+  color: var(--ink);
+  font-weight: 700;
+  padding: 1px 4px;
 }
 
 /* Directional color wash at the column edge during drags — visible even
