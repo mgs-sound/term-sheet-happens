@@ -3,7 +3,6 @@ import type { GameState } from '../../game/types';
 import { fmtM, pickLine, STAGE_LABELS } from '../format';
 import { fontForCompany, fontsForDeck } from '../fonts/cardFonts';
 import { FirmName } from './FirmName';
-import { LpRequestList } from './LpRequestList';
 import { ScrollFade } from './ScrollFade';
 
 /**
@@ -63,7 +62,6 @@ export function PortfolioSheet({
       </dl>
 
       <ScrollFade>
-      <LpRequestList requests={game.lpRequests} lines={lines} />
       {game.portfolio.length === 0 ? (
         <p className="letterhead-thesis">{pickLine(lines.portfolioEmpty, game.seed)}</p>
       ) : (
