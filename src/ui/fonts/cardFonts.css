@@ -1,5 +1,5 @@
 /*
- * Pitch-card company-name fonts: 3 per sector, 30 total. GENERATED from the
+ * Pitch-card company-name fonts: 4 per sector, 40 total. GENERATED from the
  * pool in cardFonts.ts — keep ids in sync. Self-hosted latin subsets (one
  * weight each) so the game stays 100% offline. Google Fonts via @fontsource,
  * SIL Open Font License (see LICENSE-*).
@@ -35,6 +35,16 @@
 @font-face { font-family: 'TSH lobster'; src: url('./lobster-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'TSH pacifico'; src: url('./pacifico-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'TSH shrikhand'; src: url('./shrikhand-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'TSH cutive-mono'; src: url('./cutive-mono-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'TSH climate-crisis'; src: url('./climate-crisis-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'TSH gravitas-one'; src: url('./gravitas-one-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'TSH bagel-fat-one'; src: url('./bagel-fat-one-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'TSH museomoderno'; src: url('./museomoderno-latin-600-italic.woff2') format('woff2'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'TSH manjari'; src: url('./manjari-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'TSH libre-barcode-128-text'; src: url('./libre-barcode-128-text-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'TSH sixtyfour'; src: url('./sixtyfour-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'TSH zen-dots'; src: url('./zen-dots-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'TSH fontdiner-swanky'; src: url('./fontdiner-swanky-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
 
 /* The face rules below set family/weight (+ --name-scale for wide faces) on
    any [data-font] element; each place that shows a name sets its own base
@@ -112,6 +122,27 @@
 [data-font='pacifico'] { font-family: 'TSH pacifico', var(--font-serif); font-weight: 400; }
 /* Food: retro menu */
 [data-font='shrikhand'] { font-family: 'TSH shrikhand', var(--font-serif); font-weight: 400; }
+
+/* AI: typewriter "manifesto" mono */
+[data-font='cutive-mono'] { font-family: 'TSH cutive-mono', var(--font-serif); font-weight: 400; --name-scale: 0.95; }
+/* SaaS: the loud rebrand */
+[data-font='climate-crisis'] { font-family: 'TSH climate-crisis', var(--font-serif); font-weight: 400; --name-scale: 0.78; }
+/* Fintech: old-money heavy slab */
+[data-font='gravitas-one'] { font-family: 'TSH gravitas-one', var(--font-serif); font-weight: 400; --name-scale: 0.78; }
+/* Consumer: bubbly DTC */
+[data-font='bagel-fat-one'] { font-family: 'TSH bagel-fat-one', var(--font-serif); font-weight: 400; }
+/* Climate: optimistic italic */
+[data-font='museomoderno'] { font-family: 'TSH museomoderno', var(--font-serif); font-weight: 600; font-style: italic; }
+/* Health: soft clinic */
+[data-font='manjari'] { font-family: 'TSH manjari', var(--font-serif); font-weight: 700; }
+/* Crypto: the name is literally a barcode (text underneath) */
+[data-font='libre-barcode-128-text'] { font-family: 'TSH libre-barcode-128-text', var(--font-serif); font-weight: 400; --name-scale: 1.5; line-height: 1; }
+/* Gaming: scanline arcade */
+[data-font='sixtyfour'] { font-family: 'TSH sixtyfour', var(--font-serif); font-weight: 400; --name-scale: 0.62; }
+/* Space: dotted mission wordmark */
+[data-font='zen-dots'] { font-family: 'TSH zen-dots', var(--font-serif); font-weight: 400; --name-scale: 0.8; }
+/* Food: retro diner menu */
+[data-font='fontdiner-swanky'] { font-family: 'TSH fontdiner-swanky', var(--font-serif); font-weight: 400; }
 
 /* Urgent memos (follow-on / bridge): the company name inside the caps
    headline, sized relative to the headline. */

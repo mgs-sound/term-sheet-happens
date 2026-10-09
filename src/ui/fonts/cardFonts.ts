@@ -2,21 +2,21 @@ import type { Sector } from '../../content/types';
 
 /**
  * Display fonts for the company name on pitch cards (presentation only — no
- * game logic). Each sector has a pool of 3 faces that parody how that kind of
+ * game logic). Each sector has a pool of 4 faces that parody how that kind of
  * startup brands itself. Ids match the [data-font] rules and the
  * 'TSH <id>' @font-face families in cardFonts.css.
  */
-export const CARD_FONT_POOLS: Record<Sector, readonly [string, string, string]> = {
-  AI: ['space-grotesk', 'sora', 'ibm-plex-mono'],
-  SaaS: ['montserrat', 'poppins', 'plus-jakarta-sans'],
-  Fintech: ['dm-serif-display', 'playfair-display', 'libre-baskerville'],
-  Consumer: ['fredoka', 'baloo-2', 'righteous'],
-  Climate: ['fraunces', 'young-serif', 'zilla-slab'],
-  Health: ['nunito', 'quicksand', 'figtree'],
-  Crypto: ['unbounded', 'chakra-petch', 'oxanium'],
-  Gaming: ['press-start-2p', 'silkscreen', 'bungee'],
-  Space: ['orbitron', 'audiowide', 'michroma'],
-  Food: ['lobster', 'pacifico', 'shrikhand'],
+export const CARD_FONT_POOLS: Record<Sector, readonly [string, ...string[]]> = {
+  AI: ['space-grotesk', 'sora', 'ibm-plex-mono', 'cutive-mono'],
+  SaaS: ['montserrat', 'poppins', 'plus-jakarta-sans', 'climate-crisis'],
+  Fintech: ['dm-serif-display', 'playfair-display', 'libre-baskerville', 'gravitas-one'],
+  Consumer: ['fredoka', 'baloo-2', 'righteous', 'bagel-fat-one'],
+  Climate: ['fraunces', 'young-serif', 'zilla-slab', 'museomoderno'],
+  Health: ['nunito', 'quicksand', 'figtree', 'manjari'],
+  Crypto: ['unbounded', 'chakra-petch', 'oxanium', 'libre-barcode-128-text'],
+  Gaming: ['press-start-2p', 'silkscreen', 'bungee', 'sixtyfour'],
+  Space: ['orbitron', 'audiowide', 'michroma', 'zen-dots'],
+  Food: ['lobster', 'pacifico', 'shrikhand', 'fontdiner-swanky'],
 };
 
 export const ALL_CARD_FONTS: readonly string[] = Object.values(CARD_FONT_POOLS).flat();
@@ -32,7 +32,7 @@ function hash(s: string): number {
 }
 
 /**
- * Picks the name font for a card: one of its sector's 3 faces, chosen by the
+ * Picks the name font for a card: one of its sector's faces, chosen by the
  * pitch id (so a company always tends to look the same), but NEVER the same
  * face as the previous card. Pools don't overlap, so only back-to-back cards
  * from the same sector can collide — those step to the next face in the pool.
