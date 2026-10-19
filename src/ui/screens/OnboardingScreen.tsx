@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FlavorLines } from '../../content/types';
 import type { CareerState } from '../../game/types';
 import { ProfileHead } from '../components/ProfileHead';
-import { pickLine } from '../format';
+import { fillLine, fmtM, pickLine } from '../format';
 
 /** How many skills the blank profile lists (picked from the pool). */
 const ONBOARDING_SKILLS = 3;
@@ -30,14 +30,30 @@ export function OnboardingScreen({
 }): JSX.Element {
   const copy = lines.profile;
   const ob = copy.onboarding;
+  // An heir (the succession letter's hand-over) gets the family-business pools.
+  const heir = career.heirOf;
+  const heirVars = heir
+    ? {
+        grandparent: heir.name,
+        funds: String(heir.funds),
+        years: String(heir.years),
+        returned: fmtM(heir.returnedM),
+      }
+    : null;
+  const pools = heir ? lines.legacy.heir : ob;
   const [name, setName] = useState(career.playerName ?? ob.defaultName);
   const shownName = name.trim();
-  const about = pickLine(ob.about, seed);
+  const about = fillLine(pickLine(pools.about, seed), heirVars ?? {});
   // ONBOARDING_SKILLS distinct skills from the pool, starting at a seeded spot.
   const skills = Array.from(
-    { length: Math.min(ONBOARDING_SKILLS, ob.skills.length) },
-    (_, i) => ob.skills[(Math.abs(seed) + i * 5) % ob.skills.length]!,
+    { length: Math.min(ONBOARDING_SKILLS, pools.skills.length) },
+    (_, i) => pools.skills[(Math.abs(seed) + i * 5) % pools.skills.length]!,
   ).filter((s, i, all) => all.indexOf(s) === i);
+  const endorsed = heirVars
+    ? fillLine(pickLine(lines.legacy.heir.endorsedNamed, seed), heirVars)
+    : shownName
+      ? pickLine(ob.endorsedNamed, seed).replace('{name}', shownName)
+      : pickLine(ob.endorsedAnon, seed);
 
   return (
     <section className="screen letterhead ledger-screen profile-screen onboarding-screen">
@@ -56,11 +72,7 @@ export function OnboardingScreen({
           </li>
         ))}
       </ul>
-      <p className="profile-endorsed">
-        {shownName
-          ? pickLine(ob.endorsedNamed, seed).replace('{name}', shownName)
-          : pickLine(ob.endorsedAnon, seed)}
-      </p>
+      <p className="profile-endorsed">{endorsed}</p>
 
       {/* Sits a little above the bottom: more room above it than below. */}
       <div className="onboarding-spacer onboarding-spacer-top" />

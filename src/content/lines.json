@@ -119,13 +119,38 @@
     "rule": "Memorandum of succession",
     "title": "{years} years",
     "lines": [
-      "{funds} funds and a century in, your grandchildren take over. They've already pivoted the firm to AI.",
-      "{years} years of deal flow. Your grandchildren inherit the firm, the Patagonia vests and three unresolved board seats.",
-      "Your grandchildren take over. Their first act: a podcast about how you were 'early'.",
-      "A century of carry. The grandkids take the keys and immediately ask the LPs for a bigger management fee.",
-      "{name} retires at last. The grandchildren take over and swear they'll respect the thesis. They will not."
+      "{funds} funds in. Your grandson, {heir}, says he's ready to take over. He has already pivoted the firm to AI, in his head.",
+      "{years} years of deal flow. {heir} would like the keys, the Patagonia vests and your three unresolved board seats.",
+      "{heir} is ready to take over. His first act would be a podcast about how you were 'early'.",
+      "{years} years of carry. {heir} offers to take the keys and immediately ask the LPs for a bigger management fee.",
+      "The LPs gently ask whether {name} has considered retiring. {heir} has a deck about it."
     ],
-    "cta": "Hand over the keys"
+    "cta": "Hand over the keys",
+    "stayCta": "One more fund",
+    "heir": {
+      "about": [
+        "Grandson of {grandparent} ({funds} funds, {returned} returned to LPs). Has never had to network. Now has to.",
+        "Third-generation investor. Inherited the vest, not the track record. Grandpa {grandparent} says hi.",
+        "Raised on stories of {grandparent}'s {funds} funds. Mostly the ones that went to zero.",
+        "Took over from {grandparent} after {years} years. Promises to disrupt the family business. Has not read it.",
+        "Nepotism is a strong word. Prefers 'warm intro from {grandparent}'."
+      ],
+      "skills": [
+        "Surname",
+        "Inherited Rolodex",
+        "Grandpa's vest",
+        "Trust fund (not that kind)",
+        "Knowing a guy",
+        "Thanksgiving pitch meetings",
+        "Ancestral thesis"
+      ],
+      "endorsedNamed": [
+        "Endorsed by {grandparent} (biased)",
+        "Endorsed by {grandparent}'s former LPs, out of loyalty",
+        "Endorsed by {grandparent}, from a second account",
+        "Endorsed by the family office"
+      ]
+    }
   },
   "careerOver": {
     "rule": "Re{red} letter",

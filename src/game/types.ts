@@ -384,6 +384,17 @@ export interface CareerState {
   ledger: LedgerEntry[];
   /** Name on the professional profile; absent = the "Your Name Here" default. */
   playerName?: string;
+  /** Set when this career is an heir's (the century letter's hand-over):
+   *  who they inherited from, for the new profile's jokes. */
+  heirOf?: HeirOf;
+}
+
+/** The grandparent an heir's career took over from (presentation only). */
+export interface HeirOf {
+  name: string;
+  funds: number;
+  years: number;
+  returnedM: number;
 }
 
 // ---------------------------------------------------------------------------

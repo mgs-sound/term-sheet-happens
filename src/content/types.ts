@@ -145,9 +145,19 @@ export interface FlavorLines {
     shareCta: string;
     shareLines: string[];
   };
-  /** The century letter (LEGACY.years into a career): the grandchildren
-   *  take over. Shown once. title: {years}; lines: {years}/{funds}/{name}. */
-  legacy: { rule: string; title: string; lines: string[]; cta: string };
+  /** The succession letter (LEGACY.years into a career): hand over to the
+   *  grandchild (cta) or keep going (stayCta). Shown once per career.
+   *  title: {years}; lines: {years}/{funds}/{name}/{heir}. */
+  legacy: {
+    rule: string;
+    title: string;
+    lines: string[];
+    cta: string;
+    stayCta: string;
+    /** The heir's new profile (replaces the onboarding pools).
+     *  Tokens: {grandparent}/{funds}/{years}/{returned}. */
+    heir: { about: string[]; skills: string[]; endorsedNamed: string[] };
+  };
   /** Partner+ final-offer minigame (sword in the stone). */
   swordPull: { title: string; intros: string[]; won: string[]; lost: string[]; cta: string };
   /** Partner+ final-offer minigame (shoot the crane). */

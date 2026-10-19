@@ -14,6 +14,7 @@ import {
   withPlayerName,
   acceptStay,
   careerEnded,
+  heirCareer,
   legacyReached,
   stayOption,
 } from '../game/career';
@@ -439,7 +440,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
       partner: () => careerForTier('partner'),
       gp: () => careerForTier('gp'),
       gate: careerAtEnlightenmentGate,
-      '100y': () => careerBeforeLegacy(careerForTier('gp'), content.theses),
+      '70y': () => careerBeforeLegacy(careerForTier('gp'), content.theses),
     } as const;
     if (jump === 'fundI') beginCareer(initialCareer());
     else if (jump === 'name firm') {
@@ -567,7 +568,10 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           game={game}
           nextCareer={nextCareer}
           lines={content.lines}
-          onContinue={() => setScreen(afterLegacy)}
+          onHandOver={() =>
+            beginCareer(heirCareer(nextCareer, content.lines.profile.onboarding.defaultName))
+          }
+          onKeepGoing={() => setScreen(afterLegacy)}
         />
       )}
       {screen === 'rehire' && nextCareer && careerEnded(game) && (

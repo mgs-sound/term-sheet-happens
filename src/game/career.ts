@@ -211,6 +211,49 @@ export function legacyReached(prev: CareerState, next: CareerState): boolean {
   return careerYears(prev) < LEGACY.years && careerYears(next) >= LEGACY.years;
 }
 
+const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+
+/**
+ * The heir's name: "Ana Ruiz" -> "Ana Ruiz Jr." -> "Ana Ruiz III" -> "IV"…
+ * (capped by PLAYER_NAME_MAX; past X the numeral just stays).
+ */
+export function heirName(name: string): string {
+  const jr = /\s+Jr\.?$/i;
+  const roman = /\s+(II|III|IV|V|VI|VII|VIII|IX|X)$/;
+  let base = name.trim();
+  let n = 1;
+  if (jr.test(base)) {
+    base = base.replace(jr, '');
+    n = 2;
+  } else {
+    const m = base.match(roman);
+    if (m) {
+      base = base.replace(roman, '');
+      n = ROMAN.indexOf(m[1] as string);
+    }
+  }
+  const next = Math.min(n + 1, ROMAN.length - 1);
+  const suffix = next === 2 ? ' Jr.' : ` ${ROMAN[next]}`;
+  return base.slice(0, PLAYER_NAME_MAX - suffix.length).trimEnd() + suffix;
+}
+
+/**
+ * Hand over the keys: a fresh career for the grandchild, with their name
+ * and who they inherited from (for the new profile). Nothing else carries.
+ */
+export function heirCareer(grandparent: CareerState, fallbackName: string): CareerState {
+  const name = grandparent.playerName ?? fallbackName;
+  return {
+    ...withPlayerName(initialCareer(), heirName(name)),
+    heirOf: {
+      name,
+      funds: grandparent.ledger.length,
+      years: careerYears(grandparent),
+      returnedM: grandparent.totalReturnedM,
+    },
+  };
+}
+
 /** Max length of the profile name (UI input + sanitizer agree on it). */
 export const PLAYER_NAME_MAX = 32;
 

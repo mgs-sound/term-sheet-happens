@@ -509,12 +509,13 @@ export const EXITS = {
 // ---------------------------------------------------------------------------
 
 /**
- * The century letter: once a career has run this many years of funds (each
- * fund = EXITS.harvestYears, so 100 = 20 funds), a one-off "your grandchildren
- * take over" letter shows between the scorecard and the inbox. Comedy only.
+ * The succession letter: once a career has run this many years of funds (each
+ * fund = EXITS.harvestYears, so 70 = 14 funds), a one-off letter shows between
+ * the scorecard and the inbox: hand over to your grandchild ("Jr.", a fresh
+ * career on a new profile) or keep going. Once per career, so dynasties chain.
  */
 export const LEGACY = {
-  years: 100,
+  years: 70,
 };
 
 export const CAREER = {

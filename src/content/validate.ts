@@ -273,10 +273,14 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
   const legacy = data.legacy as Record<string, unknown> | undefined;
   if (
     !legacy ||
-    !['rule', 'title', 'cta'].every((k) => isNonEmptyString(legacy[k])) ||
-    !(Array.isArray(legacy.lines) && legacy.lines.length > 0 && legacy.lines.every(isNonEmptyString))
+    !['rule', 'title', 'cta', 'stayCta'].every((k) => isNonEmptyString(legacy[k])) ||
+    !(Array.isArray(legacy.lines) && legacy.lines.length > 0 && legacy.lines.every(isNonEmptyString)) ||
+    !['about', 'skills', 'endorsedNamed'].every((k) => {
+      const pool = (legacy.heir as Record<string, unknown> | undefined)?.[k];
+      return Array.isArray(pool) && pool.length > 0 && pool.every(isNonEmptyString);
+    })
   ) {
-    errors.push('lines.json: "legacy" needs rule, title, cta and non-empty lines');
+    errors.push('lines.json: "legacy" needs rule, title, cta, stayCta, lines and heir about / skills / endorsedNamed');
   }
 
   const sword = data.swordPull as Record<string, unknown> | undefined;
