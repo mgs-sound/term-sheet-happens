@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { FlavorLines } from '../../content/types';
 import type { CareerState, GameState } from '../../game/types';
 import { careerYears, heirName } from '../../game/career';
@@ -22,6 +23,7 @@ export function LegacyScreen({
   onKeepGoing: () => void;
 }): JSX.Element {
   const copy = lines.legacy;
+  const [confirming, setConfirming] = useState(false);
   const name = nextCareer.playerName ?? lines.profile.onboarding.defaultName;
   const vars = {
     years: String(careerYears(nextCareer)),
@@ -48,14 +50,32 @@ export function LegacyScreen({
           <dd>{fmtM(nextCareer.totalReturnedM)}</dd>
         </div>
       </dl>
-      <div className="screen-actions">
-        <button type="button" className="btn btn-sign" data-sfx="start" onClick={onHandOver}>
-          {copy.cta}
-        </button>
-        <button type="button" className="btn btn-secondary" onClick={onKeepGoing}>
-          {copy.stayCta}
-        </button>
-      </div>
+      {confirming ? (
+        // A stray tap must never end a career: hand-over asks first.
+        <div className="screen-actions">
+          <p className="legacy-confirm">{fillLine(copy.confirm, vars)}</p>
+          <button type="button" className="btn btn-danger" data-sfx="start" onClick={onHandOver}>
+            {fillLine(copy.confirmCta, vars)}
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            data-sfx="close"
+            onClick={() => setConfirming(false)}
+          >
+            {copy.cancelCta}
+          </button>
+        </div>
+      ) : (
+        <div className="screen-actions">
+          <button type="button" className="btn btn-sign" onClick={() => setConfirming(true)}>
+            {copy.cta}
+          </button>
+          <button type="button" className="btn btn-secondary" onClick={onKeepGoing}>
+            {copy.stayCta}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

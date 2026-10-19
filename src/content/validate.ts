@@ -273,7 +273,9 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
   const legacy = data.legacy as Record<string, unknown> | undefined;
   if (
     !legacy ||
-    !['rule', 'title', 'cta', 'stayCta'].every((k) => isNonEmptyString(legacy[k])) ||
+    !['rule', 'title', 'cta', 'stayCta', 'confirm', 'confirmCta', 'cancelCta'].every((k) =>
+      isNonEmptyString(legacy[k]),
+    ) ||
     !(Array.isArray(legacy.lines) && legacy.lines.length > 0 && legacy.lines.every(isNonEmptyString)) ||
     !['about', 'skills', 'endorsedNamed'].every((k) => {
       const pool = (legacy.heir as Record<string, unknown> | undefined)?.[k];

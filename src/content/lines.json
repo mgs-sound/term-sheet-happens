@@ -127,6 +127,9 @@
     ],
     "cta": "Hand over the keys",
     "stayCta": "One more fund",
+    "confirm": "This ends {name}'s career for good. {heir} starts from scratch at Fund I. No take-backs.",
+    "confirmCta": "Yes, retire {name}",
+    "cancelCta": "Not yet",
     "heir": {
       "about": [
         "Grandson of {grandparent} ({funds} funds, {returned} returned to LPs). Has never had to network. Now has to.",

@@ -154,6 +154,11 @@ export interface FlavorLines {
     lines: string[];
     cta: string;
     stayCta: string;
+    /** Confirmation before handing over ({name}/{heir}), so a stray tap
+     *  never ends a career. */
+    confirm: string;
+    confirmCta: string;
+    cancelCta: string;
     /** The heir's new profile (replaces the onboarding pools).
      *  Tokens: {grandparent}/{funds}/{years}/{returned}. */
     heir: { about: string[]; skills: string[]; endorsedNamed: string[] };
