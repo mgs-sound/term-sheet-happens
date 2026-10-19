@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { CareerState, GameState, Tier } from '../../game/types';
 import type { FlavorLines } from '../../content/types';
-import type { StayOption } from '../../game/career';
+import { oldAge, type StayOption } from '../../game/career';
 import {
   outsideSummary,
   runEndTrust,
@@ -10,7 +10,7 @@ import {
   trustTrend,
   type Trend,
 } from '../../game/rehire';
-import { fmtM } from '../format';
+import { fillLine, fmtM } from '../format';
 
 const TIER_LABELS: Record<Tier, string> = {
   associate: 'Associate',
@@ -115,6 +115,7 @@ export function RehireScreen({
   onLedger: () => void;
 }): JSX.Element {
   const copy = lines.rehire;
+  const elder = oldAge(nextCareer);
   const promoted = nextCareer.tier !== game.tier;
   const out = outsideSummary(nextCareer);
   const nowTrust = runEndTrust(game);
@@ -124,6 +125,14 @@ export function RehireScreen({
       <div className="letterhead-rule">{promoted ? 'Offer letter' : 'Re-engagement letter'}</div>
       <h2 className="rehire-inbox">{copy.inbox}</h2>
       <p className="rehire-intro">{copy.intro}</p>
+      {/* Kept going past the succession letter: an old-age jab per fund. */}
+      {elder && (
+        <p className="rehire-elder">
+          {fillLine(lines.legacy.oldAge[elder.index % lines.legacy.oldAge.length] ?? '', {
+            age: String(elder.age),
+          })}
+        </p>
+      )}
 
       {/* Stay: the sign-here yellow block (matches its button). */}
       <section className={`rehire-block rehire-stay ${stay.allowed ? '' : 'is-locked'}`}>

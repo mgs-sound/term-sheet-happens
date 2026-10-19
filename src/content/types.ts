@@ -159,6 +159,9 @@ export interface FlavorLines {
     confirm: string;
     confirmCta: string;
     cancelCta: string;
+    /** Kept going instead: one jab per fund in the inbox, escalating in
+     *  order (then cycling). {age} = LEGACY.startAge + career years. */
+    oldAge: string[];
     /** The heir's new profile (replaces the onboarding pools).
      *  Tokens: {grandparent}/{funds}/{years}/{returned}. */
     heir: { about: string[]; skills: string[]; endorsedNamed: string[] };

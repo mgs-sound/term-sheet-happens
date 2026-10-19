@@ -2089,6 +2089,15 @@
   line-height: 1.35;
 }
 
+/* Past the succession letter: the old-age jab, in stamp red. */
+.rehire-elder {
+  margin: 10px 0 0;
+  color: var(--stamp-red);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .rehire-block {
   margin-top: 16px;
   padding: 8px 10px 10px;

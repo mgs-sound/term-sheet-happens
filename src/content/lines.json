@@ -130,6 +130,16 @@
     "confirm": "This ends {name}'s career for good. {heir} starts from scratch at Fund I. No take-backs.",
     "confirmCta": "Yes, retire {name}",
     "cancelCta": "Not yet",
+    "oldAge": [
+      "{age} and still deploying. The LPs have started sending flowers, just in case.",
+      "{age}. You take meetings from a recliner. Founders have learned to pitch louder.",
+      "{age}. Your brain now lives in a jar. The jar has a board seat.",
+      "{age}. Your brain is plugged into a photocopier. It still says 'let's circle back'.",
+      "{age}. You are legally a portrait in the conference room. The portrait still votes.",
+      "{age}. Scientists want to study you. The LPs want their money back first.",
+      "{age}. Your carry now vests in the afterlife. You've asked for pro rata there too.",
+      "{age}. You have outlived four theses, two heirs and the concept of a fund."
+    ],
     "heir": {
       "about": [
         "Grandson of {grandparent} ({funds} funds, {returned} returned to LPs). Has never had to network. Now has to.",

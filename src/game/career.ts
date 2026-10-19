@@ -211,6 +211,20 @@ export function legacyReached(prev: CareerState, next: CareerState): boolean {
   return careerYears(prev) < LEGACY.years && careerYears(next) >= LEGACY.years;
 }
 
+/**
+ * Kept going past the succession letter: which old-age jab to show in the
+ * inbox (0 = the fund that hit LEGACY.years, then one more per fund), and
+ * the player's age. Null while still young enough.
+ */
+export function oldAge(career: CareerState): { index: number; age: number } | null {
+  const years = careerYears(career);
+  if (years < LEGACY.years) return null;
+  return {
+    index: Math.floor((years - LEGACY.years) / EXITS.harvestYears),
+    age: LEGACY.startAge + years,
+  };
+}
+
 const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
 /**

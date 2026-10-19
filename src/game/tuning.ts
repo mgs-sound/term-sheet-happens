@@ -516,6 +516,8 @@ export const EXITS = {
  */
 export const LEGACY = {
   years: 70,
+  /** Age the player starts their career at; old-age jabs show 25 + years. TUNE */
+  startAge: 25,
 };
 
 export const CAREER = {

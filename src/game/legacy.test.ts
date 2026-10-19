@@ -6,6 +6,7 @@ import {
   heirName,
   initialCareer,
   legacyReached,
+  oldAge,
 } from './career';
 import { careerBeforeLegacy } from './devtools';
 import { EXITS, LEGACY } from './tuning';
@@ -64,5 +65,15 @@ describe('succession letter', () => {
     expect(legacyReached(at, withOneMoreFund(at))).toBe(false);
     const earlier = { ...before, ledger: before.ledger.slice(1) };
     expect(legacyReached(earlier, before)).toBe(false);
+  });
+});
+
+describe('old age', () => {
+  it('starts at the letter and steps one jab per fund', () => {
+    const before = careerBeforeLegacy(initialCareer(), theses);
+    expect(oldAge(before)).toBeNull();
+    const at = withOneMoreFund(before);
+    expect(oldAge(at)).toEqual({ index: 0, age: LEGACY.startAge + LEGACY.years });
+    expect(oldAge(withOneMoreFund(at))?.index).toBe(1);
   });
 });
