@@ -115,6 +115,18 @@
       "Returned {returned} to LPs in one fund. The endowment sent fruit. Term Sheet Happens."
     ]
   },
+  "legacy": {
+    "rule": "Memorandum of succession",
+    "title": "{years} years",
+    "lines": [
+      "{funds} funds and a century in, your grandchildren take over. They've already pivoted the firm to AI.",
+      "{years} years of deal flow. Your grandchildren inherit the firm, the Patagonia vests and three unresolved board seats.",
+      "Your grandchildren take over. Their first act: a podcast about how you were 'early'.",
+      "A century of carry. The grandkids take the keys and immediately ask the LPs for a bigger management fee.",
+      "{name} retires at last. The grandchildren take over and swear they'll respect the thesis. They will not."
+    ],
+    "cta": "Hand over the keys"
+  },
   "careerOver": {
     "rule": "Re{red} letter",
     "ruleRed": "signation",

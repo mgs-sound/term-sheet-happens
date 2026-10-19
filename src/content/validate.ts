@@ -270,6 +270,15 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     errors.push('lines.json: "careerOver" is missing copy (strings + non-empty lines/shareLines)');
   }
 
+  const legacy = data.legacy as Record<string, unknown> | undefined;
+  if (
+    !legacy ||
+    !['rule', 'title', 'cta'].every((k) => isNonEmptyString(legacy[k])) ||
+    !(Array.isArray(legacy.lines) && legacy.lines.length > 0 && legacy.lines.every(isNonEmptyString))
+  ) {
+    errors.push('lines.json: "legacy" needs rule, title, cta and non-empty lines');
+  }
+
   const sword = data.swordPull as Record<string, unknown> | undefined;
   if (
     !sword ||

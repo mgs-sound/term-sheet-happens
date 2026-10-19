@@ -11,7 +11,7 @@ import { createRng } from './rng.ts';
 import { acceptLpOffer, generateLpOffers, initialCareer } from './career.ts';
 import { requestPool } from './lpRequests.ts';
 import { makeFollowOnEvent } from './followons.ts';
-import { FUND_SIZING, METERS } from './tuning.ts';
+import { EXITS, FUND_SIZING, LEGACY, METERS } from './tuning.ts';
 import { clamp, roundM } from './util.ts';
 
 /** Rewrite a harvested run's headline numbers (DPI, fund size, reputation). */
@@ -139,6 +139,30 @@ export function careerAtGpNaming(theses: readonly Thesis[]): CareerState {
 }
 
 /** A GP career one great fund away from Enlightenment. */
+/**
+ * One fund short of the century letter: `base` with filler ledger lines up
+ * to LEGACY.years minus one harvest period. Close the next fund to see it.
+ */
+export function careerBeforeLegacy(base: CareerState, theses: readonly Thesis[]): CareerState {
+  const funds = Math.ceil(LEGACY.years / EXITS.harvestYears) - 1;
+  const ledger = Array.from({ length: funds }, (_, i) => ({
+    fundIndex: i + 1,
+    firmName: 'Legacy Holdings',
+    thesisId: theses[i % theses.length]?.id ?? '',
+    tier: base.tier,
+    fundSizeM: 100,
+    returnedM: 120,
+    dpi: 1.2,
+  }));
+  return {
+    ...base,
+    fundIndex: funds + 1,
+    aumM: roundM(base.aumM + funds * 100),
+    totalReturnedM: roundM(base.totalReturnedM + funds * 120),
+    ledger,
+  };
+}
+
 export function careerAtEnlightenmentGate(): CareerState {
   return {
     ...initialCareer(),

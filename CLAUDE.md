@@ -52,6 +52,7 @@ A satirical VC card-swipe roguelite. Reigns/Tinder loop: each run is one fund at
 - **Partner** → return 2x+ → **GP**: choose between three LP offer packages (fund size + assigned thesis + a quirk), name your own firm (or reroll generated names).
 - **Big funds:** a fund with more money per meeting than its rung's usual writes bigger checks (card asks/valuations scale up; ownership and multiples unchanged) so it's actually deployable — and its LPs pile on stricter requests (3–4, or 4–5 for the biggest: team 4+, heat ≤2, …).
 - **GP:** DPI sizes the next fund (AUM is the career score). Capital calls become a hazard.
+- **Century letter:** each fund is 5 years, so the fund that takes a career to 100 years (fund 20) is followed by a one-off "Memorandum of succession": your grandchildren take over. Comedy only, shown once, between the scorecard and the inbox (`LEGACY` in tuning, `legacy` in lines.json).
 - **Endgame:** 3x+ on a $200M+ fund with maxed reputation = **Enlightenment**. Final card: a young associate pitches YOU their fund — you swipe on them. Credits. Endless mode unlocks.
 
 ## Core systems

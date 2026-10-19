@@ -508,6 +508,15 @@ export const EXITS = {
 // Career ladder & fund sizing
 // ---------------------------------------------------------------------------
 
+/**
+ * The century letter: once a career has run this many years of funds (each
+ * fund = EXITS.harvestYears, so 100 = 20 funds), a one-off "your grandchildren
+ * take over" letter shows between the scorecard and the inbox. Comedy only.
+ */
+export const LEGACY = {
+  years: 100,
+};
+
 export const CAREER = {
   /** DPI thresholds (returned / fund size). */
   associatePromotionDpi: 1.0,

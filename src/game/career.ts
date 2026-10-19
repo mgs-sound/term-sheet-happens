@@ -10,7 +10,9 @@ import type { CareerState, GameState, LpOffer } from './types.ts';
 import { trustSizeMultiplier } from './meters.ts';
 import {
   CAREER,
+  EXITS,
   FIRST_FUND_AT_TIER_MEETINGS,
+  LEGACY,
   FUND_SIZING,
   MEETINGS_BY_TIER,
   METERS,
@@ -194,6 +196,19 @@ export function acceptLpOffer(career: CareerState, offerIndex: number): CareerSt
  */
 export function careerEnded(run: GameState): boolean {
   return (run.harvest?.returnedM ?? 0) < 0;
+}
+
+/** Years a career has run: one harvest period per fund in the ledger. */
+export function careerYears(career: CareerState): number {
+  return career.ledger.length * EXITS.harvestYears;
+}
+
+/**
+ * Did the fund just closed (prev -> next) cross the century? True exactly
+ * once per career: the grandchildren letter (LEGACY.years).
+ */
+export function legacyReached(prev: CareerState, next: CareerState): boolean {
+  return careerYears(prev) < LEGACY.years && careerYears(next) >= LEGACY.years;
 }
 
 /** Max length of the profile name (UI input + sanitizer agree on it). */

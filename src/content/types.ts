@@ -145,6 +145,9 @@ export interface FlavorLines {
     shareCta: string;
     shareLines: string[];
   };
+  /** The century letter (LEGACY.years into a career): the grandchildren
+   *  take over. Shown once. title: {years}; lines: {years}/{funds}/{name}. */
+  legacy: { rule: string; title: string; lines: string[]; cta: string };
   /** Partner+ final-offer minigame (sword in the stone). */
   swordPull: { title: string; intros: string[]; won: string[]; lost: string[]; cta: string };
   /** Partner+ final-offer minigame (shoot the crane). */
