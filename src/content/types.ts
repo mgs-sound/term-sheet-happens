@@ -145,6 +145,27 @@ export interface FlavorLines {
     shareCta: string;
     shareLines: string[];
   };
+  /** The succession letter (LEGACY.years into a career): hand over to the
+   *  grandchild (cta) or keep going (stayCta). Shown once per career.
+   *  title: {years}; lines: {years}/{funds}/{name}/{heir}. */
+  legacy: {
+    rule: string;
+    title: string;
+    lines: string[];
+    cta: string;
+    stayCta: string;
+    /** Confirmation before handing over ({name}/{heir}), so a stray tap
+     *  never ends a career. */
+    confirm: string;
+    confirmCta: string;
+    cancelCta: string;
+    /** Kept going instead: one jab per fund in the inbox, escalating in
+     *  order (then cycling). {age} = LEGACY.startAge + career years. */
+    oldAge: string[];
+    /** The heir's new profile (replaces the onboarding pools).
+     *  Tokens: {grandparent}/{funds}/{years}/{returned}. */
+    heir: { about: string[]; skills: string[]; endorsedNamed: string[] };
+  };
   /** Partner+ final-offer minigame (sword in the stone). */
   swordPull: { title: string; intros: string[]; won: string[]; lost: string[]; cta: string };
   /** Partner+ final-offer minigame (shoot the crane). */

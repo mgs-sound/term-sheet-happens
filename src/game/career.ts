@@ -10,7 +10,9 @@ import type { CareerState, GameState, LpOffer } from './types.ts';
 import { trustSizeMultiplier } from './meters.ts';
 import {
   CAREER,
+  EXITS,
   FIRST_FUND_AT_TIER_MEETINGS,
+  LEGACY,
   FUND_SIZING,
   MEETINGS_BY_TIER,
   METERS,
@@ -194,6 +196,76 @@ export function acceptLpOffer(career: CareerState, offerIndex: number): CareerSt
  */
 export function careerEnded(run: GameState): boolean {
   return (run.harvest?.returnedM ?? 0) < 0;
+}
+
+/** Years a career has run: one harvest period per fund in the ledger. */
+export function careerYears(career: CareerState): number {
+  return career.ledger.length * EXITS.harvestYears;
+}
+
+/**
+ * Did the fund just closed (prev -> next) cross the century? True exactly
+ * once per career: the grandchildren letter (LEGACY.years).
+ */
+export function legacyReached(prev: CareerState, next: CareerState): boolean {
+  return careerYears(prev) < LEGACY.years && careerYears(next) >= LEGACY.years;
+}
+
+/**
+ * Kept going past the succession letter: which old-age jab to show in the
+ * inbox (0 = the fund that hit LEGACY.years, then one more per fund), and
+ * the player's age. Null while still young enough.
+ */
+export function oldAge(career: CareerState): { index: number; age: number } | null {
+  const years = careerYears(career);
+  if (years < LEGACY.years) return null;
+  return {
+    index: Math.floor((years - LEGACY.years) / EXITS.harvestYears),
+    age: LEGACY.startAge + years,
+  };
+}
+
+const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+
+/**
+ * The heir's name: "Ana Ruiz" -> "Ana Ruiz Jr." -> "Ana Ruiz III" -> "IV"…
+ * (capped by PLAYER_NAME_MAX; past X the numeral just stays).
+ */
+export function heirName(name: string): string {
+  const jr = /\s+Jr\.?$/i;
+  const roman = /\s+(II|III|IV|V|VI|VII|VIII|IX|X)$/;
+  let base = name.trim();
+  let n = 1;
+  if (jr.test(base)) {
+    base = base.replace(jr, '');
+    n = 2;
+  } else {
+    const m = base.match(roman);
+    if (m) {
+      base = base.replace(roman, '');
+      n = ROMAN.indexOf(m[1] as string);
+    }
+  }
+  const next = Math.min(n + 1, ROMAN.length - 1);
+  const suffix = next === 2 ? ' Jr.' : ` ${ROMAN[next]}`;
+  return base.slice(0, PLAYER_NAME_MAX - suffix.length).trimEnd() + suffix;
+}
+
+/**
+ * Hand over the keys: a fresh career for the grandchild, with their name
+ * and who they inherited from (for the new profile). Nothing else carries.
+ */
+export function heirCareer(grandparent: CareerState, fallbackName: string): CareerState {
+  const name = grandparent.playerName ?? fallbackName;
+  return {
+    ...withPlayerName(initialCareer(), heirName(name)),
+    heirOf: {
+      name,
+      funds: grandparent.ledger.length,
+      years: careerYears(grandparent),
+      returnedM: grandparent.totalReturnedM,
+    },
+  };
 }
 
 /** Max length of the profile name (UI input + sanitizer agree on it). */

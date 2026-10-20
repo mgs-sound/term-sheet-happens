@@ -130,6 +130,16 @@
   padding-top: 20px;
 }
 
+/* Succession letter: "are you sure?" before the hand-over (counter-block look). */
+.legacy-confirm {
+  margin: 0;
+  border: 2px solid var(--stamp-red);
+  color: var(--stamp-red);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 /* ------------------------------------------------------------ letterhead */
 
 .letterhead {
@@ -2076,6 +2086,15 @@
   margin: 6px 0 0;
   font-size: 17px;
   font-style: italic;
+  line-height: 1.35;
+}
+
+/* Past the succession letter: the old-age jab, in stamp red. */
+.rehire-elder {
+  margin: 10px 0 0;
+  color: var(--stamp-red);
+  font-size: 15px;
+  font-weight: 700;
   line-height: 1.35;
 }
 

@@ -270,6 +270,24 @@ export function validateFlavorLines(data: unknown): { lines: FlavorLines | null;
     errors.push('lines.json: "careerOver" is missing copy (strings + non-empty lines/shareLines)');
   }
 
+  const legacy = data.legacy as Record<string, unknown> | undefined;
+  if (
+    !legacy ||
+    !['rule', 'title', 'cta', 'stayCta', 'confirm', 'confirmCta', 'cancelCta'].every((k) =>
+      isNonEmptyString(legacy[k]),
+    ) ||
+    !['lines', 'oldAge'].every((k) => {
+      const pool = legacy[k];
+      return Array.isArray(pool) && pool.length > 0 && pool.every(isNonEmptyString);
+    }) ||
+    !['about', 'skills', 'endorsedNamed'].every((k) => {
+      const pool = (legacy.heir as Record<string, unknown> | undefined)?.[k];
+      return Array.isArray(pool) && pool.length > 0 && pool.every(isNonEmptyString);
+    })
+  ) {
+    errors.push('lines.json: "legacy" needs rule, title, cta, stayCta, lines and heir about / skills / endorsedNamed');
+  }
+
   const sword = data.swordPull as Record<string, unknown> | undefined;
   if (
     !sword ||

@@ -14,11 +14,14 @@ import {
   withPlayerName,
   acceptStay,
   careerEnded,
+  heirCareer,
+  legacyReached,
   stayOption,
 } from '../game/career';
 import {
   careerAtEnlightenmentGate,
   careerAtGpNaming,
+  careerBeforeLegacy,
   forceHarvestResult,
   forceLpRequests,
   forceVetoChallenge,
@@ -47,6 +50,7 @@ import { GpOffersScreen } from './screens/GpOffersScreen';
 import { GpNamingScreen } from './screens/GpNamingScreen';
 import { LedgerScreen } from './screens/LedgerScreen';
 import { EnlightenmentScreen } from './screens/EnlightenmentScreen';
+import { LegacyScreen } from './screens/LegacyScreen';
 import { DevPanel, type DevJump } from './components/DevPanel';
 import { lpRequestText } from './components/LpRequestList';
 import { SettingsSheet } from './components/SettingsSheet';
@@ -63,6 +67,7 @@ type Screen =
   | 'gpOffers'
   | 'gpNaming'
   | 'ledger'
+  | 'legacy'
   | 'enlightenment';
 
 const SAVE_KEY = 'save';
@@ -113,7 +118,7 @@ function screenForResume(save: SaveData): Screen {
   const game = save.game;
   if (!game) return 'reveal';
   if (game.phase === 'harvested') {
-    const allowed: Screen[] = ['scorecard', 'harvest', 'rehire', 'ledger', 'enlightenment'];
+    const allowed: Screen[] = ['scorecard', 'harvest', 'rehire', 'ledger', 'legacy', 'enlightenment'];
     if (save.pendingCareer) allowed.push('gpOffers', 'gpNaming');
     return allowed.includes(save.screen as Screen) ? (save.screen as Screen) : 'scorecard';
   }
@@ -272,6 +277,9 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
     const rng = createRng((game.seed ^ (game.fundIndex * 2654435761)) >>> 0);
     return closeCareerFund(career, game, rng, content.theses);
   }, [game, career, content.theses]);
+
+  // Past the scorecard (and the century letter): Enlightenment once, else the inbox.
+  const afterLegacy: Screen = nextCareer?.enlightened && !career.enlightened ? 'enlightenment' : 'rehire';
 
   // The new-firm offers shown in the rehire inbox, one row each: the same
   // fixed set the engagement letters then flip through (seeded from the run,
@@ -432,6 +440,7 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
       partner: () => careerForTier('partner'),
       gp: () => careerForTier('gp'),
       gate: careerAtEnlightenmentGate,
+      '70y': () => careerBeforeLegacy(careerForTier('gp'), content.theses),
     } as const;
     if (jump === 'fundI') beginCareer(initialCareer());
     else if (jump === 'name firm') {
@@ -545,8 +554,24 @@ function GameApp({ content, save }: { content: Content; save: SaveData | null })
           lines={content.lines}
           onShare={() => void shareScorecard()}
           onContinue={() =>
-            setScreen(nextCareer?.enlightened && !career.enlightened ? 'enlightenment' : 'rehire')
+            setScreen(
+              // The century letter first (once per career; not over a resignation).
+              nextCareer && !careerEnded(game) && legacyReached(career, nextCareer)
+                ? 'legacy'
+                : afterLegacy,
+            )
           }
+        />
+      )}
+      {screen === 'legacy' && nextCareer && (
+        <LegacyScreen
+          game={game}
+          nextCareer={nextCareer}
+          lines={content.lines}
+          onHandOver={() =>
+            beginCareer(heirCareer(nextCareer, content.lines.profile.onboarding.defaultName))
+          }
+          onKeepGoing={() => setScreen(afterLegacy)}
         />
       )}
       {screen === 'rehire' && nextCareer && careerEnded(game) && (

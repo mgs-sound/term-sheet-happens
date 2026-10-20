@@ -508,6 +508,18 @@ export const EXITS = {
 // Career ladder & fund sizing
 // ---------------------------------------------------------------------------
 
+/**
+ * The succession letter: once a career has run this many years of funds (each
+ * fund = EXITS.harvestYears, so 70 = 14 funds), a one-off letter shows between
+ * the scorecard and the inbox: hand over to your grandchild ("Jr.", a fresh
+ * career on a new profile) or keep going. Once per career, so dynasties chain.
+ */
+export const LEGACY = {
+  years: 70,
+  /** Age the player starts their career at; old-age jabs show 25 + years. TUNE */
+  startAge: 25,
+};
+
 export const CAREER = {
   /** DPI thresholds (returned / fund size). */
   associatePromotionDpi: 1.0,

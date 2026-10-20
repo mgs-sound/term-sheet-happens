@@ -3,7 +3,7 @@ import type { GameState } from '../../game/types';
 import { services } from '../../services';
 import { SFX_IDS } from '../../services/AudioService';
 
-export type DevJump = 'fundI' | 'associate' | 'partner' | 'gp' | 'gate' | 'name firm';
+export type DevJump = 'fundI' | 'associate' | 'partner' | 'gp' | 'gate' | '70y' | 'name firm';
 
 /**
  * Dev-only cheat panel (?dev). All mutations route through engine/devtools
@@ -68,7 +68,7 @@ export function DevPanel({
       {open && (
         <div className="dev-body">
           <span className="dev-label">jump</span>
-          {(['fundI', 'associate', 'partner', 'gp', 'gate', 'name firm'] as const).map((j) => (
+          {(['fundI', 'associate', 'partner', 'gp', 'gate', '70y', 'name firm'] as const).map((j) => (
             <button key={j} type="button" onClick={() => onJump(j)}>
               {j}
             </button>

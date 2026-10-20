@@ -115,6 +115,56 @@
       "Returned {returned} to LPs in one fund. The endowment sent fruit. Term Sheet Happens."
     ]
   },
+  "legacy": {
+    "rule": "Memorandum of succession",
+    "title": "{years} years",
+    "lines": [
+      "{funds} funds in. Your grandson, {heir}, says he's ready to take over. He has already pivoted the firm to AI, in his head.",
+      "{years} years of deal flow. {heir} would like the keys, the Patagonia vests and your three unresolved board seats.",
+      "{heir} is ready to take over. His first act would be a podcast about how you were 'early'.",
+      "{years} years of carry. {heir} offers to take the keys and immediately ask the LPs for a bigger management fee.",
+      "The LPs gently ask whether {name} has considered retiring. {heir} has a deck about it."
+    ],
+    "cta": "Hand over the keys",
+    "stayCta": "One more fund",
+    "confirm": "This ends {name}'s career for good. {heir} starts from scratch at Fund I. No take-backs.",
+    "confirmCta": "Yes, retire {name}",
+    "cancelCta": "Not yet",
+    "oldAge": [
+      "{age} and still deploying. The LPs have started sending flowers, just in case.",
+      "{age}. You take meetings from a recliner. Founders have learned to pitch louder.",
+      "{age}. Your brain now lives in a jar. The jar has a board seat.",
+      "{age}. Your brain is plugged into a photocopier. It still says 'let's circle back'.",
+      "{age}. You are legally a portrait in the conference room. The portrait still votes.",
+      "{age}. Scientists want to study you. The LPs want their money back first.",
+      "{age}. Your carry now vests in the afterlife. You've asked for pro rata there too.",
+      "{age}. You have outlived four theses, two heirs and the concept of a fund."
+    ],
+    "heir": {
+      "about": [
+        "Grandson of {grandparent} ({funds} funds, {returned} returned to LPs). Has never had to network. Now has to.",
+        "Third-generation investor. Inherited the vest, not the track record. Grandpa {grandparent} says hi.",
+        "Raised on stories of {grandparent}'s {funds} funds. Mostly the ones that went to zero.",
+        "Took over from {grandparent} after {years} years. Promises to disrupt the family business. Has not read it.",
+        "Nepotism is a strong word. Prefers 'warm intro from {grandparent}'."
+      ],
+      "skills": [
+        "Surname",
+        "Inherited Rolodex",
+        "Grandpa's vest",
+        "Trust fund (not that kind)",
+        "Knowing a guy",
+        "Thanksgiving pitch meetings",
+        "Ancestral thesis"
+      ],
+      "endorsedNamed": [
+        "Endorsed by {grandparent} (biased)",
+        "Endorsed by {grandparent}'s former LPs, out of loyalty",
+        "Endorsed by {grandparent}, from a second account",
+        "Endorsed by the family office"
+      ]
+    }
+  },
   "careerOver": {
     "rule": "Re{red} letter",
     "ruleRed": "signation",
