@@ -20,3 +20,9 @@ DerivedData/
 xcuserdata/
 *.ipa
 *.dSYM.zip
+
+# Steam desktop build (Electron)
+/release
+/desktop/build
+/desktop/steamworks_sdk
+steam_appid.txt

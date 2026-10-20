@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "main": "desktop/build/main.js",
   "scripts": {
     "dev": "vite",
     "dev:phone": "vite --host 0.0.0.0",
@@ -14,6 +15,10 @@
     "screenshots": "node scripts/screenshots.mjs",
     "ios:sync": "npm run build && cap sync ios",
     "ios": "npm run ios:sync && cap open ios",
+    "desktop:build": "tsc -p desktop",
+    "desktop:dev": "npm run desktop:build && TSH_DEV_URL=http://localhost:5173 electron .",
+    "desktop": "npm run build && npm run desktop:build && steamworks-fetch-universal-koffi && electron-builder --mac",
+    "steam:upload": "steamcmd +login \"$STEAM_USER\" +run_app_build \"$PWD/desktop/steam/app_build.vdf\" +quit",
     "test": "vitest run",
     "test:watch": "vitest",
     "validate-content": "node --experimental-strip-types --no-warnings scripts/validate-content.ts",
@@ -27,7 +32,8 @@
     "@capacitor/preferences": "^8.0.1",
     "@capacitor/share": "^8.0.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "steamworks-ffi-node": "^0.11.3"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.3",
@@ -36,6 +42,8 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.5.0",
+    "electron": "^44.9.1",
+    "electron-builder": "^26.15.3",
     "localtunnel": "^2.0.2",
     "qrcode-terminal": "^0.12.0",
     "typescript": "^5.8.3",

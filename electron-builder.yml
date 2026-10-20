@@ -1,0 +1,48 @@
+# Steam desktop build: `npm run desktop` → release/mac-universal/Term Sheet Happens.app
+appId: game.termsheethappens
+productName: Term Sheet Happens
+directories:
+  # Not the default `dist`: that's Vite's web build, which the app ships.
+  output: release
+
+files:
+  - dist/**
+  - desktop/build/**
+  - package.json
+  # Vite already bundled the web code; the Capacitor and React packages
+  # (plus their deps) aren't needed at runtime.
+  - '!node_modules/{@capacitor,react,react-dom,scheduler,loose-envify,js-tokens,tslib}/**'
+  - '!node_modules/steamworks-ffi-node/prebuilds/{win32,linux}-*/**'
+  # Its presence would stop the app from relaunching itself through Steam.
+  - '!**/steam_appid.txt'
+
+# The Steam binding loads native code through koffi, which can't run from inside the asar.
+asarUnpack:
+  - node_modules/steamworks-ffi-node/**
+  - node_modules/koffi/**
+  - node_modules/@koromix/**
+# koffi ships prebuilt binaries; a rebuild would drop the universal set
+# fetched by `steamworks-fetch-universal-koffi`.
+npmRebuild: false
+
+# libsteam_api.dylib, from the Steamworks SDK (see desktop/README.md).
+extraResources:
+  - from: desktop/steamworks_sdk/redistributable_bin/osx
+    to: steamworks_sdk/redistributable_bin/osx
+
+mac:
+  # Steam ships the .app folder; no DMG or zip.
+  target:
+    - target: dir
+      arch: universal
+  # Native files that are identical in the x64 and arm64 halves (per-arch
+  # packages side by side, or already fat), so the universal merge keeps them as-is.
+  x64ArchFiles: '{**/node_modules/@koromix/**,**/node_modules/steamworks-ffi-node/prebuilds/**,**/steamworks_sdk/**}'
+  category: public.app-category.games
+  icon: ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png
+  hardenedRuntime: true
+  entitlements: desktop/entitlements.mac.plist
+  entitlementsInherit: desktop/entitlements.mac.plist
+  # "Developer ID Application: Sound Games Inc." from the keychain. Notarization
+  # runs when the APPLE_API_* env vars are set (desktop/README.md).
+  identity: Sound Games Inc. (JA5UT773C5)

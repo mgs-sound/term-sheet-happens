@@ -1,0 +1,22 @@
+// SteamPipe build script, run by `npm run steam:upload` (steamcmd).
+// Paths are relative to this file.
+"AppBuild"
+{
+	"AppID"	"480" // TODO: real App ID (also APP_ID in desktop/main.ts)
+	"Desc"	"Term Sheet Happens macOS"
+	"ContentRoot"	"../../release/mac-universal/"
+	"BuildOutput"	"../../release/steam-build-output/"
+	"SetLive"	"" // a branch name (e.g. "beta") goes live on upload; never "default"
+	"Depots"
+	{
+		"481" // TODO: the macOS depot ID
+		{
+			"FileMapping"
+			{
+				"LocalPath"	"*"
+				"DepotPath"	"."
+				"recursive"	"1"
+			}
+		}
+	}
+}
