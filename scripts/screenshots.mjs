@@ -2,7 +2,8 @@
  * Store screenshots: drives the game through the ?dev panel with a headless
  * browser and saves PNGs at store-friendly sizes. Not part of the app.
  *
- *   npm i -D playwright && npx playwright install chromium   (once)
+ * Playwright is NOT a project dependency; install it locally when needed:
+ *   npm i --no-save playwright && npx playwright install chromium
  *   npm run dev                                               (in another tab)
  *   node scripts/screenshots.mjs                    (store set, both formats)
  *   node scripts/screenshots.mjs landscape          (one format)
