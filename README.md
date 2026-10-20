@@ -2,7 +2,7 @@
 
 A satirical VC card-swipe roguelite. Swipe on founders, disappoint LPs, keep a
 ledger. Mobile-first web (Vite + React 18 + TypeScript strict), fully offline,
-Capacitor-ready. Design doc and standing rules live in [CLAUDE.md](CLAUDE.md).
+wrapped for iOS with Capacitor. Design doc and standing rules live in [CLAUDE.md](CLAUDE.md).
 
 ## Requirements
 
@@ -35,7 +35,8 @@ force-DPI, share-card preview). Saves live in localStorage under `tsh.*`;
   (see `scripts/generate-pitches.md` for the batch-writing prompt).
 - `src/ui/` — React + plain CSS, deal-memo aesthetic. No game math.
 - `src/services/` — platform interfaces (`StorageService`, `ShareService`,
-  `HapticsService`) with web implementations; Capacitor swaps these only.
+  `HapticsService`) with web and Capacitor implementations; `index.ts`
+  picks one set at startup (the app's only platform check).
 - `public/sw.js` — offline shell (cache-first hashed assets, network-first
   navigations). Registered in production builds only.
 
@@ -53,3 +54,23 @@ force-DPI, share-card preview). Saves live in localStorage under `tsh.*`;
 
 After the first visit the game plays fully offline; the service worker
 serves the shell and content from cache.
+
+## iOS (Capacitor → TestFlight)
+
+`ios/` is a committed Xcode project (Swift Package Manager, no CocoaPods).
+The web bundle it embeds is generated (and gitignored), so run a sync after
+cloning and after every web change:
+
+```bash
+npm run ios:sync   # build + copy dist/ into the iOS project
+npm run ios        # same, then open Xcode
+```
+
+App id `game.termsheethappens` (in `capacitor.config.ts` and the Xcode
+target). In Xcode: pick your team under Signing & Capabilities, bump the
+build number, then Product → Archive → Distribute App → App Store Connect.
+The app icon is `ios/App/App/Assets.xcassets/AppIcon.appiconset/` (1024px,
+no alpha).
+
+Native builds use Capacitor Preferences for saves (not localStorage), the
+native share sheet, and real haptics.

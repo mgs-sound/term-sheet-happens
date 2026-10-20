@@ -1,12 +1,16 @@
 /**
- * ShareService — scorecard sharing behind an interface so Capacitor Share can
- * replace the Web Share API later without touching game or UI code.
+ * ShareService — scorecard sharing behind an interface: the Web Share API on
+ * the web, the native share sheet via Capacitor in the shell (wired in
+ * ./index.ts).
  *
  * Web fallback chain: navigator.share with files -> navigator.share text ->
  * clipboard (PNG + text when supported, else text + PNG download) -> PNG
  * download alone. The caller renders the PNG (offscreen canvas) and hands
  * the blob here; this service is transport only.
  */
+
+import { Directory, Filesystem } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 
 export type ShareOutcome =
   | 'shared' // native share sheet completed
@@ -99,5 +103,50 @@ export class WebShareService implements ShareService {
     anchor.click();
     anchor.remove();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+}
+
+/** Capacitor rejects a dismissed share sheet with "Share canceled". */
+function isNativeCancel(err: unknown): boolean {
+  return err instanceof Error && /cancel/i.test(err.message);
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(',', 2)[1] ?? '');
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+
+/**
+ * Native share sheet. The plugin shares file:// URLs, not blobs, so the PNG
+ * is written to the cache directory first. If the image can't go out, the
+ * text still does.
+ */
+export class CapacitorShareService implements ShareService {
+  async share(payload: SharePayload): Promise<ShareOutcome> {
+    if (payload.image) {
+      try {
+        const { uri } = await Filesystem.writeFile({
+          path: payload.image.filename,
+          data: await blobToBase64(payload.image.blob),
+          directory: Directory.Cache,
+        });
+        await Share.share({ title: payload.title, text: payload.text, files: [uri] });
+        return 'shared';
+      } catch (err) {
+        if (isNativeCancel(err)) return 'cancelled';
+        // Fall through to text share.
+      }
+    }
+
+    try {
+      await Share.share({ title: payload.title, text: payload.text });
+      return 'shared';
+    } catch (err) {
+      return isNativeCancel(err) ? 'cancelled' : 'unavailable';
+    }
   }
 }
