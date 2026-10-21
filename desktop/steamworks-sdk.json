@@ -1,0 +1,6 @@
+{
+  "version": "1.65",
+  "files": {
+    "redistributable_bin/osx/libsteam_api.dylib": "a37faf19675b943a3c9717d25d9a881f5addb7f0ee728e03de7aac143ba759d2"
+  }
+}

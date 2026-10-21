@@ -25,7 +25,7 @@ A satirical VC card-swipe roguelite. Mobile-first web (Vite + React 18 + TypeScr
 
 No router library — simple phase-based screen state.
 
-Commands: `npm run dev`, `npm test` (Vitest over `src/game` + `src/content`), `npm run build` (typecheck + bundle), `npm run validate-content` (content schema, id/name uniqueness, sector validity, idea length), `npm run simulate -- --runs N` (naive-strategy DPI distributions per tier, for tuning `tuning.ts`), `npm run ios:sync` / `npm run ios` (build + sync into the iOS project / then open Xcode), `npm run desktop:dev` (Electron against the Vite dev server; Steam client running), `npm run desktop` (signed universal `.app` into `release/`), `npm run steam:upload` (SteamPipe via steamcmd).
+Commands: `npm run dev`, `npm test` (Vitest over `src/game` + `src/content`), `npm run build` (typecheck + bundle), `npm run validate-content` (content schema, id/name uniqueness, sector validity, idea length), `npm run simulate -- --runs N` (naive-strategy DPI distributions per tier, for tuning `tuning.ts`), `npm run ios:sync` / `npm run ios` (build + sync into the iOS project / then open Xcode), `npm run steam:sdk -- <steamworks_sdk zip>` (install the pinned, gitignored Steamworks redistributable; once per machine), `npm run desktop:dev` (starts Vite + Electron on it; Steam client running) / `npm run desktop:dev:nosteam` (same, Steam gate skipped; dev only), `npm run desktop` (signed universal `.app` into `release/`), `npm run desktop:local` (signed zip without Steam or its gate, for colleagues, into `release/local/`; never upload it to Steam), `npm run steam:upload` (SteamPipe via steamcmd).
 
 ---
 

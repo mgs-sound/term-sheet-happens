@@ -4,6 +4,10 @@ productName: Term Sheet Happens
 directories:
   # Not the default `dist`: that's Vite's web build, which the app ships.
   output: release
+# Never upload builds anywhere. Without this, electron-builder publishes to the
+# (public) GitHub repo when it runs in CI with a GH_TOKEN, and bakes an
+# auto-update feed into the app. Steam ships the builds.
+publish: null
 
 files:
   - dist/**

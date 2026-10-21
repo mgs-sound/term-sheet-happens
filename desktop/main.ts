@@ -4,10 +4,11 @@
  * IPC: the game runs exactly as it does in a browser.
  */
 
+import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { app, BrowserWindow, dialog, Menu, net, protocol } from 'electron';
-import { SteamworksSDK } from 'steamworks-ffi-node';
+import type { SteamworksSDK } from 'steamworks-ffi-node';
 
 // Spacewar, Valve's public test app, until the game's own App ID exists.
 // TODO: real App ID (also in desktop/steam/*.vdf).
@@ -21,6 +22,15 @@ const BACKDROP = '#E8E4D8';
 const STEAM_CALLBACK_MS = 1000;
 
 const dev = !app.isPackaged;
+// No Steam at all:
+// - `npm run desktop:dev:nosteam` sets TSH_NO_STEAM=1, to work on the game
+//   without the client. Only dev runs read the variable.
+// - `npm run desktop:local` packages a build for colleagues without the Steam
+//   binding or library, flagged in its package.json (electron-builder.local.yml).
+// A Steam build always checks ownership.
+const skipSteam = dev
+  ? process.env.TSH_NO_STEAM === '1'
+  : JSON.parse(fs.readFileSync(path.join(app.getAppPath(), 'package.json'), 'utf8')).tshNoSteam === true;
 
 // Everything up to `whenReady` must run before the app's ready event.
 protocol.registerSchemesAsPrivileged([
@@ -37,28 +47,31 @@ app.setPath('userData', path.join(app.getPath('appData'), PRODUCT_NAME));
 
 if (!app.requestSingleInstanceLock()) app.quit();
 
-const steam = SteamworksSDK.getInstance();
+let steam: SteamworksSDK | null = null;
 let steamPump: NodeJS.Timeout | null = null;
 let mainWindow: BrowserWindow | null = null;
 
 /** True once Steam is up and this account owns the game. */
-function steamGate(): boolean {
-  steam.setSdkPath(
+async function steamGate(): Promise<boolean> {
+  // Loaded here rather than imported up top, so no-Steam builds can leave it out.
+  const sdk = (await import('steamworks-ffi-node')).SteamworksSDK.getInstance();
+  sdk.setSdkPath(
     dev ? path.join(import.meta.dirname, '..', 'steamworks_sdk') : path.join(process.resourcesPath, 'steamworks_sdk'),
   );
   // Launched from Finder instead of Steam: Steam relaunches us. Dev runs use
   // the SteamAppId that init() sets, so they never restart.
-  if (!dev && steam.restartAppIfNecessary(APP_ID)) {
+  if (!dev && sdk.restartAppIfNecessary(APP_ID)) {
     app.quit();
     return false;
   }
   // Init fails when Steam isn't running or this account has no license.
-  if (!steam.init({ appId: APP_ID }) || !steam.apps.isSubscribedApp(APP_ID)) {
+  if (!sdk.init({ appId: APP_ID }) || !sdk.apps.isSubscribedApp(APP_ID)) {
     dialog.showErrorBox('Steam is required', `Launch ${PRODUCT_NAME} from your Steam library.`);
     app.quit();
     return false;
   }
-  steamPump = setInterval(() => steam.runCallbacks(), STEAM_CALLBACK_MS);
+  steam = sdk;
+  steamPump = setInterval(() => sdk.runCallbacks(), STEAM_CALLBACK_MS);
   return true;
 }
 
@@ -135,14 +148,15 @@ app.on('second-instance', () => {
 app.on('window-all-closed', () => app.quit());
 
 app.on('before-quit', () => {
-  if (!steamPump) return;
+  if (!steam || !steamPump) return;
   clearInterval(steamPump);
   steamPump = null;
   steam.shutdown();
 });
 
-void app.whenReady().then(() => {
-  if (!steamGate()) return;
+void app.whenReady().then(async () => {
+  if (skipSteam) console.log('[desktop] no-Steam build: skipping the Steam gate');
+  else if (!(await steamGate())) return;
   serveDist();
   buildMenu();
   createWindow();

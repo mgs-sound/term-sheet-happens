@@ -1,0 +1,21 @@
+# Build to hand to colleagues: `npm run desktop:local` → release/local/*.zip
+# The Steam build (electron-builder.yml) minus Steam: no binding, no
+# libsteam_api.dylib, and the app skips the ownership gate. Same signing and
+# notarization. Never upload it to Steam.
+# Inherited arrays get these appended; null, or a value that isn't an array, replaces them.
+extends: electron-builder.yml
+directories:
+  # Away from release/mac-universal, which steam:upload ships.
+  output: release/local
+# Read by desktop/main.ts.
+extraMetadata:
+  tshNoSteam: true
+files:
+  - '!node_modules/{steamworks-ffi-node,koffi,@koromix,node-addon-api}/**'
+asarUnpack: null
+extraResources: null
+mac:
+  # One file to pass around, instead of the .app folder.
+  target:
+    target: zip
+    arch: universal
