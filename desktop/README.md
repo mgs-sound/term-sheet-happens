@@ -8,6 +8,7 @@
   - the menus have no full screen toggle and no Window menu;
   - anything else that takes the window out of full screen (the green button, Mission Control) puts it straight back;
   - Cmd+Q quits, and Cmd+Tab switches apps as usual. Dev runs too.
+- zooms the page on screens bigger than 1920×1080 (`MAX_VIEWPORT` in `main.ts`), so it looks as it does on a 1080p screen instead of a small phone column in a sea of paper. Smaller screens aren't zoomed, and browsers and the iOS app are unaffected.
 
 Nothing in `src/` knows it's on Steam. Because Electron isn't Capacitor's native platform, the web services are picked: localStorage, the share chain falling through to the clipboard, and no haptics.
 

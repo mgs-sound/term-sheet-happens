@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { app, BrowserWindow, dialog, Menu, net, protocol } from 'electron';
+import { app, BrowserWindow, dialog, Menu, net, protocol, screen } from 'electron';
 import type { SteamworksSDK } from 'steamworks-ffi-node';
 
 // Spacewar, Valve's public test app, until the game's own App ID exists.
@@ -18,6 +18,10 @@ const PRODUCT_NAME = 'Term Sheet Happens';
 const APP_ORIGIN = 'app://game';
 // --paper-dim, the backdrop behind the phone column (src/index.css).
 const BACKDROP = '#E8E4D8';
+// The largest page the game lays out. Bigger screens zoom the whole page so it
+// looks as it does on a 1920×1080 one, rather than a small phone column in a
+// sea of paper. Smaller screens aren't zoomed.
+const MAX_VIEWPORT = { width: 1920, height: 1080 };
 // Steam wants its callbacks pumped even when nothing listens for them.
 const STEAM_CALLBACK_MS = 1000;
 
@@ -119,6 +123,14 @@ function createWindow(): void {
   // Whatever takes it out of full screen (the title bar's green button,
   // Mission Control, the system shortcut), put it straight back.
   win.on('leave-full-screen', () => win.setFullScreen(true));
+  // Zoom to fit MAX_VIEWPORT. Full screen only, so the window's display is its
+  // size, even mid-transition. Re-fit on each load and when the display changes.
+  const fitZoom = (): void => {
+    const { width, height } = screen.getDisplayMatching(win.getBounds()).size;
+    win.webContents.setZoomFactor(Math.max(1, Math.min(width / MAX_VIEWPORT.width, height / MAX_VIEWPORT.height)));
+  };
+  win.webContents.on('dom-ready', fitZoom);
+  win.on('resize', fitZoom);
   // The page never leaves the game: no popups, no navigating away.
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   const devUrl = process.env.TSH_DEV_URL;
