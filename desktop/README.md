@@ -3,7 +3,11 @@
 `desktop/main.ts` is the whole shell. It's an Electron main process that:
 
 - checks Steam ownership before any window exists;
-- serves the unchanged web build (`dist/`) at `app://game`.
+- serves the unchanged web build (`dist/`) at `app://game`;
+- shows it full screen only, in macOS's native full screen (its own Space). There's no windowed mode:
+  - the menus have no full screen toggle and no Window menu;
+  - anything else that takes the window out of full screen (the green button, Mission Control) puts it straight back;
+  - Cmd+Q quits, and Cmd+Tab switches apps as usual. Dev runs too.
 
 Nothing in `src/` knows it's on Steam. Because Electron isn't Capacitor's native platform, the web services are picked: localStorage, the share chain falling through to the clipboard, and no haptics.
 

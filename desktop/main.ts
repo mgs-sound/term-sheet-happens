@@ -92,14 +92,9 @@ function buildMenu(): void {
       { role: 'appMenu' },
       // Also what makes Cmd+C / Cmd+V work in the name fields.
       { role: 'editMenu' },
-      {
-        label: 'View',
-        submenu: [
-          { role: 'togglefullscreen' },
-          ...(dev ? [{ type: 'separator' as const }, { role: 'reload' as const }, { role: 'toggleDevTools' as const }] : []),
-        ],
-      },
-      { role: 'windowMenu' },
+      // No full screen toggle and no Window menu (minimize, tiling): the app
+      // is full screen only. Dev runs keep reload and devtools.
+      ...(dev ? [{ label: 'View', submenu: [{ role: 'reload' as const }, { role: 'toggleDevTools' as const }] }] : []),
     ]),
   );
 }
@@ -107,12 +102,9 @@ function buildMenu(): void {
 function createWindow(): void {
   const win = new BrowserWindow({
     title: PRODUCT_NAME,
-    // The game is a 430×932 phone column on a paper backdrop; any size works.
-    useContentSize: true,
-    width: 520,
-    height: 960,
-    minWidth: 430,
-    minHeight: 700,
+    // Full screen only, no windowed mode. The game is a 430×932 phone column
+    // centred on the paper backdrop, so any screen works.
+    fullscreen: true,
     backgroundColor: BACKDROP,
     show: false,
     webPreferences: {
@@ -124,6 +116,9 @@ function createWindow(): void {
     },
   });
   win.once('ready-to-show', () => win.show());
+  // Whatever takes it out of full screen (the title bar's green button,
+  // Mission Control, the system shortcut), put it straight back.
+  win.on('leave-full-screen', () => win.setFullScreen(true));
   // The page never leaves the game: no popups, no navigating away.
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   const devUrl = process.env.TSH_DEV_URL;
